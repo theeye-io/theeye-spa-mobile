@@ -37,7 +37,7 @@
         "clipboard": "1.7.1",
         "connect-mongo": "~0.7.0",
         "connect-redis": "1.4.5",
-        "cordova-android": "^6.2.3",
+        "cordova-android": "^6.3.0",
         "cordova-plugin-googleplus": "git+https://github.com/EddyVerbruggen/cordova-plugin-googleplus.git",
         "cordova-plugin-whitelist": "^1.3.2",
         "crypt": "~0.0.1",
