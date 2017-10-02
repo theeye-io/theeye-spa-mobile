@@ -1,9 +1,9 @@
 module.exports = {
-  env: 'production',
-  app_url: 'https://theeye.io',
-  socket_url: 'https://theeye.io',
-  api_url: 'https://theeye.io/apiv2',
-  supervisor_api_url: 'https://supervisor.theeye.io',
+  env: 'development',
+  app_url: 'http://localhost:6080',
+  socket_url: 'http://localhost:6080',
+  api_url: 'http://localhost:6080/apiv2',
+  supervisor_api_url: 'http://localhost:60080',
   session: {
     refresh_interval: 1000 * 60 * 30
   }
