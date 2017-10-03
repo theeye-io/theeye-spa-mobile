@@ -48,16 +48,14 @@ module.exports = {
       },
       done: (response,xhr) => {
         if (xhr.status == 200) {
+          App.state.session.destroy()
+          App.state.alerts.success('Logged Out.','See you soon')
           if(window.plugins && window.plugins.googleplus) {
             window.plugins.googleplus.disconnect(
               function (msg) {
-                App.state.session.destroy()
-                App.state.alerts.success('Logged Out.','See you soon')
+                console.log(msg)
               }
             );
-          } else {
-            App.state.session.destroy()
-            App.state.alerts.success('Logged Out.','See you soon')
           }
         }
       },
