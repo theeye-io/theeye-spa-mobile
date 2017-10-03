@@ -76,6 +76,7 @@
         <splash height="2732" src="res/screen/ios/Default@2x~universal~anyany.png" width="2732" />
     </platform>
     <engine name="android" spec="^6.3.0" />
+    <engine name="browser" spec="^4.1.0" />
     <plugin name="cordova-plugin-googleplus" spec="git+https://github.com/EddyVerbruggen/cordova-plugin-googleplus.git">
         <variable name="REVERSED_CLIENT_ID" value="com.googleusercontent.apps.57402909306-u20qa8qh1ddhp0ikodta0nmlduvih1rp" />
     </plugin>
