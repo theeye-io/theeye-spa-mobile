@@ -11,6 +11,10 @@ module.exports = () => {
     })
   }
 
+  const isLogginOut = (pathname) => {
+    return /logout/.test(pathname) === true
+  }
+
   // if has access token, should validate it first? it cannot work offline
   App.state.session.on('change:logged_in',() => {
     let logged_in = App.state.session.logged_in
@@ -41,8 +45,11 @@ module.exports = () => {
   })
 
   App.Router.on('route',()=>{
-    if (!isPublicRoute(window.location.pathname)) {
-      SessionActions.refreshAccessToken()
+    if (App.state.session.logged_in===true) {
+      let path = window.location.pathname
+      if (!isPublicRoute(path) && !isLogginOut(path)) {
+        SessionActions.refreshAccessToken()
+      }
     }
   })
 
