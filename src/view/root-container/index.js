@@ -20,6 +20,9 @@ module.exports = View.extend({
   	<div class="main-container">
 			<nav></nav>
   	  <div data-hook="page-container"></div>
+  	  <footer>
+  	    <a href="/">theeye.io</a> - Beta Release <br> Copyright © 2014-2017 Theeye Inc
+  	  </footer>
   	</div>
   `,
   initialize () {
