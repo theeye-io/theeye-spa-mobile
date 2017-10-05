@@ -165,28 +165,6 @@ const Menu = View.extend({
     })
   },
   renderMenuLinks () {
-    const container = this.query('[data-hook=links-container] span')
-
-    // empty container
-    while (container.hasChildNodes()) {
-      container.removeChild(container.lastChild)
-    }
-
-    if (App.state.session.user.credential) {
-      if (Acls.hasAccessLevel('admin')) {
-        container.appendChild( html2dom(`<li><a data-hook='mvc-link' href="/admin/monitor" class="eyemenu-icon eyemenu-monitors"> Monitors </a></li>`))
-        container.appendChild( html2dom(`<li><a data-hook='mvc-link' href="/admin/task" class="eyemenu-icon eyemenu-tasks"> Tasks </a></li>`))
-        container.appendChild( html2dom(`<li><a data-hook='mvc-link' href="/admin/script" class="eyemenu-icon eyemenu-scripts"> Scripts </a></li>`))
-        container.appendChild( html2dom(`<li><a href="/admin/webhook" class="eyemenu-icon eyemenu-webhooks"> Webhooks </a></li>`))
-        container.appendChild( html2dom(`<li><a href="/admin/hostgroup" class="eyemenu-icon eyemenu-templates"> Provisioning </a></li>`))
-      }
-
-      if (Acls.hasAccessLevel('root')) {
-        container.appendChild( html2dom(`<li><a href="/admin/user" class="eyemenu-icon eyemenu-users"> Users </a></li>`))
-        container.appendChild( html2dom(`<li><a href="/admin/customer" class="eyemenu-icon eyemenu-organizations"> Organizations </a></li>`))
-      }
-    }
-
     // on window resize recalculate links container height
     const recalculateLinksHeight = (event) => {
       const links = this.queryByHook('links-container')

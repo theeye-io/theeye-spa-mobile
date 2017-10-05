@@ -8,7 +8,6 @@ import App from 'ampersand-app'
 import AppState from 'state'
 import Router from 'router'
 import Loader from 'components/loader'
-import ChatBox from 'components/chat'
 import RootContainer from 'view/root-container'
 import query from 'lib/query-params'
 const logger = require('lib/logger')('app')
@@ -61,8 +60,6 @@ App.extend({
     state.loader.on('change',() => {
       loader.updateState(state.loader)
     })
-
-    const chat = new ChatBox.ChatBoxBaloon()
 
     const root = new RootContainer({ el: document.getElementById('root') })
     state.on('change:currentPage',() => {

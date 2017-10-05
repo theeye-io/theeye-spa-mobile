@@ -485,7 +485,6 @@ input[type=checkbox].form-control {
 
 .main-container {
   /*position:absolute; width: 100%;*/
-  padding-bottom: 50px;
   padding-top: 76px;
   width:100%;
   position: absolute;

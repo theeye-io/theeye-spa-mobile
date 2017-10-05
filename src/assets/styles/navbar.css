@@ -33,7 +33,7 @@
 .eyemenu-panel .eyemenu-main-user h4, .eyemenu-panel .eyemenu-main-user a {width:136px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .eyemenu-panel .eyemenu-main-user i {border-radius:50%;font-size:48px;color:#f6b2b1;background:#e93e3c}
 .eyemenu-panel .eyemenu-main-user h4 {font-weight:600;margin-bottom:0}
-.eyemenu-panel .eyemenu-secondary-users {width:43%;text-align:center;}
+.eyemenu-panel .eyemenu-secondary-users {width:43%;text-align:center;padding-left: 20%;}
 .eyemenu-panel .eyemenu-secondary-users i {border-radius:50%;font-size:30px;margin:12px 5px 14px;color:#dbdbda;background:#b8b7b5}
 .eyemenu-panel .eyemenu-secondary-users i.active {color:#f7d197;background:#f4aa4a}
 .eyemenu-panel .eyemenu-switch-panels {font-size:24px;padding:10px;cursor:pointer;width:12%;}
@@ -84,7 +84,7 @@
 .navbar-eyemenu .eyemenu-search-panel-clear {position:absolute;right:0;top:0;font-size:24px;color:#ccc;padding:11px 15px;cursor:pointer;color:#005580;display:none}
 
 /* responsiveness */
-@media (max-width: 767px) { 
+@media (max-width: 767px) {
 	.navbar-eyemenu .eyemenu-panel-launcher {margin:10px; padding-right:15px;padding-left:8px;}
 	.navbar-eyemenu .eyemenu-panel-launcher.eyemenu-panel-innerlauncher {margin:0;}
 

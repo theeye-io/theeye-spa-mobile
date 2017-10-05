@@ -111,10 +111,10 @@ module.exports = View.extend({
     let buttons
 
     if (type == 'host') {
-      buttons = [ HostStats, Edit, Workflow, Search ]
+      buttons = [ Search ]
     }
     else if (['script','scraper','process','file'].indexOf(type) !== -1) {
-      buttons = [ LastEvent, Edit, Workflow, Search ]
+      buttons = [ LastEvent, Search ]
     }
 
     if (!buttons) return
