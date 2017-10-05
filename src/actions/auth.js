@@ -48,19 +48,16 @@ module.exports = {
       },
       done: (response,xhr) => {
         if (xhr.status == 200) {
-          App.state.session.destroy()
-          App.state.alerts.success('Logged Out.','See you soon')
-          if(window.plugins && window.plugins.googleplus) {
-            window.plugins.googleplus.disconnect(
-              function (msg) {
-                console.log(msg)
-              }
-            );
-          }
         }
       },
-      fail: (err,xhr) => { bootbox.alert('Error, please try again') }
+      fail: (err,xhr) => {
+        //bootbox.alert('Something goes wrong.')
+      }
     })
+
+    App.state.reset() // reset all application states
+    App.state.session.clear() // force session destroy on client
+    App.state.alerts.success('Logged Out.','See you soon')
   },
   resetMail (data) {
     App.state.loader.visible = true
@@ -199,7 +196,7 @@ module.exports = {
     })
   },
   toggleLoginForm() {
-    App.state.login.showRecoverForm = !App.state.login.showRecoverForm
+    App.state.login.toggle('showRecoverForm')
   },
   providerLogin(provider) {
     window.location.replace('auth/'+provider)
