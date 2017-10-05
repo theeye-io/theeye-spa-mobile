@@ -200,5 +200,57 @@ module.exports = {
   },
   providerLogin(provider) {
     window.location.replace('auth/'+provider)
+  },
+  socialLoginMobile(provider) {
+    if(provider == 'google') {
+      window.plugins.googleplus.login({
+        'webClientId': '57402909306-u65ofaja5gf9og205dpbim1igibstaa4.apps.googleusercontent.com',
+        'offline': true
+      },
+      function(userData) {
+        XHR.send({
+          url: `${config.app_url}/auth/verifysocialtoken`,
+          method: 'post',
+          jsonData: {email: userData.email, idToken: userData.idToken},
+          timeout: 5000,
+          withCredentials: true,
+          headers: {
+            Accept: 'application/json;charset=UTF-8'
+          },
+          done: (response,xhr) => {
+            if (xhr.status == 200){
+              App.state.session.set({
+                access_token: response.access_token
+              })
+            } else {
+              if (xhr.status == 400) {
+                bootbox.alert('Login error, invalid credentials')
+              } else {
+                bootbox.alert('Login error, please try again')
+              }
+            }
+          },
+          fail: (err,xhr) => {
+            window.plugins.googleplus.disconnect(
+              function (msg) {
+                App.state.session.destroy()
+                App.state.alerts.success('Logged Out.','See you soon')
+              }
+            );
+            if (xhr.status == 400) {
+              bootbox.alert('Login error, invalid credentials')
+            } else {
+              bootbox.alert('Login error, please try again')
+            }
+          }
+        })
+      },
+      function(error){
+        //throws error ==12501 on modal close event
+        if (error!==12501) {
+          bootbox.alert('Login error, please try again')
+        }
+      })
+    }
   }
 }
