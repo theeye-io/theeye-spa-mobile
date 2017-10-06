@@ -11,7 +11,7 @@ module.exports = View.extend({
   template: `
     <li class="task-exec-button">
       <button data-hook="trigger"
-        class="ladda-button btn btn-primary tooltiped" 
+        class="ladda-button btn btn-primary tooltiped"
         title="Run this task"
         data-spinner-size="30"
         data-style="zoom-in">
@@ -21,14 +21,6 @@ module.exports = View.extend({
   `,
   events: {
     'click button[data-hook=trigger]':'onClickTrigger',
-    'mouseover':'onMouseOver',
-    'mouseleave':'onMouseLeave',
-  },
-  onMouseOver (event) {
-    console.log('mouse overed')
-  },
-  onMouseLeave (event) {
-    console.log('mouse leaved')
   },
   onClickTrigger (event) {
     event.stopPropagation()

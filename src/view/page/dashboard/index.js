@@ -1,6 +1,7 @@
 'use strict';
 
 import App from 'ampersand-app'
+import config from 'config'
 import View from 'ampersand-view'
 import Modalizer from 'components/modalizer'
 import jquery from 'jquery'
@@ -69,7 +70,10 @@ module.exports = View.extend({
     renderStats: ['boolean',false,false],
     renderTasks: ['boolean',false,true],
     waitTimeout: ['number',false,null],
-    upandrunningSign: ['boolean',false,true]
+    upandrunningSign: ['boolean',false,() => {
+      let enabled = config.dashboard.upandrunningSign
+      return typeof enabled === 'boolean' ? enabled : true
+    }]
   },
   events: {
     'click [data-hook=up-and-running] i':'hideUpAndRunning',
@@ -291,7 +295,7 @@ module.exports = View.extend({
         })
 
         runAllButton.visible = Boolean(App.state.searchbox.search)
-        
+
         if (App.state.searchbox.search.length > 3) {
           const rows = taskRows.views.filter(row => row.show === true)
           if (!rows || rows.length===0) {
