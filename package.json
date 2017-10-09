@@ -37,7 +37,7 @@
         "clipboard": "1.7.1",
         "connect-mongo": "~0.7.0",
         "connect-redis": "1.4.5",
-        "cordova-android": "^6.3.0",
+        "cordova-android": "^6.2.3",
         "cordova-browser": "^4.1.0",
         "cordova-plugin-googleplus": "git+https://github.com/EddyVerbruggen/cordova-plugin-googleplus.git",
         "cordova-plugin-splashscreen": "^4.0.3",
@@ -116,7 +116,7 @@
         "plugins": {
             "cordova-plugin-whitelist": {},
             "cordova-plugin-googleplus": {
-                "REVERSED_CLIENT_ID": "com.googleusercontent.apps.57402909306-u20qa8qh1ddhp0ikodta0nmlduvih1rp"
+                "REVERSED_CLIENT_ID": "com.googleusercontent.apps.1072547485365-g3pboqq6nmrj17iv3u5uoirmf2j7om1f"
             },
             "cordova-plugin-splashscreen": {}
         },
