@@ -29,7 +29,7 @@ const TaskButtonsView = View.extend({
 
         const isCompleted = (lifecycle) => {
           return [
-            LIFECYCLE.COMPLETED, 
+            LIFECYCLE.COMPLETED,
             LIFECYCLE.TERMINATED,
             LIFECYCLE.FINISHED,
           ].indexOf(lifecycle) !== -1
@@ -186,7 +186,6 @@ const ScriptCollapsedContent = View.extend({
             <td><span data-hook="script_description"></span></td>
             <td><span data-hook="script_filename"></span></td>
             <td><span data-hook="script_language"></span></td>
-            <td><button data-hook="edit_script" class="fa fa-edit btn btn-sm btn-primary"></button></td>
           </tr>
         </tbody>
       </table>
@@ -318,10 +317,10 @@ module.exports = View.extend({
   events: {
     'click .collapsed[data-hook=collapse-toggle]': 'onClickToggleCollapse'
   },
-  // capture and handle collapse event 
+  // capture and handle collapse event
   onClickToggleCollapse (event) {
     TaskActions.populate(this.model)
-    return 
+    return
   },
   render () {
     this.renderWithTemplate()
