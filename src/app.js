@@ -90,4 +90,9 @@ App.extend({
   }
 })
 
-App.init()
+document.addEventListener("deviceready", function() {
+  document.addEventListener("resume", function() {
+    App.Router.reload()
+  }, false);
+  App.init()
+}, false);
