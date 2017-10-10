@@ -29,10 +29,7 @@ module.exports = () => {
       if (!logged_in) {
         App.Router.redirectTo('login',{replace: true})
       } else {
-        if (document.origin=='null') {
-          // redirect to dashboard only if pushState is not supported
-          App.Router.redirectTo('dashboard',{replace: true})
-        }
+        App.Router.redirectTo('dashboard',{replace: true})
       }
     } else {
       if (logged_in) {

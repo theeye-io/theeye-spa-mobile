@@ -94,5 +94,8 @@ document.addEventListener("deviceready", function() {
   document.addEventListener("resume", function() {
     App.Router.reload()
   }, false);
+  document.addEventListener("backbutton", function(e) {
+    e.preventDefault()
+  }, false);
   App.init()
 }, false);
