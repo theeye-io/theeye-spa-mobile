@@ -167,7 +167,8 @@ const Menu = View.extend({
   renderBackdrop () {
     const backdrop = new Backdrop({
       zIndex: 998,
-      opacity: 0
+      opacity: 0.7,
+      color: '#000'
     })
     this.listenTo(backdrop,'click',() => {
       NavbarActions.toggleMenu()
