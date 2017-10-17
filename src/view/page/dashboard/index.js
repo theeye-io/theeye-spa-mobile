@@ -33,6 +33,7 @@ const runAllTasks = (rows) => {
 		bootbox.confirm({
 			title: boxTitle,
 			message: boxMessage,
+      backdrop: true,
 			buttons: {
 				confirm: {
 					label: 'Run All',
