@@ -29,7 +29,7 @@
 .eyemenu-panel .eyemenu-links li a.eyemenu-profile:before {content: "\f2bd";}
 .eyemenu-panel .eyemenu-links li a.eyemenu-settings:before {content: "\f013";}
 .eyemenu-panel .eyemenu-links li a.eyemenu-logout:before {content: "\f08b";}
-.eyemenu-panel .eyemenu-top-panel {background:#192435;padding:10px 24px 20px 36px;width:100%;border-bottom:1px solid #23324c;height:124px;}
+.eyemenu-panel .eyemenu-top-panel {background:#192435;padding:10px 24px 20px 36px;width:100%;border-bottom:1px solid #23324c;height:200px;}
 .eyemenu-panel .eyemenu-bot-panel {width:100%;overflow-y:scroll;overflow-x:hidden;}
 .eyemenu-panel .eyemenu-main-user {width:43%;}
 .eyemenu-panel .eyemenu-main-user h4, .eyemenu-panel .eyemenu-main-user a {width:136px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -38,7 +38,8 @@
 .eyemenu-panel .eyemenu-secondary-users {width:43%;text-align:center;padding-left: 20%;}
 .eyemenu-panel .eyemenu-secondary-users i {border-radius:50%;font-size:30px;margin:12px 5px 14px;color:#dbdbda;background:#b8b7b5}
 .eyemenu-panel .eyemenu-secondary-users i.active {color:#f7d197;background:#f4aa4a}
-.eyemenu-panel .eyemenu-switch-panels {font-size:24px;padding:10px;cursor:pointer;width:12%;}
+.eyemenu-panel .eyemenu-customer h4 {font-weight:600;margin-bottom:0;font-size:16px}
+.eyemenu-panel .eyemenu-switch-panels {font-size:24px;padding:0px 10px;cursor:pointer;width:12%;}
 .eyemenu-panel .eyemenu-clients .eyemenu-client span {vertical-align:super;margin-left:12px;color:#b8bdc6}
 .eyemenu-panel .eyemenu-links .eyemenu-client a:before {display:none}
 .eyemenu-panel .eyemenu-links .eyemenu-client a {padding-left:34px}

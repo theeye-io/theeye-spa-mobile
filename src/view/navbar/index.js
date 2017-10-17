@@ -62,9 +62,8 @@ const CustomerItemList = View.extend({
 
 const CurrentCustomerItem = View.extend({
   template: `
-    <div class="eyemenu-secondary-users pull-left">
-      <i data-hook="active" class="fa fa-user-circle active" aria-hidden="true"></i>
-      <p data-hook="name" class="text-center"></p>
+    <div class="eyemenu-customer pull-left">
+      <h4 data-hook="name"></h4>
     </div>
   `,
   bindings: {
@@ -77,10 +76,9 @@ const CurrentCustomerItem = View.extend({
 
 const UserProfile = View.extend({
   template: `
-    <div class="eyemenu-main-user pull-left">
+    <div class="eyemenu-main-user">
       <i class="fa fa-user-circle" aria-hidden="true"></i>
       <h4 data-hook="username"></h4>
-      <span data-hook="email" href="#"></span>
     </div>
   `,
   bindings: {
