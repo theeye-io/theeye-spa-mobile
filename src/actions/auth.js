@@ -6,6 +6,7 @@ import bootbox from 'bootbox'
 import assign from 'lodash/assign'
 import config from 'config'
 import oauthConfig from 'config/oauth-config'
+import AnalyticsActions from './analytics'
 const xhr = $.ajax
 
 module.exports = {
@@ -21,6 +22,7 @@ module.exports = {
       },
       done: (response,xhr) => {
         if (xhr.status == 200){
+          AnalyticsActions.trackEvent('Auth', 'Login')
           App.state.session.set({
             access_token: response.access_token
           })
@@ -47,6 +49,7 @@ module.exports = {
         Accept: 'application/json;charset=UTF-8'
       },
       done: (response,xhr) => {
+        AnalyticsActions.trackEvent('Auth', 'Logout')
         if (xhr.status == 200) {
         }
       },
@@ -218,6 +221,7 @@ module.exports = {
             Accept: 'application/json;charset=UTF-8'
           },
           done: (response,xhr) => {
+            AnalyticsActions.trackEvent('Auth', 'Social Login', 'Google')
             if (xhr.status == 200){
               App.state.session.set({
                 access_token: response.access_token
