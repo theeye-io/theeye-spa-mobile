@@ -3,6 +3,7 @@ import JobOutput from 'view/page/dashboard/job-output'
 import SearchActions from 'actions/searchbox'
 import ResourceActions from 'actions/resource'
 import HostActions from 'actions/host'
+import AnalyticsActions from 'actions/analytics'
 
 export const Edit = View.extend({
   template: `
@@ -67,6 +68,8 @@ export const LastEvent = View.extend({
   onClickLastEvent (event) {
     event.preventDefault();
     event.stopPropagation();
+
+    AnalyticsActions.trackView('executionOutputMonitor')
 
     const view = new JobOutput({
       output: this.model.last_event || 'it is empty'

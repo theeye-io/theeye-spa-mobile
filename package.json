@@ -40,6 +40,7 @@
         "cordova-android": "^6.2.3",
         "cordova-browser": "^4.1.0",
         "cordova-fabric-plugin": "^1.1.9",
+        "cordova-plugin-google-analytics": "^1.8.3",
         "cordova-plugin-googleplus": "^5.1.1",
         "cordova-plugin-splashscreen": "^4.0.3",
         "cordova-plugin-statusbar": "^2.2.3",
@@ -125,7 +126,8 @@
                 "FABRIC_API_KEY": "44ff5df2c2b8e843d90f122120a0f2652bc23715",
                 "FABRIC_API_SECRET": "a01c760676d7a382d64ba4251f0f29338f4b324ccb4437b46dd97d516fc49e90"
             },
-            "cordova-plugin-statusbar": {}
+            "cordova-plugin-statusbar": {},
+            "cordova-plugin-google-analytics": {}
         },
         "platforms": [
             "android",

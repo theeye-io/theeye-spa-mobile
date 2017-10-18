@@ -3,6 +3,7 @@
 import App from 'ampersand-app'
 import Router from 'ampersand-router'
 import AuthActions from 'actions/auth'
+import AnalyticsActions from 'actions/analytics'
 const logger = require('lib/logger')('router')
 
 // routes
@@ -44,6 +45,7 @@ module.exports = Router.extend({
   },
   routes: {
     'dashboard': () => {
+      AnalyticsActions.trackView('dashboard')
       const route = new DashboardRoute()
       route.route('index')
     },
@@ -68,6 +70,7 @@ module.exports = Router.extend({
       route.route('index')
     },
     'login': () => {
+      AnalyticsActions.trackViewWithNewSession('login')
       const route = new AuthRoute()
       route.route('login')
     },

@@ -10,6 +10,7 @@ import Router from 'router'
 import Loader from 'components/loader'
 import RootContainer from 'view/root-container'
 import query from 'lib/query-params'
+import AnalyticsActions from 'actions/analytics'
 const logger = require('lib/logger')('app')
 
 require('app/events')
@@ -97,5 +98,6 @@ document.addEventListener("deviceready", function() {
   document.addEventListener("backbutton", function(e) {
     e.preventDefault()
   }, false);
+  AnalyticsActions.initPlugin('UA-108287519-1')
   App.init()
 }, false);

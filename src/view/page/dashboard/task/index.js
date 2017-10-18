@@ -8,6 +8,7 @@ import SearchActions from 'actions/searchbox'
 import TaskActions from 'actions/task'
 import ScriptActions from 'actions/script'
 import LIFECYCLE from 'constants/lifecycle'
+import AnalyticsActions from 'actions/analytics'
 
 import lang2ext from 'lib/lang2ext'
 
@@ -83,6 +84,8 @@ const TaskButtonsView = View.extend({
   onClickLastExecution (event) {
     event.preventDefault()
     event.stopPropagation()
+
+    AnalyticsActions.trackView('executionOutputTask')
 
     const getResult = () => {
       if (!this.execResult) {

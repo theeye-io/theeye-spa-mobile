@@ -4,6 +4,7 @@ import View from 'ampersand-view'
 import ladda from 'ladda'
 const logger = require('lib/logger')('page:dashboard:task:exec-button')
 import LIFECYCLE from 'constants/lifecycle'
+import AnalyticsActions from 'actions/analytics'
 
 import './styles.less'
 
@@ -27,6 +28,8 @@ module.exports = View.extend({
     event.preventDefault()
 
     if (!this.model.canExecute) return
+
+    AnalyticsActions.trackEvent('Task', 'Execution', this.model.id)
 
     if (this.model.lastjob.inProgress()) {
       const message = `Cancel task <b>${this.model.name}</b> execution?
