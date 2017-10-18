@@ -10,5 +10,10 @@ module.exports = {
   },
   trackEvent(Category, Action, Label) {
     window.ga.trackEvent(Category, Action, Label)
+  },
+  trackError(error, log) {
+    if(log)
+      window.fabric.Crashlytics.addLog(log);
+    window.fabric.Crashlytics.sendCrash(JSON.stringify(error));
   }
 }

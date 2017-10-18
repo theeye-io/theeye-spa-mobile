@@ -49,14 +49,19 @@ module.exports = {
         Accept: 'application/json;charset=UTF-8'
       },
       done: (response,xhr) => {
-        AnalyticsActions.trackEvent('Auth', 'Logout')
         if (xhr.status == 200) {
         }
       },
       fail: (err,xhr) => {
+        AnalyticsActions.trackError(err, 'Logout Error')
         //bootbox.alert('Something goes wrong.')
       }
     })
+
+    AnalyticsActions.trackEvent('Auth', 'Logout')
+    if(window.plugins && window.plugins.googleplus) {
+      window.plugins.googleplus.disconnect(function (msg) {console.log(msg)})
+    }
 
     App.state.reset() // reset all application states
     App.state.session.clear() // force session destroy on client
@@ -91,6 +96,7 @@ module.exports = {
         if (xhr.status == 400) {
           bootbox.alert('User email not found')
         } else {
+          AnalyticsActions.trackError(err, 'Login Error')
           bootbox.alert('Error, please try again')
         }
       }
@@ -244,6 +250,7 @@ module.exports = {
             if (xhr.status == 400) {
               bootbox.alert('Login error, invalid credentials')
             } else {
+              AnalyticsActions.trackError(err, 'Social Login (google) Error')
               bootbox.alert('Login error, please try again')
             }
           }
@@ -252,6 +259,8 @@ module.exports = {
       function(error){
         //throws error ==12501 on modal close event
         if (error!==12501) {
+          AnalyticsActions.trackError(error, 'Social Login (google) Error')
+
           bootbox.alert('Login error, please try again')
         }
       })

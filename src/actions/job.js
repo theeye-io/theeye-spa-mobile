@@ -41,6 +41,7 @@ module.exports = {
         task.lastjob.set(data)
       },
       fail (err,xhr) {
+        AnalyticsActions.trackError(err, 'Task create error')
         bootbox.alert('Job creation failed')
         console.log(arguments)
       }
@@ -61,6 +62,7 @@ module.exports = {
         task.lastjob.set('lifecycle',LIFECYCLE.CANCELED)
       },
       fail (err,xhr) {
+        AnalyticsActions.trackError(err, 'Task cancel error')
         bootbox.alert('something goes wrong')
         console.log(arguments)
       }
