@@ -14,6 +14,6 @@ module.exports = {
   trackError(error, log) {
     if(log)
       window.fabric.Crashlytics.addLog(log);
-    window.fabric.Crashlytics.sendCrash(JSON.stringify(error));
+    window.fabric.Crashlytics.sendNonFatalCrash(JSON.stringify(error));
   }
 }
