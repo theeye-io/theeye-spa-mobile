@@ -23,6 +23,8 @@ module.exports = {
       done: (response,xhr) => {
         if (xhr.status == 200){
           AnalyticsActions.trackEvent('Auth', 'Login')
+          AnalyticsActions.answersTrackLogin('Normal', {email: data.email})
+
           App.state.session.set({
             access_token: response.access_token
           })
@@ -227,8 +229,10 @@ module.exports = {
             Accept: 'application/json;charset=UTF-8'
           },
           done: (response,xhr) => {
-            AnalyticsActions.trackEvent('Auth', 'Social Login', 'Google')
             if (xhr.status == 200){
+              AnalyticsActions.trackEvent('Auth', 'Social Login', 'Google')
+              AnalyticsActions.answersTrackLogin('Google', {email: userData.email})
+
               App.state.session.set({
                 access_token: response.access_token
               })
