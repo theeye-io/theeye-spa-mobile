@@ -19,3 +19,4 @@ www/bundles/js/common.bundle.js
 www/bundles/js/main.bundle.js
 www/bundles/styles/main.css
 src/config/oauth-config.js
+GoogleService-Info.plist
