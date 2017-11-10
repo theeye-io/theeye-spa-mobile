@@ -120,7 +120,7 @@ const TaskButtonsView = View.extend({
 
 const ScraperCollapsedContent = View.extend({
   template: `
-    <div>
+    <div class="task-container">
       <p>This task will be executed on '<i data-hook="hostname"></i>'</p>
       <i data-hook="description">no description</i>
       <h4>Request details</h4>
@@ -173,7 +173,7 @@ const ScraperCollapsedContent = View.extend({
 
 const ScriptCollapsedContent = View.extend({
   template: `
-    <div>
+    <div class="task-container">
       <p>This task will be executed on '<i data-hook="hostname"></i>'</p>
       <i data-hook="description">no description</i>
       <h4>Script details</h4>
