@@ -1,46 +1,64 @@
 <div class="admin-container dashboard">
-  <!-- MONITORS -->
-  <div data-hook="monitors-panel" class="monitors admin-panel">
-    <section class="col-md-6 resources-panel events-panel">
-      <h3 data-hook="monitors-panel-header">Monitors</h3>
+  <div id="slider">
+    <ul class="tab-contents">
+      <!-- MONITORS -->
+      <li class="tab-content">
+        <div data-hook="monitors-panel" class="monitors admin-panel">
+          <section class="resources-panel events-panel">
+            <h3 data-hook="monitors-panel-header">Monitors</h3>
 
-      <!-- HIDDEN CONTAINER WITH EXTRA OPTIONS -->
-      <div data-hook="more-options" class="group hidden-container">
-        <div data-hook="grouping-select"></div>
-      </div>
+            <!-- HIDDEN CONTAINER WITH EXTRA OPTIONS -->
+            <div data-hook="more-options" class="group hidden-container">
+              <div data-hook="grouping-select"></div>
+            </div>
 
-      <!-- ALL UP AND RUNNING -->
-      <div data-hook="up-and-running" class="main-status hidden-container">
-        <i class="fa fa-check-circle big-icon"></i>
-        <h4>All up and running</h4>
-      </div>
+            <!-- ALL UP AND RUNNING -->
+            <div data-hook="up-and-running" class="main-status hidden-container">
+              <i class="fa fa-check-circle big-icon"></i>
+              <h4>All up and running</h4>
+            </div>
 
-      <!-- MONITORS LIST -->
-      <div>
-        <div class="panel-group" id="monitor-accordion" role="tablist" aria-multiselectable="true">
-          <section data-hook="monitors-container">
-            <!-- MONITOR CONTAINER -->
-          </section>
-          <section data-hook="monitors-fold-container">
+            <!-- MONITORS LIST -->
+            <div>
+              <div class="panel-group" id="monitor-accordion" role="tablist" aria-multiselectable="true">
+                <section data-hook="monitors-container">
+                  <!-- MONITOR CONTAINER -->
+                </section>
+                <section data-hook="monitors-fold-container">
+                </section>
+              </div>
+            </div>
           </section>
         </div>
-      </div>
-    </section>
-  </div>
-  <!-- /MONITORS -->
+      </li>
+      <!-- /MONITORS -->
 
-  <!-- TASKS -->
-  <div data-hook="tasks-panel">
-    <section class="col-md-6 tasks-panel events-panel">
-      <h3>Tasks</h3>
-      <div>
-        <div class="panel-group" id="task-accordion" role="tablist" aria-multiselectable="true">
-          <section data-hook="run-all-tasks"> </section>
-          <section data-hook="tasks-container"> </section>
-          <section data-hook="tasks-fold-container"> </section>
+      <!-- TASKS -->
+      <li class="tab-content">
+        <div data-hook="tasks-panel">
+          <section class="tasks-panel events-panel">
+            <h3>Tasks</h3>
+            <div>
+              <div class="panel-group" id="task-accordion" role="tablist" aria-multiselectable="true">
+                <section data-hook="run-all-tasks"> </section>
+                <section data-hook="tasks-container"> </section>
+                <section data-hook="tasks-fold-container"> </section>
+              </div>
+            </div>
+          </section>
         </div>
-      </div>
-    </section>
+      </li>
+      <!-- /TASKS -->
+    </ul>
   </div>
-  <!-- /TASKS -->
+  <!-- TAB BUTTONS -->
+  <div class="dashboard-tabs">
+    <div data-hook="show-monitors" class="dashboard-tab monitors-tab active">
+      <span>Monitors</span>
+    </div>
+    <div data-hook="show-tasks" class="dashboard-tab tasks-tab">
+      <span>Tasks</span>
+    </div>
+  </div>
+  <!-- /TAB BUTTONS -->
 </div>

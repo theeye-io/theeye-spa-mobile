@@ -4,7 +4,7 @@ import App from 'ampersand-app'
 import config from 'config'
 import View from 'ampersand-view'
 import Modalizer from 'components/modalizer'
-import jquery from 'jquery'
+import $ from 'jquery'
 import URI from 'urijs'
 import PanelView from './panel'
 import TaskRowView from './task'
@@ -21,6 +21,8 @@ const searchRows = require('lib/filter-rows')
 import MonitorsOptions from './monitors-options'
 import MonitoringOboardingPanel from './monitoring-onboarding'
 import TasksOboardingPanel from './tasks-onboarding'
+
+var slideCount, slideWidth, sliderUlWidth
 
 const runAllTasks = (rows) => {
   // doble check here
@@ -79,6 +81,8 @@ module.exports = View.extend({
   },
   events: {
     'click [data-hook=up-and-running] i':'hideUpAndRunning',
+    'click [data-hook=show-tasks]':'showTasks',
+    'click [data-hook=show-monitors]':'showMonitors'
   },
   initialize () {
     View.prototype.initialize.apply(this,arguments)
@@ -87,7 +91,17 @@ module.exports = View.extend({
     this.$upandrunning.slideUp()
     this.$monitorsPanel.slideDown()
   },
+  setSliderSizes () {
+    slideCount = $('#slider ul li.tab-content').length;
+    slideWidth = $(window).width();
+    sliderUlWidth = slideCount * slideWidth;
+
+    $('#slider ul.tab-contents').css({ width: sliderUlWidth });
+    $('#slider ul.tab-contents li.tab-content').css({ width: slideWidth });
+  },
   render () {
+    var self = this
+
     this.renderWithTemplate()
 
     this.listenToAndRun(App.state.dashboard,'change:resourcesDataSynced',() => {
@@ -102,6 +116,7 @@ module.exports = View.extend({
           )
         }
         this.stopListening(App.state.dashboard,'change:resourcesDataSynced')
+        this.setSliderSizes()
       }
     })
 
@@ -118,6 +133,7 @@ module.exports = View.extend({
             )
           }
           this.stopListening(App.state.dashboard,'change:tasksDataSynced')
+          this.setSliderSizes()
         }
       })
     } else {
@@ -128,6 +144,28 @@ module.exports = View.extend({
     if (this.renderStats === true) {
       this.renderStatsPanel()
     }
+
+    $(window).resize(function() {
+      self.setSliderSizes()
+    })
+  },
+  showTasks() {
+    if ($('.dashboard-tabs .dashboard-tab.tasks-tab').hasClass('active'))
+      return
+    $('.dashboard-tabs .dashboard-tab').toggleClass('active')
+    $('#slider ul.tab-contents').animate({
+      left: - slideWidth
+    }, 400, function () {
+    });
+  },
+  showMonitors() {
+    if ($('.dashboard-tabs .dashboard-tab.monitors-tab').hasClass('active'))
+      return
+    $('.dashboard-tabs .dashboard-tab').toggleClass('active')
+    $('#slider ul.tab-contents').animate({
+      left: 0
+    }, 400, function () {
+    });
   },
   /**
    *
