@@ -1,0 +1,52 @@
+.dashboard-tabs {
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background: #FFF;
+  position: fixed;
+  text-align: center;
+}
+
+.dashboard-tabs > .dashboard-tab {
+  width: 50%;
+  overflow:hidden;
+  float: left;
+  cursor: pointer;
+}
+
+.dashboard-tabs > .dashboard-tab.monitors-tab {
+  border-right: 2px solid #23324C;
+}
+
+.dashboard-tabs > .dashboard-tab.active {
+  background: #EEE;
+}
+
+.dashboard-tabs > .dashboard-tab span{
+  color: #304269;
+  font-size: 20px;
+  line-height: 50px;
+}
+
+#slider {
+  position: relative;
+  overflow: hidden;
+}
+
+#slider ul.tab-contents {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#slider ul.tab-contents li.tab-content {
+  position: relative;
+  display: block;
+  float: left;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
