@@ -28,10 +28,14 @@ const setStateFromQueryString = (query) => {
 const fetchData = (options) => {
   const { fetchTasks } = options
 
+  App.state.dashboard.resourcesDataSynced = false
+
   App.state.dashboard.groupedResources.once('reset',() => {
     logger.log('resources synced and grouped resources prepared')
     App.state.dashboard.resourcesDataSynced = true
   })
+
+  App.state.dashboard.tasksDataSynced = false
 
   App.state.tasks.once('sync',() => {
     logger.log('tasks synced')
