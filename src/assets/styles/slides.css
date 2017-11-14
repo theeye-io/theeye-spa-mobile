@@ -14,6 +14,7 @@
   overflow:hidden;
   float: left;
   cursor: pointer;
+  background: #EEE;
 }
 
 .dashboard-tabs > .dashboard-tab.monitors-tab {
@@ -21,7 +22,7 @@
 }
 
 .dashboard-tabs > .dashboard-tab.active {
-  background: #EEE;
+  background: #d88e47;
 }
 
 .dashboard-tabs > .dashboard-tab span{
