@@ -126,9 +126,7 @@ module.exports = {
         Accept: 'application/json;charset=UTF-8'
       },
       done: (response,xhr) => {
-        if (xhr.status == 200){
-          console.log('User register for notifications service successfull.')
-        } else {
+        if (!xhr.status == 200) {
           bootbox.alert('Error registering user for notifications service.')
         }
       },
