@@ -16,6 +16,7 @@ const logger = require('lib/logger')('app')
 require('app/events')
 const sockets = require('app/sockets')
 const session = require('app/session')
+const pushNotification = require('app/push-notification')
 
 import 'assets/styles'
 
@@ -33,6 +34,7 @@ App.extend({
       this.registerComponents()
       session()
       sockets()
+      pushNotification()
     })
   },
   initState (next) {
