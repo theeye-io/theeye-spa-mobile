@@ -5,7 +5,7 @@ import XHR from 'lib/xhr'
 import bootbox from 'bootbox'
 import assign from 'lodash/assign'
 import config from 'config'
-import oauthConfig from 'config/oauth-config'
+import credentials from 'config/credentials'
 import AnalyticsActions from './analytics'
 const xhr = $.ajax
 
@@ -215,7 +215,7 @@ module.exports = {
   socialLoginMobile(provider) {
     if(provider == 'google') {
       window.plugins.googleplus.login({
-        'webClientId': oauthConfig.google.webClientId,
+        'webClientId': credentials.google.webClientId,
         'offline': true
       },
       function(userData) {

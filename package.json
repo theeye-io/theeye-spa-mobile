@@ -37,10 +37,10 @@
     "clipboard": "1.7.1",
     "connect-mongo": "~0.7.0",
     "connect-redis": "1.4.5",
-    "cordova-android": "^6.2.3",
-    "cordova-browser": "^4.1.0",
+    "cordova-android": "^6.3.0",
     "cordova-fabric-plugin": "^1.1.9",
     "cordova-ios": "^4.4.0",
+    "cordova-plugin-device": "^1.1.7",
     "cordova-plugin-google-analytics": "^1.8.3",
     "cordova-plugin-googleplus": "^5.1.1",
     "cordova-plugin-splashscreen": "^4.0.3",
@@ -97,6 +97,7 @@
     "passport-google-oauth": "~0.1.5",
     "passport-http-bearer": "1.0.1",
     "passport-local": "~1.0.0",
+    "phonegap-plugin-push": "^2.1.0",
     "rc": "~0.3.5",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
@@ -128,12 +129,13 @@
         "FABRIC_API_SECRET": "a01c760676d7a382d64ba4251f0f29338f4b324ccb4437b46dd97d516fc49e90"
       },
       "cordova-plugin-statusbar": {},
-      "cordova-plugin-google-analytics": {}
+      "cordova-plugin-google-analytics": {},
+      "phonegap-plugin-push": {},
+      "cordova-plugin-device": {}
     },
     "platforms": [
-      "android",
-      "browser",
-      "ios"
+      "ios",
+      "android"
     ]
   },
   "scripts": {

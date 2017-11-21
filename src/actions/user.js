@@ -1,6 +1,8 @@
 //import jquery from 'jquery'
 import bootbox from 'bootbox'
 import App from 'ampersand-app'
+import config from 'config'
+import XHR from 'lib/xhr'
 const xhr = $.ajax
 
 module.exports = {
@@ -111,6 +113,26 @@ module.exports = {
         title: 'User Remove error',
         message: errorMessage
       })
+    })
+  },
+  registerDeviceToken (id, data) {
+    XHR.send({
+      url: `${config.app_url}/user/${id}/registerdevicetoken`,
+      method: 'post',
+      jsonData: data,
+      timeout: 5000,
+      withCredentials: true,
+      headers: {
+        Accept: 'application/json;charset=UTF-8'
+      },
+      done: (response,xhr) => {
+        if (!xhr.status == 200) {
+          bootbox.alert('Error registering user for notifications service.')
+        }
+      },
+      fail: (err,xhr) => {
+        bootbox.alert('Error registering user for notifications service.')
+      }
     })
   }
 }
