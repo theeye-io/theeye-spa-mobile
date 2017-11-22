@@ -127,11 +127,12 @@ module.exports = {
       },
       done: (response,xhr) => {
         if (!xhr.status == 200) {
-          bootbox.alert('Error registering user for notifications service.')
+          console.log('Error registering user for notifications service.')
         }
       },
       fail: (err,xhr) => {
-        bootbox.alert('Error registering user for notifications service.')
+        console.log(err)
+        console.log('Error registering user for notifications service.')
       }
     })
   }
