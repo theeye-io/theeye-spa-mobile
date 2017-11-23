@@ -1,4 +1,5 @@
 /**NEW MODAL STYLES**/
+.modal { overflow-y: scroll; }
 .modal-header{ color:#304269;}
 .modal-body{ color:#304269;}
 
@@ -14,9 +15,19 @@
 }
 
 .modal-dialog .modal-content {
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 300;
 }
+
+.modal-dialog .modal-content .modal-body {
+  font-size: 16px;
+  min-height: 150px;
+}
+
+.modal-dialog .modal-content form {
+  font-size: 14px;
+}
+
 
 .modal-dialog .modal-content .modal-footer button.btn {
   display: block;
@@ -40,3 +51,19 @@
 .modal-dialog .modal-content .modal-footer button.btn:focus {
   outline: none;
 }
+
+@media (min-width: 768px) {
+  .modalizer .modal-dialog {
+    width: 80%;
+    margin: 30px auto;
+  }
+}
+
+/**
+ *
+ * commented on merge
+ *
+.bootbox-body{
+
+}
+*/
