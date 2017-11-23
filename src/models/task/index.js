@@ -1,46 +1,17 @@
-//import AppModel from 'lib/app-model'
 import State from 'ampersand-state'
 import AppCollection from 'lib/app-collection'
 import isURL from 'validator/lib/isURL'
 import isMongoId from 'validator/lib/isMongoId'
-import LIFECYCLE from 'constants/lifecycle'
 
 //import { Model as Host } from 'models/host'
 
+const ScriptJob = require('./job').ScriptJob
+const ScraperJob = require('./job').ScraperJob
 const ScriptTemplate = require('./template').Script
 const ScraperTemplate = require('./template').Scraper
 const config = require('config')
 
 const urlRoot = `${config.api_url}/task`
-
-const JobResult = State.extend({
-  props: {
-    id: 'string',
-    user_id: 'string',
-    task_id: 'string',
-    host_id: 'string',
-    script_id: 'string',
-    script_arguments: 'array',
-    customer_id: 'string',
-    customer_name: 'string',
-    //script: 'object', // embedded
-    //task: 'object', // embedded
-    //host: 'object',
-    //user: 'object',
-    name: 'string',
-    notify: 'boolean',
-    state: 'string',
-    lifecycle: 'string',
-    result: ['object',false,null],
-    creation_date: 'date',
-    last_update: 'date',
-    event: 'any',
-    event_id: 'string'
-  },
-  inProgress () {
-    return LIFECYCLE.inProgress(this.lifecycle)
-  }
-})
 
 const formattedTags = () => {
   return {
@@ -73,16 +44,25 @@ const Script = ScriptTemplate.extend({
       fn () {
         return isMongoId(this.script_id || '') && isMongoId(this.host_id || '')
       }
+    },
+    hasTemplate: {
+      deps: ['template_id'],
+      fn () {
+        return Boolean(this.template_id) === true
+      }
     }
   },
   children: {
     //host: Host,
-    lastjob: JobResult,
+    lastjob: ScriptJob,
     template: ScriptTemplate,
   },
   serialize () {
     var serial = ScriptTemplate.prototype.serialize.apply(this,arguments)
     serial.template = this.template ? this.template.id : null
+    serial.host = this.host_id
+    serial.script = this.script_id
+    delete serial.lastjob
     return serial
   }
 })
@@ -98,9 +78,9 @@ const Scraper = ScraperTemplate.extend({
   derived: {
     formatted_tags: formattedTags(),
     canExecute: {
-      deps: ['url','host_id'],
+      deps: ['remote_url','host_id'],
       fn () {
-        const url = this.url || ''
+        const url = this.remote_url || ''
 
         const isurl = /localhost/.test(url) || isURL(url, {
           protocols: ['http','https'],
@@ -108,16 +88,24 @@ const Scraper = ScraperTemplate.extend({
         })
         return isurl && isMongoId(this.host_id || '')
       }
+    },
+    hasTemplate: {
+      deps: ['template_id'],
+      fn () {
+        return Boolean(this.template_id) === true
+      }
     }
   },
   children: {
     //host: Host,
-    lastjob: JobResult,
+    lastjob: ScraperJob,
     template: ScraperTemplate,
   },
   serialize () {
     var serial = ScraperTemplate.prototype.serialize.apply(this,arguments)
     serial.template = this.template ? this.template.id : null
+    serial.host = this.host_id
+    delete serial.lastjob
     return serial
   }
 })
@@ -125,15 +113,28 @@ const Scraper = ScraperTemplate.extend({
 const Collection = AppCollection.extend({
   comparator: 'name',
   url: urlRoot,
-  model: function (attrs, options) {
+  model (attrs, options) {
     if ( /ScraperTask/.test(attrs._type) === true ) {
       return new Scraper(attrs,options)
     } else {
       return new Script(attrs,options)
     }
+  },
+  isModel (model) {
+    return model instanceof Scraper || model instanceof Script
   }
 })
 
 exports.Scraper = Scraper
 exports.Script = Script
 exports.Collection = Collection
+
+exports.Factory = function (data) {
+  if (data.type == 'script') {
+    return new Script(data)
+  }
+  if (data.type == 'scraper') {
+    return new Scraper(data)
+  }
+  throw new Error(`unrecognized type ${data.type}`)
+}
