@@ -1,7 +1,7 @@
+'use strict'
+
 import CheckboxView from 'ampersand-checkbox-view'
-import mergeWith from 'lodash/mergeWith'
-import compact from 'lodash/compact'
-import concat from 'lodash/concat'
+import assign from 'lodash/assign'
 
 module.exports = CheckboxView.extend({
   template: `
@@ -13,8 +13,13 @@ module.exports = CheckboxView.extend({
           <p data-hook="message-text" class="alert alert-warning"></p>
         </div>
       </div>
-    </div>`,
-  bindings: mergeWith({}, CheckboxView.prototype.bindings, {
+    </div>
+  `,
+  props: {
+    visible: ['boolean',false,true],
+  },
+  bindings: assign({}, CheckboxView.prototype.bindings, {
+    visible: { type: 'toggle' },
     name: [{
       type: 'attribute',
       name: 'for',
@@ -24,9 +29,5 @@ module.exports = CheckboxView.extend({
       name: 'id',
       selector: 'input'
     }]
-  }, customizer)
+  })
 })
-
-function customizer (objValue, srcValue) {
-  return compact(concat(objValue, srcValue))
-}

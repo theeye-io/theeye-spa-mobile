@@ -1,5 +1,7 @@
+'use strict'
+
 var InputView = require('ampersand-input-view')
-var extend = require('lodash/assign')
+var assign = require('lodash/assign')
 
 /**
  *
@@ -20,9 +22,13 @@ module.exports = InputView.extend({
     </div>
   `,
   props: {
+    visible: ['boolean',false,true ],
     styles: ['string',false,'form-group']
   },
-  bindings: extend({}, InputView.prototype.bindings, {
+  bindings: assign({}, InputView.prototype.bindings, {
+    visible: {
+      type: 'toggle'
+    },
     styles: {
       type: 'attribute',
       name: 'class'
