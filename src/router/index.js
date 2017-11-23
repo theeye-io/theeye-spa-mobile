@@ -8,11 +8,6 @@ const logger = require('lib/logger')('router')
 
 // routes
 const AuthRoute = require('./auth')
-const UserRoute = require('./user')
-const CustomerRoute = require('./customer')
-const WebhookRoute = require('./webhook')
-const HostGroupRoute = require('./hostgroup')
-import SchedulerRoute from './scheduler'
 import DashboardRoute from './dashboard'
 
 module.exports = Router.extend({
@@ -47,26 +42,6 @@ module.exports = Router.extend({
     'dashboard': () => {
       AnalyticsActions.trackView('dashboard')
       const route = new DashboardRoute()
-      route.route('index')
-    },
-    'admin/hostgroup(/:id/:action)': () => {
-      const route = new HostGroupRoute()
-      route.route('index')
-    },
-    'admin/user(/:id/:action)': () => {
-      const route = new UserRoute()
-      route.route('index')
-    },
-    'admin/customer(/:id/:action)': () => {
-      const route = new CustomerRoute()
-      route.route('index')
-    },
-    'admin/webhook(/:id/:action)': () => {
-      const route = new WebhookRoute()
-      route.route('index')
-    },
-    'admin/scheduler': () => {
-      const route = new SchedulerRoute()
       route.route('index')
     },
     'login': () => {
