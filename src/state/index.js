@@ -1,22 +1,49 @@
 import AmpersandState from 'ampersand-state'
-import AmpersandCollection from 'ampersand-collection'
+import Collection from 'ampersand-collection'
 import uriFragment from 'lib/uri-fragment'
 import { Collection as Webhooks } from 'models/webhook'
 import { Collection as HostGroups } from 'models/hostgroup'
 import { Collection as Users } from 'models/user'
+import { Collection as Members } from 'models/member'
 import { Collection as Customers } from 'models/customer'
 import { Collection as Hosts } from 'models/host'
 import { Collection as Schedules } from 'models/schedule'
 import { Collection as Resources } from 'models/resource'
 import { Collection as Tasks } from 'models/task'
+import { Collection as Tags } from 'models/tag'
+import { Collection as Scripts } from 'models/file/script'
+import { Collection as Events } from 'models/event'
 import Alerts from 'components/alerts'
 //import URI from 'urijs'
 
 import HostGroupPageState from './hostgroup-page'
 import DashboardPageState from './dashboard-page'
 import SessionState from './session'
+import NavbarState from './navbar'
 
 const State = AmpersandState.extend({ extraProperties: 'allow' })
+
+const credentials = [
+  { order: 1, id: 'viewer', name: 'viewer', description: 'Viewer' },
+  { order: 2, id: 'user', name: 'user', description: 'User' },
+  { order: 3, id: 'manager', name: 'manager', description: 'Manager' },
+  { order: 4, id: 'admin', name: 'admin', description: 'Admin' },
+  { order: 5, id: 'owner', name: 'owner', description: 'Owner' }
+]
+
+const CredentialsCollection = Collection.extend({
+  reset (models) {
+    const reset = Collection.prototype.reset
+    if (!models) {
+      reset.call(this, credentials) // reset to original state
+    } else {
+      reset.call(this, models)
+    }
+  },
+  clear () {
+    this.reset([])
+  }
+})
 
 const AppState = State.extend({
   //
@@ -26,6 +53,7 @@ const AppState = State.extend({
   //
   props: {
     activate: ['state',false,() => { return new ActivateState() }],
+    passwordReset: ['state',false,() => { return new PasswordResetState() }],
     alerts: ['state',false,() => { return new Alerts() }],
     currentPage: 'state',
     dashboard: ['state',false,() => { return new DashboardPageState() }],
@@ -39,26 +67,29 @@ const AppState = State.extend({
     this.loader = new LoaderState()
     this.session = new SessionState()
     this.navbar = new NavbarState()
+    this.credentials = new CredentialsCollection()
 
     _initCollections.call(this)
 
-    this.session.on('change:logged_in',() => {
+    const resetCredentialsCollection = () => {
       if (this.session.logged_in===undefined) {
         return
+      } else if (this.session.logged_in===false) {
+        this.credentials.clear() // empty
+      } else if (this.session.logged_in===true) {
+        this.credentials.reset() // reset to default
       }
-      else if (this.session.logged_in===false) {
-        this.credentials.reset()
-      }
-      else if (this.session.logged_in===true) {
-        this.credentials.reset(credentials)
+    }
 
-        if (this.session.user.credential === 'root') {
-          this.credentials.add({
-            id: 'root',
-            name: 'root',
-            description: 'Root'
-          })
-        }
+    this.session.on('change:logged_in', resetCredentialsCollection)
+
+    this.credentials.on('reset',() => {
+      if (this.session.user.credential === 'root') {
+        this.credentials.add({
+          id: 'root',
+          name: 'root',
+          description: 'Root'
+        })
       }
     })
   },
@@ -119,12 +150,6 @@ const LoginState = State.extend({
   }
 })
 
-const NavbarState = State.extend({
-  props: {
-    menuSwitch: ['boolean',false,false]
-  }
-})
-
 const ActivateState = State.extend({
   props: {
     username: 'string',
@@ -134,22 +159,20 @@ const ActivateState = State.extend({
   }
 })
 
+const PasswordResetState = State.extend({
+  props: {
+    token: 'string'
+  }
+})
+
 const RegisterState = State.extend({
   props: {
     result: ['boolean',false,false]
   }
 })
 
-const credentials = [
-  { id: 'viewer', name: 'viewer', description: 'Viewer' },
-  { id: 'owner', name: 'owner', description: 'Owner' },
-  { id: 'admin', name: 'admin', description: 'Admin' },
-  { id: 'user', name: 'user', description: 'User' }
-]
-
 const _initCollections = function () {
   Object.assign(this, {
-    credentials: new AmpersandCollection([]),
     customers: new Customers([]),
     hostGroups: new HostGroups([]),
     hosts: new Hosts([]),
@@ -157,7 +180,11 @@ const _initCollections = function () {
     resources: new Resources([]),
     schedules: new Schedules(),
     tasks: new Tasks([]),
+    tags: new Tags([]),
+    scripts: new Scripts([]),
     users: new Users([]),
     webhooks: new Webhooks([]),
+    members: new Members([]),
+    events: new Events([])
   })
 }
