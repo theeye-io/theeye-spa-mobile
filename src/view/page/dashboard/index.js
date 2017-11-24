@@ -3,9 +3,7 @@
 import App from 'ampersand-app'
 import config from 'config'
 import View from 'ampersand-view'
-import Modalizer from 'components/modalizer'
 import $ from 'jquery'
-import URI from 'urijs'
 import PanelView from './panel'
 import TaskRowView from './task'
 import MonitorRowView from './monitor'
@@ -312,7 +310,9 @@ module.exports = View.extend({
     this.registerSubview(runAllButton)
 
     this.listenTo(runAllButton,'runall',() => {
-      const rows = taskRows.views.filter(row => row.show === true)
+      const rows = taskRows.views.filter(row => {
+        return row.model.canExecute && row.show === true
+      })
       runAllTasks(rows)
     })
 
@@ -337,7 +337,9 @@ module.exports = View.extend({
           rows: taskRows.views,
           search: App.state.searchbox.search,
           onrow: (row, isHit) => {
-            row.show = isHit
+            if (row.model.canExecute) {
+              row.show = isHit
+            }
           },
           onsearchend: () => {
             taskRows.views.forEach(row => row.show = true)

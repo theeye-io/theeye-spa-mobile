@@ -1,8 +1,7 @@
-'use strict'
-
 import App from 'ampersand-app'
+import acls from 'lib/acls'
 import View from 'ampersand-view'
-import JobOutput from '../job-output'
+import JobResult from '../job-result'
 import ExecButton from './exec-button'
 import SearchActions from 'actions/searchbox'
 import TaskActions from 'actions/task'
@@ -69,7 +68,7 @@ const TaskButtonsView = View.extend({
   },
   events: {
     'click button[data-hook=workflow]':'onClickWorkflow',
-    'click button[data-hook=edit]':'onClickEdit',
+    //'click button[data-hook=edit]':'onClickEdit',
     'click button[data-hook=search]':'onClickSearch',
     'click button[data-hook=last_exec]':'onClickLastExecution',
   },
@@ -87,20 +86,8 @@ const TaskButtonsView = View.extend({
 
     AnalyticsActions.trackView('executionOutputTask')
 
-    const getResult = () => {
-      if (!this.execResult) {
-        return 'execution result is not available'
-      }
-
-      return this.model.lastjob.result
-    }
-
-    const view = new JobOutput({ output: getResult() })
+    const view = new JobResult({ job: this.model.lastjob })
     view.show()
-
-    this.listenTo(this.model.lastjob, 'change:result', () => {
-      view.output = getResult()
-    })
 
     return false
   },
@@ -110,40 +97,42 @@ const TaskButtonsView = View.extend({
     window.location = '/admin/workflow?node=' + this.model.id
     return false
   },
-  onClickEdit (event) {
-    event.stopPropagation()
-    event.preventDefault()
-    window.location = "/admin/task#search=" + this.model.id
-    return false
-  },
+  //onClickEdit (event) {
+  //  event.stopPropagation()
+  //  event.preventDefault()
+  //  window.location = "/admin/task#search=" + this.model.id
+  //  return false
+  //},
 })
 
 const ScraperCollapsedContent = View.extend({
   template: `
     <div class="task-container">
-      <p>This task will be executed on '<i data-hook="hostname"></i>'</p>
-      <i data-hook="description">no description</i>
+      <h4>This task is assigned to '<i data-hook="hostname"></i>'</h4>
+      <p class="text-block" data-hook="description">no description</p>
       <h4>Request details</h4>
-      <table class="table table-stripped">
-        <thead>
-          <tr data-hook="title-cols">
-            <th></th>
-            <th>URL</th>
-            <th>Method</th>
-            <th>Timeout</th>
-            <th>Status Code</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td></td>
-            <td><span data-hook="url"></span></td>
-            <td><span data-hook="method"></span></td>
-            <td><span data-hook="timeout"></span></td>
-            <td><span data-hook="status_code"></span></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="text-block">
+        <table class="table table-stripped">
+          <thead>
+            <tr data-hook="title-cols">
+              <th></th>
+              <th>URL</th>
+              <th>Method</th>
+              <th>Timeout</th>
+              <th>Status Code</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td></td>
+              <td><span data-hook="remote_url"></span></td>
+              <td><span data-hook="method"></span></td>
+              <td><span data-hook="timeout"></span></td>
+              <td><span data-hook="status_code"></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   `,
   derived: {
@@ -163,7 +152,7 @@ const ScraperCollapsedContent = View.extend({
   },
   bindings: {
     'model.hostname': { hook: 'hostname' },
-    'model.url': { hook: 'url' },
+    'model.remote_url': { hook: 'remote_url' },
     'model.method': { hook: 'method' },
     'model.status_code': { hook: 'status_code' },
     timeout: { hook: 'timeout' },
@@ -174,28 +163,30 @@ const ScraperCollapsedContent = View.extend({
 const ScriptCollapsedContent = View.extend({
   template: `
     <div class="task-container">
-      <p>This task will be executed on '<i data-hook="hostname"></i>'</p>
-      <i data-hook="description">no description</i>
+      <h4>This task is assigned to '<i data-hook="hostname"></i>'</h4>
+      <p class="text-block" data-hook="description">no description</p>
       <h4>Script details</h4>
-      <table class="table table-stripped">
-        <thead>
-          <tr data-hook="title-cols">
-            <th></th>
-            <th>Description</th>
-            <th>Filename</th>
-            <th>Type</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td></td>
-            <td><span data-hook="script_description"></span></td>
-            <td><span data-hook="script_filename"></span></td>
-            <td><span data-hook="script_language"></span></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="text-block">
+        <table class="table table-stripped">
+          <thead>
+            <tr data-hook="title-cols">
+              <th></th>
+              <th>Description</th>
+              <th>Filename</th>
+              <th>Type</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody data-hook="table-body">
+            <tr>
+              <td></td>
+              <td><span data-hook="script_description"></span></td>
+              <td><span data-hook="script_filename"></span></td>
+              <td><span data-hook="script_language"></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   `,
   derived: {
@@ -341,10 +332,13 @@ module.exports = View.extend({
       new TaskButtonsView({ model: this.model }),
       this.query('ul.dropdown-menu[data-hook=buttons-container]')
     )
-    const button = this.renderSubview(
-      new ExecButton({ model: this.model }),
-      this.queryByHook('execute-button-container')
-    )
+
+    if (acls.hasAccessLevel('user')) {
+      const button = this.renderSubview(
+        new ExecButton({ model: this.model }),
+        this.queryByHook('execute-button-container')
+      )
+    }
   },
   renderCollapsedContent () {
     let content

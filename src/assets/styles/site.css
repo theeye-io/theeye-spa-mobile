@@ -14,7 +14,10 @@ a:-webkit-any-link {
 
 h1,h2,h3,h4 { font-size: inherit; }
 
-p { text-align: justify; max-width: 700px; }
+p {
+  text-align: justify;
+  max-width: 700px;
+}
 
 pre {
     margin: 0 2px;
@@ -174,6 +177,7 @@ hr {border:none;border-bottom:1px dotted #fff}
 .loginBox .register-form form label { width: 100%; }
 .loginBox .activate-form form label { width: 100%; }
 .loginBox .customer-form form label { width: 100%; }
+.loginBox .password-form form label { width: 100%; }
 .loginBox .register-link { margin-top: 10px; }
 .loginBox .register-link a { color:#fff; }
 .loginBox .login-toggle { cursor:pointer; }
@@ -320,6 +324,7 @@ h3.light { color: #EEE}
 .admin-container .panel-heading .panel-item.icons,
 .admin-container .panel-heading .panel-item.icons .resource-search,
 .admin-container .panel-heading .panel-item.icons .state-resource-container { float:right; /*margin-left:10px;*/ }
+.admin-container .panel-heading .panel-item .visible-badge {padding-right:5px;}
 .admin-container .panel-default.selectedItem>.panel-heading{ color: #F39B0F; }
 /*.admin-container .panel-heading .panel-item.icons .trigger-task {top:-5px;}*/
 .admin-container .editIcon,
@@ -384,7 +389,6 @@ ol.list-group.tasks { color:#34495E }
 .editor{ min-height: 100px;}
 .btn { text-shadow: none; box-shadow: none; }
 .btn-primary { border-color:#304269;background-color:#304269; }
-.simple-btn{ border: none; box-shadow: none; }
 .new-btn{ float: left; margin: 7px; margin-left: 0px; margin-right: 0px; }
 .btn-light{
   /* back to bootstrap defaults for lighten buttons */

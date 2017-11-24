@@ -1,21 +1,28 @@
 import AppModel from 'lib/app-model'
 import AppCollection from 'lib/app-collection'
-const config = require('config')
+// const config = require('config')
 
-export const Model = AppModel.extend({
+const Model = AppModel.extend({
+  idAttribute: '_id',
   props: {
-    id: 'string',
+    //id: 'string', //// should use 'id' instead . need to migrate/improve backend to include the 'id' attribute in the reponse data
     _id: 'string',
     name: 'string',
     data: 'object',
     type: 'string',
     priority: 'number',
-    nextRunAt: 'date'
+    nextRunAt: 'string',
+    lastFinishedAt: 'string',
+    lastRunAt: 'string'
     // lastModifiedBy: '' // ???
   }
 })
 
-export const Collection = AppCollection.extend({
-  model: Model,
-  url: `${config.api_url}/schedule`
+const Collection = AppCollection.extend({
+  // url: `${config.api_url}/schedule`,
+  mainIndex: '_id',
+  model: Model
 })
+
+exports.Model = Model
+exports.Collection = Collection

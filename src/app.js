@@ -17,6 +17,7 @@ require('app/events')
 const sockets = require('app/sockets')
 const session = require('app/session')
 const pushNotification = require('app/push-notification')
+const models = require('app/models')
 
 import 'assets/styles'
 
@@ -35,6 +36,7 @@ App.extend({
       session()
       sockets()
       pushNotification()
+      models()
     })
   },
   initState (next) {
@@ -74,19 +76,19 @@ App.extend({
   },
   bindDocumentEvents () {
     const oninput = (event) => {
-      logger.log('document input')
+      // logger.log('document input')
       App.trigger('document:input', event)
     }
     document.addEventListener('input', oninput, false)
 
     const onclick = (event) => {
-      logger.log('document click')
+      // logger.log('document click')
       App.trigger('document:click', event)
     }
     document.addEventListener('click', onclick, false)
 
     const onkeydown = (event) => {
-      logger.log('document keydown')
+      // logger.log('document keydown')
       App.trigger('document:keydown', event)
     }
     document.addEventListener('keydown', onkeydown, false)

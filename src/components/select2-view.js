@@ -13,7 +13,7 @@ function getMatches (el, selector) {
 
 module.exports = View.extend({
   template: `
-    <div class="form-group form-horizontal">
+    <div>
       <label data-hook="label" class="col-sm-3 control-label"></label>
       <div class="col-sm-9">
         <select class="form-control select" style="width:100%"></select>
@@ -23,6 +23,13 @@ module.exports = View.extend({
       </div>
     </div>`,
   bindings: {
+    visible: {
+      type: 'toggle'
+    },
+    styles: {
+      type: 'attribute',
+      name: 'class'
+    },
     multiple: {
       type: 'booleanAttribute',
       selector: 'select',
@@ -59,6 +66,8 @@ module.exports = View.extend({
     }
   },
   props: {
+    visible: ['boolean',false,true ],
+    styles: ['string',false,'form-group'],
     tokenSeparator: ['array',false,()=>{ return [] }],
     tags: ['boolean',false,false],
     multiple: ['boolean',false,false],
@@ -192,19 +201,31 @@ module.exports = View.extend({
     // a method on this object
     this.$select.on('change',this.handleInputChanged)
 
-    this.setValues(this.startingValue)
+    this.setValue(this.startingValue)
   },
-  setValues (items) {
+  setValue (items) {
     if (!items) {
       this.$select.val(null)
     } else {
-      var data
+      var data 
       if (items.isCollection) {
         // items are treated as models
         data = items.map(model => model.get(this.idAttribute))
       } else if (Array.isArray(items)) {
         // items are treated as plain objects
-        data = items.map(item => item[this.idAttribute])
+        if (items.length>0) {
+          data = items.map(item => {
+            if (!item) return ''
+            if (typeof item == 'string') {
+              return item
+            }
+            if (item.hasOwnProperty(this.idAttribute)) {
+              return item[this.idAttribute]
+            }
+            console.warn(`${item} object properties invalid`)
+            return ''
+          })
+        } else data = []
       } else {
         // items is a single item
         data = items

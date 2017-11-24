@@ -1,4 +1,5 @@
 import View from 'ampersand-view'
+import acls from 'lib/acls'
 import lang2ext from 'lib/lang2ext'
 import ScriptActions from 'actions/script'
 import moment from 'moment'
@@ -170,7 +171,6 @@ const ScriptCollapsedContent = GenericCollapsedContent.extend({
             <td><span data-hook="script_description"></span></td>
             <td><span data-hook="script_filename"></span></td>
             <td><span data-hook="script_language"></span></td>
-            <td><button title="edit the script" data-hook="edit_script" class="fa fa-edit btn btn-sm btn-primary"></button></td>
           </tr>
         </tbody>
       </table>
