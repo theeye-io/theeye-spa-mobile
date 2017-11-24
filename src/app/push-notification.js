@@ -1,3 +1,4 @@
+import App from 'ampersand-app'
 import credentials from 'config/credentials'
 import UserActions from 'actions/user'
 
