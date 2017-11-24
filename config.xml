@@ -91,4 +91,5 @@
     <plugin name="cordova-plugin-google-analytics" spec="^1.8.3" />
     <plugin name="phonegap-plugin-push" spec="^2.1.0" />
     <plugin name="cordova-plugin-device" spec="^1.1.7" />
+    <plugin name="cordova-plugin-screen-orientation" spec="~2.0.2" />
 </widget>
