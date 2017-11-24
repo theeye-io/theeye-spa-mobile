@@ -1,3 +1,4 @@
+import acls from 'lib/acls'
 import View from 'ampersand-view'
 import JobOutput from 'view/page/dashboard/job-output'
 import SearchActions from 'actions/searchbox'
@@ -5,7 +6,7 @@ import ResourceActions from 'actions/resource'
 import HostActions from 'actions/host'
 import AnalyticsActions from 'actions/analytics'
 
-export const Edit = View.extend({
+const Edit = View.extend({
   template: `
     <button class="btn btn-primary tooltiped" title="Edit Monitors" data-hook="edit">
       <i class="fa fa-edit" aria-hidden="true"></i>
@@ -22,7 +23,7 @@ export const Edit = View.extend({
   }
 })
 
-export const Workflow = View.extend({
+const Workflow = View.extend({
   template: `
     <button class="btn btn-primary tooltiped" title="Workflow" data-hook="workflow">
       <i class="fa fa-sitemap" aria-hidden="true"></i>
@@ -39,7 +40,7 @@ export const Workflow = View.extend({
   },
 })
 
-export const Search = View.extend({
+const Search = View.extend({
   template: `
     <button class="btn btn-primary tooltiped" title="Search related elements" data-hook="search">
       <i class="fa fa-search" aria-hidden="true"></i>
@@ -56,7 +57,7 @@ export const Search = View.extend({
   },
 })
 
-export const LastEvent = View.extend({
+const LastEvent = View.extend({
   template: `
     <button class="btn btn-primary tooltiped" title="Last Event" data-hook="last_event">
       <i class="fa fa-file-text-o" aria-hidden="true"></i>
@@ -84,7 +85,7 @@ export const LastEvent = View.extend({
   }
 })
 
-export const HostStats = View.extend({
+const HostStats = View.extend({
   template: `
     <button class="btn btn-primary tooltiped" title="Host Stats" data-hook="stats">
       <i class="fa fa-bar-chart" aria-hidden="true"></i>
@@ -132,3 +133,9 @@ module.exports = View.extend({
     })
   }
 })
+
+exports.Edit = Edit
+exports.HostStats = HostStats
+exports.LastEvent = LastEvent
+exports.Search = Search
+exports.Workflow = Workflow
