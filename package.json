@@ -131,7 +131,8 @@
       "cordova-plugin-statusbar": {},
       "cordova-plugin-google-analytics": {},
       "phonegap-plugin-push": {},
-      "cordova-plugin-device": {}
+      "cordova-plugin-device": {},
+      "cordova-plugin-screen-orientation": {}
     },
     "platforms": [
       "ios",

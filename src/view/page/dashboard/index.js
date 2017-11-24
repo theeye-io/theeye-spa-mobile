@@ -96,6 +96,12 @@ module.exports = View.extend({
 
     $('#slider ul.tab-contents').css({ width: sliderUlWidth });
     $('#slider ul.tab-contents li.tab-content').css({ width: slideWidth });
+
+    if ($('.dashboard-tabs .dashboard-tab.monitors-tab').hasClass('active')) {
+      $('#slider ul.tab-contents').css({ left: 0 })
+    } else {
+      $('#slider ul.tab-contents').css({ left: - slideWidth })
+    }
   },
   render () {
     var self = this
@@ -146,6 +152,10 @@ module.exports = View.extend({
     $(window).resize(function() {
       self.setSliderSizes()
     })
+
+    screen.orientation.onchange = function() {
+      self.setSliderSizes()
+    }
   },
   showTasks() {
     if ($('.dashboard-tabs .dashboard-tab.tasks-tab').hasClass('active'))
