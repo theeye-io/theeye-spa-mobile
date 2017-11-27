@@ -2,7 +2,6 @@
 
 import JsonViewer from 'components/json-viewer'
 import Modalizer from 'components/modalizer'
-import AnalyticsActions from 'actions/analytics'
 
 //import CommandOutputViewer from 'components/command-output-viewer'
 
@@ -29,7 +28,6 @@ module.exports = Modalizer.extend({
     //}
 
     this.listenTo(this,'hidden',() => {
-      AnalyticsActions.trackView('dashboard')
       this.bodyView.remove()
       delete this.bodyView
     })
