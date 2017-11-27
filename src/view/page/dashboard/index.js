@@ -161,6 +161,7 @@ module.exports = View.extend({
     if ($('.dashboard-tabs .dashboard-tab.tasks-tab').hasClass('active'))
       return
     $('.dashboard-tabs .dashboard-tab').toggleClass('active')
+    $(window).scrollTop(0);
     $('#slider ul.tab-contents').animate({
       left: - slideWidth
     }, 400, function () {
@@ -170,6 +171,7 @@ module.exports = View.extend({
     if ($('.dashboard-tabs .dashboard-tab.monitors-tab').hasClass('active'))
       return
     $('.dashboard-tabs .dashboard-tab').toggleClass('active')
+    $(window).scrollTop(0);
     $('#slider ul.tab-contents').animate({
       left: 0
     }, 400, function () {
