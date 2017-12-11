@@ -27,6 +27,7 @@ module.exports = () => {
           device_token: data.registrationId,
           uuid: device.uuid,
           platform: device.platform,
+          package_name: BuildInfo.packageName
         })
       });
       App.push.on('error', (e) => {
