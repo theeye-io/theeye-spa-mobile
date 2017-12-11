@@ -92,4 +92,5 @@
     <plugin name="phonegap-plugin-push" spec="^2.1.0" />
     <plugin name="cordova-plugin-device" spec="^1.1.7" />
     <plugin name="cordova-plugin-screen-orientation" spec="~2.0.2" />
+    <plugin name="cordova-plugin-buildinfo" spec="^2.0.1" />
 </widget>
