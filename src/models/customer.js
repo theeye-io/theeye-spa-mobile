@@ -1,6 +1,7 @@
 import AppModel from 'lib/app-model'
 import AppCollection from 'lib/app-collection'
 import config from 'config'
+import assign from 'lodash/assign'
 
 const urlRoot = `${config.app_url}/customer`
 
@@ -19,7 +20,7 @@ const Model = AppModel.extend({
     name: 'string',
     description: 'string',
     emails: ['array', false, () => { return [] }],
-    config: ['object', false, () => { return Object.assign({}, defaultConfig) }],
+    config: ['object', false, () => { return assign({}, defaultConfig) }],
     creation_date: 'date',
 		last_update: 'date'
   },
@@ -37,7 +38,7 @@ const Model = AppModel.extend({
     }
   },
   parse(attrs) {
-    attrs.config = Object.assign({}, defaultConfig, attrs.config)
+    attrs.config = assign({}, defaultConfig, attrs.config)
     return attrs
   }
 })

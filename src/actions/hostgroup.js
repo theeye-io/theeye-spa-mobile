@@ -8,6 +8,7 @@ import config from 'config'
 
 import { Collection as Hosts } from 'models/host'
 import { Model as HostGroup } from 'models/hostgroup'
+import assign from 'lodash/assign'
 
 module.exports = {
   create (data) {
@@ -16,7 +17,7 @@ module.exports = {
     const tasks = state.configTasks.serialize()
     const triggers = state.configTriggers.serialize()
 
-    const body = Object.assign({}, data, {
+    const body = assign({}, data, {
       resources: resources,
       tasks: tasks,
       triggers: triggers
@@ -41,7 +42,7 @@ module.exports = {
     })
   },
   update (id, data) {
-    const body = Object.assign({},data)
+    const body = assign({},data)
 
     XHR.send({
       url: `${config.api_url}/hostgroup/${id}`,

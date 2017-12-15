@@ -3,6 +3,7 @@ import acls from 'lib/acls'
 import lang2ext from 'lib/lang2ext'
 import ScriptActions from 'actions/script'
 import moment from 'moment'
+import assign from 'lodash/assign'
 
 const GenericCollapsedContent = View.extend({
   template: `<div>no definition</div>`,
@@ -69,7 +70,7 @@ const ScraperCollapsedContent = GenericCollapsedContent.extend({
       </table>
     </div>
   `,
-  bindings: Object.assign({}, bindings, {
+  bindings: assign({}, bindings, {
     url: { hook: 'url' },
     method: { hook: 'method' },
     status_code: { hook: 'status_code' },
@@ -124,7 +125,7 @@ const ProcessCollapsedContent = GenericCollapsedContent.extend({
       </table>
     </div>
   `,
-  bindings: Object.assign({}, bindings, {
+  bindings: assign({}, bindings, {
     is_regexp: {
       hook: 'is_regexp',
       type: 'booleanClass',
@@ -214,7 +215,7 @@ const ScriptCollapsedContent = GenericCollapsedContent.extend({
       }
     },
   },
-  bindings: Object.assign({}, bindings, {
+  bindings: assign({}, bindings, {
     formatted_description: { hook: 'description' },
     filename: { hook: 'script_filename' },
     language: { hook: 'script_language' },
@@ -265,7 +266,7 @@ const FileCollapsedContent =  GenericCollapsedContent.extend({
       </table>
     </div>
   `,
-  bindings: Object.assign({}, bindings, {
+  bindings: assign({}, bindings, {
     dirname: { hook: 'dirname' },
     basename: { hook: 'basename' },
     os_username: { hook: 'os_username' },
@@ -329,7 +330,7 @@ const HostCollapsedContent =  GenericCollapsedContent.extend({
       </table>
     </div>
   `,
-  bindings: Object.assign({}, bindings, {
+  bindings: assign({}, bindings, {
     'host.stateIcon': {
       hook: 'host_state',
       type: 'attribute',
@@ -386,7 +387,7 @@ exports.Factory = (input) => {
   const type = input.model.type
 
   // re-assign to internal properties
-  const options = Object.assign({}, input, {
+  const options = assign({}, input, {
     resource: input.model,
     monitor: input.model.monitor
   })

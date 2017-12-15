@@ -1,6 +1,7 @@
 import AmpersandState from 'ampersand-state'
 import Collection from 'ampersand-collection'
 import uriFragment from 'lib/uri-fragment'
+import assign from 'lodash/assign'
 import { Collection as Webhooks } from 'models/webhook'
 import { Collection as HostGroups } from 'models/hostgroup'
 import { Collection as Users } from 'models/user'
@@ -172,7 +173,7 @@ const RegisterState = State.extend({
 })
 
 const _initCollections = function () {
-  Object.assign(this, {
+  assign(this, {
     customers: new Customers([]),
     hostGroups: new HostGroups([]),
     hosts: new Hosts([]),

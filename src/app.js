@@ -11,6 +11,7 @@ import Loader from 'components/loader'
 import RootContainer from 'view/root-container'
 import query from 'lib/query-params'
 import AnalyticsActions from 'actions/analytics'
+import assign from 'lodash/assign'
 const logger = require('lib/logger')('app')
 
 require('app/events')
@@ -53,7 +54,7 @@ App.extend({
     if (!append) {
       qs = query.set(params)
     } else {
-      qs = query.set( Object.assign({}, query.get(), params) )
+      qs = query.set( assign({}, query.get(), params) )
     }
     App.Router.navigate(window.location.pathname + `?${qs}`,{replace: true})
     App.Router.reload()

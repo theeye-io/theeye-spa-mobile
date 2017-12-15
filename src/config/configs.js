@@ -1,5 +1,7 @@
 'use strict'
 
+import assign from 'lodash/assign'
+
 const defaultConfigs = {
   env: 'default',
   app_url: 'http://localhost:6080',
@@ -21,7 +23,7 @@ const defaultConfigs = {
 const configs = {
   default: defaultConfigs,
 
-  local: Object.assign({}, defaultConfigs, {
+  local: assign({}, defaultConfigs, {
     env: 'local',
     dashboard: {
       upandrunningSign: false
@@ -29,7 +31,7 @@ const configs = {
   }),
 
   // cloud development enviroment
-  development : Object.assign({}, defaultConfigs, {
+  development : assign({}, defaultConfigs, {
     env: 'development',
     app_url: 'https://development.theeye.io',
     socket_url: 'https://development.theeye.io',
@@ -38,7 +40,7 @@ const configs = {
   }),
 
   // cloud staging enviroment
-  staging : Object.assign({}, defaultConfigs, {
+  staging : assign({}, defaultConfigs, {
     env: 'staging',
     app_url: 'https://staging.theeye.io',
     socket_url: 'https://staging.theeye.io',
@@ -47,7 +49,7 @@ const configs = {
   }),
 
   // cloud production enviroment
-  production : Object.assign({}, defaultConfigs, {
+  production : assign({}, defaultConfigs, {
     env: 'production',
     app_url: 'https://theeye.io',
     socket_url: 'https://theeye.io',
