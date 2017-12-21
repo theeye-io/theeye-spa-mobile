@@ -15,6 +15,7 @@ plugins/
 *.jsbkp
 www/bundles/js/*.*
 www/bundles/styles/*.*
+www/bundles/images/*.*
 www/bundles/js/common.bundle.js
 www/bundles/js/main.bundle.js
 www/bundles/styles/main.css
