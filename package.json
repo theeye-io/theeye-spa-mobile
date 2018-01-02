@@ -124,7 +124,7 @@
     "plugins": {
       "cordova-plugin-whitelist": {},
       "cordova-plugin-googleplus": {
-        "REVERSED_CLIENT_ID": "com.googleusercontent.apps.1072547485365-g3pboqq6nmrj17iv3u5uoirmf2j7om1f"
+        "REVERSED_CLIENT_ID": "com.googleusercontent.apps.1072547485365-paamcaljqmvn6s0nr0ota0553q1c4a5a"
       },
       "cordova-plugin-splashscreen": {},
       "cordova-fabric-plugin": {
