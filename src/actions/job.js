@@ -20,7 +20,12 @@ const updateJob = (job, data) => {
 }
 
 module.exports = {
-  /** this is being updated via socket event */
+  /**
+   *
+   * @summary this is being updated via socket event
+   * @param {Object} data job model properties
+   *
+   */
   update (data) {
     logger.log('job updates received')
 
@@ -42,9 +47,7 @@ module.exports = {
     XHR.send({
       method: 'post',
       url: `${config.api_url}/job`,
-      withCredentials: true,
       jsonData: { task: task.id, task_arguments: taskArgs },
-      timeout: 5000,
       headers: {
         Accept: 'application/json;charset=UTF-8'
       },
@@ -63,8 +66,6 @@ module.exports = {
     XHR.send({
       method: 'put',
       url: `${config.api_url}/job/${job.id}/cancel`,
-      withCredentials: true,
-      timeout: 5000,
       headers: {
         Accept: 'application/json;charset=UTF-8'
       },
