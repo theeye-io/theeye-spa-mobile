@@ -45,6 +45,7 @@
     "cordova-plugin-device": "^1.1.7",
     "cordova-plugin-google-analytics": "^1.8.3",
     "cordova-plugin-googleplus": "^5.1.1",
+    "cordova-plugin-inappbrowser": "^2.0.1",
     "cordova-plugin-screen-orientation": "~2.0.2",
     "cordova-plugin-splashscreen": "^4.0.3",
     "cordova-plugin-statusbar": "^2.2.3",
@@ -136,7 +137,8 @@
       "phonegap-plugin-push": {},
       "cordova-plugin-device": {},
       "cordova-plugin-screen-orientation": {},
-      "cordova-plugin-buildinfo": {}
+      "cordova-plugin-buildinfo": {},
+      "cordova-plugin-inappbrowser": {}
     },
     "platforms": [
       "ios",
