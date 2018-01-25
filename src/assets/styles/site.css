@@ -875,3 +875,10 @@ a.flowchart-icon {
   padding: 0 !important;
   margin: 0 !important;
 }
+
+.loginBox .register-link {
+  color: #d88e47
+}
+.loginBox .register-link:hover {
+  color: #ee8e40
+}
