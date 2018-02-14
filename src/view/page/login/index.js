@@ -3,7 +3,6 @@ import FormView from 'ampersand-form-view'
 import InputView from 'ampersand-input-view'
 import AuthActions from 'actions/auth'
 import App from 'ampersand-app'
-import bootbox from 'bootbox'
 
 const LoginForm = FormView.extend({
   autoRender: true,
@@ -47,11 +46,6 @@ module.exports = View.extend({
         var data = this.loginForm.data
         AuthActions.login(data)
       }
-    },
-    'click [data-hook=register-modal]': function (event) {
-      event.preventDefault()
-      event.stopPropagation()
-      bootbox.alert('<p style="text-align:left;">In order to start using this app you will have to complete the registration process from our website <a href="#" onclick="cordova.InAppBrowser.open(&quot;https://app.theeye.io/register&quot;, &quot;_system&quot;)"><b>https://app.theeye.io/register</b></a></p>')
     }
   },
   render() {
