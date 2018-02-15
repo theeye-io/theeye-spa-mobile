@@ -16,3 +16,8 @@
 .loader-component h3 {
   color: #FFF
 }
+
+.modal-loader {
+  opacity: unset !important;
+  background-color: rgba(0,0,0,0.5) !important;
+}
