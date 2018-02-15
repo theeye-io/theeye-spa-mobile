@@ -3,19 +3,19 @@
 import extend from 'lodash/assign'
 import Backdrop from 'components/backdrop'
 import './style.css'
-import roboto from './roboto_loader.gif'
+import ripple_loader from './ripple.svg'
 
 module.exports = Backdrop.extend({
   template: `
-    <div class="modal-backdrop fade in">
+    <div class="modal-backdrop fade in modal-loader">
       <div class="loader-component">
-        <img src="${roboto}">
+        <img src="${ripple_loader}">
         <h3 data-hook="message"></h3>
       </div>
     </div>
   `,
   props: {
-    message: ['string',false,'Loading...'],
+    message: ['string',false,''],
     progress: ['number',false,0],
     show_progress: ['boolean',false,false]
   },
