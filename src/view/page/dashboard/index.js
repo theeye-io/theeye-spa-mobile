@@ -80,7 +80,8 @@ module.exports = View.extend({
   events: {
     'click [data-hook=up-and-running] i':'hideUpAndRunning',
     'click [data-hook=show-tasks]':'showTasks',
-    'click [data-hook=show-monitors]':'showMonitors'
+    'click [data-hook=show-monitors]':'showMonitors',
+    'click [data-hook=show-notifications]':'showNotifications'
   },
   initialize () {
     View.prototype.initialize.apply(this,arguments)
@@ -99,8 +100,12 @@ module.exports = View.extend({
 
     if ($('.dashboard-tabs .dashboard-tab.monitors-tab').hasClass('active')) {
       $('#slider ul.tab-contents').css({ left: 0 })
-    } else {
+    }
+    if ($('.dashboard-tabs .dashboard-tab.tasks-tab').hasClass('active')) {
       $('#slider ul.tab-contents').css({ left: - slideWidth })
+    }
+    if ($('.dashboard-tabs .dashboard-tab.notifications-tab').hasClass('active')) {
+      $('#slider ul.tab-contents').css({ left: - (slideWidth*2) })
     }
   },
   render () {
@@ -160,7 +165,9 @@ module.exports = View.extend({
   showTasks() {
     if ($('.dashboard-tabs .dashboard-tab.tasks-tab').hasClass('active'))
       return
-    $('.dashboard-tabs .dashboard-tab').toggleClass('active')
+    $('.dashboard-tabs .dashboard-tab.tasks-tab').addClass('active')
+    $('.dashboard-tabs .dashboard-tab.monitors-tab').removeClass('active')
+    $('.dashboard-tabs .dashboard-tab.notifications-tab').removeClass('active')
     $(window).scrollTop(0);
     $('#slider ul.tab-contents').animate({
       left: - slideWidth
@@ -170,10 +177,24 @@ module.exports = View.extend({
   showMonitors() {
     if ($('.dashboard-tabs .dashboard-tab.monitors-tab').hasClass('active'))
       return
-    $('.dashboard-tabs .dashboard-tab').toggleClass('active')
+    $('.dashboard-tabs .dashboard-tab.monitors-tab').addClass('active')
+    $('.dashboard-tabs .dashboard-tab.tasks-tab').removeClass('active')
+    $('.dashboard-tabs .dashboard-tab.notifications-tab').removeClass('active')
     $(window).scrollTop(0);
     $('#slider ul.tab-contents').animate({
       left: 0
+    }, 400, function () {
+    });
+  },
+  showNotifications() {
+    if ($('.dashboard-tabs .dashboard-tab.notifications-tab').hasClass('active'))
+      return
+    $('.dashboard-tabs .dashboard-tab.notifications-tab').addClass('active')
+    $('.dashboard-tabs .dashboard-tab.monitors-tab').removeClass('active')
+    $('.dashboard-tabs .dashboard-tab.tasks-tab').removeClass('active')
+    $(window).scrollTop(0);
+    $('#slider ul.tab-contents').animate({
+      left: - (slideWidth*2)
     }, 400, function () {
     });
   },

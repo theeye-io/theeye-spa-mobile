@@ -4,31 +4,29 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 50px;
-  background: #FFF;
   position: fixed;
   text-align: center;
 }
 
 .dashboard-tabs > .dashboard-tab {
-  width: 50%;
+  width: 33%;
   overflow:hidden;
   float: left;
   cursor: pointer;
-  background: #EEE;
+  background: #23324C;
 }
 
-.dashboard-tabs > .dashboard-tab.monitors-tab {
-  border-right: 2px solid #23324C;
-}
+ .dashboard-tabs > .dashboard-tab.tasks-tab {
+   width: 34%;
+ }
 
 .dashboard-tabs > .dashboard-tab.active {
-  background: #d88e47;
+  background: #304269;
 }
 
-.dashboard-tabs > .dashboard-tab span{
-  color: #304269;
-  font-size: 20px;
+.dashboard-tabs > .dashboard-tab i{
+  color: #FFF;
+  font-size: 25px;
   line-height: 50px;
 }
 
