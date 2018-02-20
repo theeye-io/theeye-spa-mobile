@@ -99,6 +99,7 @@ const renderPageView = (options) => {
     monitors: App.state.resources,
     tasks: App.state.tasks,
     renderTasks: options.renderTasks,
-    renderStats: options.renderStats
+    renderStats: options.renderStats,
+    notifications: App.state.inbox.filteredNotifications
   })
 }

@@ -1,0 +1,41 @@
+.inbox-container {
+  .header {
+    span.delete-all {
+      line-height: 40px;
+      position: absolute;
+      top: 0;
+      right: 20px;
+      font-size: 22px;
+      display: unset;
+    }
+  }
+
+  .inbox-entry.success [data-hook=icon],
+  .inbox-entry.recovered [data-hook=icon],
+  .inbox-entry.normal [data-hook=icon] {
+    color: green;
+  }
+
+  .inbox-entry.failure [data-hook=icon],
+  .inbox-entry.updates_stopped [data-hook=icon] {
+    color: red;
+  }
+
+  .no-notifications {
+    background-color: #eaeaea;
+    height: 100%;
+    text-align: center;
+    padding: 90px 20px;
+    color: #cacaca;
+  }
+
+  .icon-check { color: green; }
+  .icon-info { color: #00dcff; }
+  .icon-warn { color: #ffff00; }
+  .icon-fatal { color: #ff3300; }
+  .icon-error { color: #ff3300; }
+
+  .severity-low { color: #00dcff; }
+  .severity-high { color: #ffff00; }
+  .severity-critical { color: #ff3300; }
+}

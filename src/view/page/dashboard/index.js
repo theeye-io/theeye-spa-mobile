@@ -19,6 +19,8 @@ const searchRows = require('lib/filter-rows')
 import MonitorsOptions from './monitors-options'
 import MonitoringOboardingPanel from './monitoring-onboarding'
 import TasksOboardingPanel from './tasks-onboarding'
+import InboxView from './inbox'
+import NotificationActions from 'actions/notifications'
 
 var slideCount, slideWidth, sliderUlWidth
 
@@ -69,13 +71,28 @@ module.exports = View.extend({
     groupedResources: 'collection',
     monitors: 'collection',
     tasks: 'collection',
+    notifications: 'collection',
     renderStats: ['boolean',false,false],
     renderTasks: ['boolean',false,true],
     waitTimeout: ['number',false,null],
     upandrunningSign: ['boolean',false,() => {
       let enabled = config.dashboard.upandrunningSign
       return typeof enabled === 'boolean' ? enabled : true
-    }]
+    }],
+    unread: ['number', true, 0],
+    showBadge: ['boolean', false, false]
+  },
+  bindings: {
+    unread: [
+      {
+        type: 'text',
+        hook: 'badge'
+      },
+      {
+        type: 'toggle',
+        hook: 'badge'
+      }
+    ]
   },
   events: {
     'click [data-hook=up-and-running] i':'hideUpAndRunning',
@@ -85,6 +102,7 @@ module.exports = View.extend({
   },
   initialize () {
     View.prototype.initialize.apply(this,arguments)
+    this.listenToAndRun(this.notifications, 'add sync reset remove', this.updateCounts)
   },
   hideUpAndRunning () {
     this.$upandrunning.slideUp()
@@ -150,9 +168,12 @@ module.exports = View.extend({
       this.queryByHook('tasks-panel').remove()
     }
 
-    if (this.renderStats === true) {
-      this.renderStatsPanel()
-    }
+    // notifications inbox
+    this.inbox = new InboxView({collection: this.notifications})
+    this.renderSubview(
+      this.inbox,
+      this.queryByHook('notifications-container')
+    )
 
     $(window).resize(function() {
       self.setSliderSizes()
@@ -196,6 +217,7 @@ module.exports = View.extend({
     $('#slider ul.tab-contents').animate({
       left: - (slideWidth*2)
     }, 400, function () {
+      NotificationActions.markAllRead()
     });
   },
   /**
@@ -395,14 +417,9 @@ module.exports = View.extend({
 
     this.listenToAndRun(App.state.searchbox,'change:search',search)
   },
-  renderStatsPanel () {
-    this.renderSubview(
-      new PanelView({
-        col_class: 'col-md-6',
-        title: 'Stats',
-        name: 'stats'
-      }),
-      this.queryByHook('.admin-container.dashboard')
-    )
+  updateCounts () {
+    const reducer = (acc, cur) => acc + (cur.read ? 0 : 1)
+    this.unread = this.notifications.toJSON().reduce(reducer, 0)
+    this.showBadge = this.unread !== 0
   }
 })

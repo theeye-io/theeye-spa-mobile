@@ -7,6 +7,7 @@ import JobAction from 'actions/job'
 import config from 'config'
 const logger = require('lib/logger')('app:sockets')
 import OperationsConstants from 'constants/operations'
+import NotificationActions from 'actions/notifications'
 
 const connect = (next) => {
   // first time connect is called it is autoconnected
@@ -75,6 +76,9 @@ module.exports = () => {
                 ) {
                   JobAction.update(event.model)
                 }
+              },
+              'notification-crud': event => {
+                NotificationActions.add(event.model)
               }
             }
           })

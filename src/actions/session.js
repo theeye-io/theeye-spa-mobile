@@ -3,6 +3,7 @@ import XHR from 'lib/xhr'
 const logger = require('lib/logger')('actions:session')
 const config = require('config')
 import bootbox from 'bootbox'
+import reject from 'lodash/reject'
 
 module.exports = {
   changeCustomer (id) {
@@ -100,6 +101,55 @@ module.exports = {
           message: 'Error fetching user profile information, please try again later.'
         })
       }
+    })
+  },
+  updateSettings (notif, done) {
+    const user = App.state.session.user
+
+    var body = {}
+    body.notifications = assign({}, user.notifications.serialize(), notif)
+
+    // App.state.loader.step()
+    XHR.send({
+      url: `${config.app_url}/session/profile/settings`,
+      method: 'PUT',
+      jsonData: body,
+      fail: (err) => {
+        bootbox.alert({
+          title: `Settings update error`,
+          message: err.message || 'Request failed',
+          callback: () => {
+            App.state.loader.visible = false
+            if (done) done()
+          }
+        })
+      },
+      done: (settings) => {
+        user.set(settings)
+        // bootbox.alert({
+        //   title: 'Settings',
+        //   message: `Settings successfully updated`,
+        //   callback: () => {
+        //     App.state.loader.visible = false
+        //     if (done) done()
+        //   }
+        // })
+        App.state.loader.visible = false
+        if (done) done()
+      }
+    })
+  },
+  toggleExclusionFilter (filter, add) {
+    // App.state.loader.step()
+    const notifications = App.state.session.user.notifications
+    const excludes = notifications.desktopExcludes || []
+
+    // remove from filters so it doesn't dupe
+    const newSettings = reject(excludes, filter)
+    if (add) newSettings.push(filter)
+
+    this.updateSettings({ desktopExcludes: newSettings }, () => {
+      App.state.session.user.trigger('change:notifications')
     })
   }
 }

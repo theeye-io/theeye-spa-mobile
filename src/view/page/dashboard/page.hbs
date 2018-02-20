@@ -55,7 +55,11 @@
         <div data-hook="notifications-panel">
           <section class="notifications-panel events-panel">
             <h3>Notifications</h3>
-
+            <div>
+              <div class="panel-group">
+                <section data-hook="notifications-container"> </section>
+              </div>
+            </div>
           </section>
         </div>
       </li>
@@ -72,6 +76,7 @@
     </div>
     <div data-hook="show-notifications" class="dashboard-tab notifications-tab">
       <i class="fa fa-bell-o"></i>
+      <span class="badge" data-hook="badge">0</span>
     </div>
   </div>
   <!-- /TAB BUTTONS -->

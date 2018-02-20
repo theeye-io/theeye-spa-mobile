@@ -840,6 +840,7 @@ a.flowchart-icon {
 
 @media (max-width: 767px) {
 	.admin-container .panel-heading .panel-item.name { width:72%;padding-right:20px; }
+  .admin-container .panel-heading .panel-item.entry-text { width:90%;}
 	.admin-container .panel-heading .panel-title-content { position:relative; }
 	.admin-container .panel-heading .panel-item.icons.panel-item-mobile {}
 	.admin-container .panel-heading .panel-item.icons.panel-item-mobile ul.dropdown-menu { left:inherit;right:0;width:40px;min-width:inherit;background:none;margin:0;padding:0;background-color:#304269; }
