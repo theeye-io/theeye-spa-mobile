@@ -24,11 +24,6 @@ const DeleteNotificationsView = View.extend({
   `
 })
 
-const resourceType = {
-  Resource: 'Resource',
-  ScriptJob: 'Task'
-}
-
 const meaning = {
   ready: 'queued, waiting for result',
   finished: 'finished running',
@@ -119,8 +114,11 @@ const InboxRow = View.extend({
     const type = this.model.data.model._type
 
     this.time = moment(this.model.createdAt).format(format)
-    this.modelName = this.model.data.model.name
-    this.modelType = resourceType[this.model.data.model_type]
+    if(type === "AgentUpdateJob") {
+      this.modelName = 'Agent update'
+    } else {
+      this.modelName = this.model.data.model.name
+    }
     this.icon = ''
 
     this.colorClass = stateToColorClass(state)
@@ -170,13 +168,14 @@ const InboxRow = View.extend({
     this.renderWithTemplate(this)
     this.setModelIcon(this.modelType)
   },
-  setModelIcon(type) {
+  setModelIcon(modelType) {
     var iconClass = 'circle fa '
-    if(iconByType[type]) {
-      iconClass += ` ${iconByType[type]} ${type}-color`
+    if(modelType) {
+      iconClass += ` ${iconByType[modelType]} ${modelType}-color`
     } else {
-      iconClass += 'fa-letter fa-letter-a default-color'
+      iconClass += ` ${iconByType['host']} host-color`
     }
+
     const iconEl = this.queryByHook('model-icon')
     iconEl.className = iconClass
   }
