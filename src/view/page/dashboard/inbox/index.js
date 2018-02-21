@@ -23,14 +23,19 @@ const DeleteNotificationsView = View.extend({
   `
 })
 
+const resourceType = {
+  Resource: 'Resource',
+  ScriptJob: 'Task'
+}
+
 const meaning = {
-  ready: 'waiting',
-  finished: 'finished',
-  updates_stopped: 'stopped',
-  updates_started: 'started',
-  failure: 'failed',
-  canceled: 'canceled',
-  recovered: 'recovered'
+  ready: 'queued, waiting for result',
+  finished: 'finished running',
+  updates_stopped: 'has gone silent',
+  updates_started: 'came back to life',
+  failure: 'is not working properly',
+  canceled: 'has been canceled',
+  recovered: 'came back to normal'
 }
 
 const icons = {
@@ -61,45 +66,44 @@ const EmptyView = View.extend({
   template: `<div class="no-notifications" data-hook="no-notifications">No notifications</div>`
 })
 
-const InboxPopupRow = View.extend({
+const InboxRow = View.extend({
   props: {
     severity: 'string',
+    modelType: 'string',
     modelName: 'string',
     message: 'string',
     time: 'string',
     icon: 'string',
-    text: 'string'
+    text: 'string',
+    hostName: 'string'
   },
-  template: `
-    <div class="inbox-entry panel panel-default">
-      <div class="panel-heading">
-        <h4 class="panel-title-icon"><i data-hook="model-icon"></i></h4>
-        <h4 class="panel-title inbox-title">
-          <div class="panel-title-content">
-            <div class="panel-item name entry-text">
-              <span data-hook="severity"></span>
-              <span data-hook="modelName"></span>
-              <span data-hook="message"></span>
-              <small data-hook="time"></small>
-            </div>
-            <div class="panel-item state-icon">
-              <span data-hook="icon"></span>
-            </div>
-          </div>
-        </h4>
-      </div>
-    </div>
-  `,
+  template: require('./inboxRow.hbs'),
   bindings: {
     message: { hook: 'message' },
     time: { hook: 'time' },
+    modelType: { hook: 'modelType' },
     modelName: { hook: 'modelName' },
     severity: { type: 'class' },
     icon: {
       type: 'attribute',
       name: 'class',
       hook: 'icon'
-    }
+    },
+    hostName: { hook: 'hostName' }
+  },
+  derived: {
+    collapsedHeaderId: {
+      deps: ['model.id'],
+      fn () {
+        return `collapse_heading_${this.model.id}`
+      }
+    },
+    collapseContainerId: {
+      deps: ['model.id'],
+      fn () {
+        return `collapse_container_${this.model.id}`
+      }
+    },
   },
   initialize () {
     this.inboxify()
@@ -109,12 +113,12 @@ const InboxPopupRow = View.extend({
     if (new Date().toDateString() === new Date(this.model.createdAt).toDateString()) {
       format = '[Today at] LT'
     }
-
     const state = sanitizeState(this.model.data.model.state)
     const type = this.model.data.model._type
 
-    this.time = '> ' + moment(this.model.createdAt).format(format)
+    this.time = moment(this.model.createdAt).format(format)
     this.modelName = this.model.data.model.name
+    this.modelType = resourceType[this.model.data.model_type]
     this.icon = ''
 
     this.severity = stateToSeverity(state)
@@ -124,6 +128,7 @@ const InboxPopupRow = View.extend({
       this.modelType = this.model.data.model.type
       this.message = meaning[monitor_event] || `${monitor_event}:${state}`
       this.icon = icons[monitor_event]
+      this.hostName = this.model.data.hostname
 
       // monitor execution always failure, unless used a recognized state
       if (!this.severity) this.severity = StateConstants.FAILURE
@@ -134,6 +139,7 @@ const InboxPopupRow = View.extend({
         this.modelType = this.model.data.model.task.type
       this.message = meaning[lifecycle] || `${lifecycle}:${state}`
       this.icon = icons[lifecycle]
+      this.hostName = this.model.data.model.host.hostname
 
       // task execution always success, unless declared a failure
       if (!this.severity) this.severity = StateConstants.SUCCESS
@@ -204,7 +210,7 @@ module.exports = View.extend({
 
     this.list = this.renderCollection(
       this.collection,
-      InboxPopupRow,
+      InboxRow,
       this.queryByHook('inbox-items-container'),
       {
         emptyView: EmptyView
