@@ -23,16 +23,11 @@ const DeleteNotificationsView = View.extend({
   `
 })
 
-const resourceType = {
-  Resource: 'Resource',
-  ScriptJob: 'Task'
-}
-
 const meaning = {
   ready: 'waiting',
   finished: 'finished',
-  updates_stopped: 'updates stopped',
-  updates_started: 'updates started',
+  updates_stopped: 'stopped',
+  updates_started: 'started',
   failure: 'failed',
   canceled: 'canceled',
   recovered: 'recovered'
@@ -52,6 +47,16 @@ const icons = {
   updates_stopped: 'fa fa-exclamation-circle'
 }
 
+const iconByType = {
+  scraper: 'fa-cloud',
+  script: 'fa-code',
+  host: 'fa-server',
+  process: 'fa-cog',
+  file: 'fa-file-o',
+  dstat: 'fa-bar-chart',
+  psaux: 'fa-cogs'
+}
+
 const EmptyView = View.extend({
   template: `<div class="no-notifications" data-hook="no-notifications">No notifications</div>`
 })
@@ -68,7 +73,8 @@ const InboxPopupRow = View.extend({
   template: `
     <div class="inbox-entry panel panel-default">
       <div class="panel-heading">
-        <h4 class="panel-title">
+        <h4 class="panel-title-icon"><i data-hook="model-icon"></i></h4>
+        <h4 class="panel-title inbox-title">
           <div class="panel-title-content">
             <div class="panel-item name entry-text">
               <span data-hook="severity"></span>
@@ -112,9 +118,10 @@ const InboxPopupRow = View.extend({
     this.icon = ''
 
     this.severity = stateToSeverity(state)
-
+    this.modelType = ''
     if (type === 'Resource') { // it is resources notification
       let monitor_event = this.model.data.monitor_event
+      this.modelType = this.model.data.model.type
       this.message = meaning[monitor_event] || `${monitor_event}:${state}`
       this.icon = icons[monitor_event]
 
@@ -123,6 +130,8 @@ const InboxPopupRow = View.extend({
 
     } else if (/Job/.test(type)===true) { // it is a task execution
       let lifecycle = this.model.data.model.lifecycle
+      if(this.model.data.model.task)
+        this.modelType = this.model.data.model.task.type
       this.message = meaning[lifecycle] || `${lifecycle}:${state}`
       this.icon = icons[lifecycle]
 
@@ -134,6 +143,20 @@ const InboxPopupRow = View.extend({
       this.icon = icons[state]
       this.message = `${state}`
     }
+  },
+  render () {
+    this.renderWithTemplate(this)
+    this.setModelIcon(this.modelType)
+  },
+  setModelIcon(type) {
+    var iconClass = 'circle fa '
+    if(iconByType[type]) {
+      iconClass += ` ${iconByType[type]} ${type}-color`
+    } else {
+      iconClass += 'fa-letter fa-letter-a default-color'
+    }
+    const iconEl = this.queryByHook('model-icon')
+    iconEl.className = iconClass
   }
 })
 

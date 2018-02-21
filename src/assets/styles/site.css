@@ -804,11 +804,13 @@ a.flowchart-icon {
 .admin-container.dashboard .monitors.admin-panel h3 span.dropdown ul.dropdown-menu li:hover { background-color: #23324C; }
 
 .admin-container.dashboard .tasks-container .panel-heading h4.panel-title-icon ,
+.admin-container.dashboard .inbox-container .panel-heading h4.panel-title-icon ,
 .admin-container.dashboard .resource-container .panel-heading h4.panel-title-icon {
   float: left; margin-top: 0; margin-bottom: 0; font-size: 16px; color: inherit; padding: 5px; padding-left: 10px;
 }
 
 .admin-container.dashboard .tasks-container .panel-heading h4.panel-title-icon i ,
+.admin-container.dashboard .inbox-container .panel-heading h4.panel-title-icon i ,
 .admin-container.dashboard .resource-container .panel-heading h4.panel-title-icon i {
   min-height: 38px; width: 38px; padding-top: 5px; line-height: 28px; text-align: center; font-size: 18px;
 }
