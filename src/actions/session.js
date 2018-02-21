@@ -115,11 +115,11 @@ module.exports = {
       method: 'PUT',
       jsonData: body,
       fail: (err) => {
+        App.state.loader.visible = false
         bootbox.alert({
           title: `Settings update error`,
           message: err.message || 'Request failed',
           callback: () => {
-            App.state.loader.visible = false
             if (done) done()
           }
         })

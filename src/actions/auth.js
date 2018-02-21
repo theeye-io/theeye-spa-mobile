@@ -11,6 +11,7 @@ const xhr = $.ajax
 
 module.exports = {
   login (data) {
+    App.state.loader.visible = true
     XHR.send({
       url: `${config.app_url}/auth/login`,
       method: 'post',
@@ -21,6 +22,7 @@ module.exports = {
         Accept: 'application/json;charset=UTF-8'
       },
       done: (response,xhr) => {
+        App.state.loader.visible = false
         if (xhr.status == 200){
           AnalyticsActions.trackEvent('Auth', 'Login')
           AnalyticsActions.answersTrackLogin('Normal', {email: data.email})
@@ -33,6 +35,7 @@ module.exports = {
         }
       },
       fail: (err,xhr) => {
+        App.state.loader.visible = false
         if (xhr.status == 400) {
           bootbox.alert('Login error, invalid credentials')
         } else {

@@ -28,8 +28,8 @@ module.exports = {
           }
         )
       } else {
+        App.state.loader.visible = false
         bootbox.alert('That\'s it, they are gone. Congrats.',() => {
-          App.state.loader.visible = false
         })
       }
     })

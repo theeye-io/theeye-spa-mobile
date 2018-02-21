@@ -5,6 +5,7 @@ import moment from 'moment'
 import Modalizer from 'components/modalizer'
 import FormView from 'ampersand-form-view'
 import StateConstants from 'constants/states'
+import LifecycleConstants from 'constants/lifecycle'
 import './style.less'
 
 const DeleteNotificationsView = View.extend({
@@ -45,11 +46,12 @@ const icons = {
   completed: 'fa fa-check-circle',
   terminated: 'fa fa-question-circle',
   canceled: 'fa fa-minus-circle',
+  success: 'fa fa-check-circle',
   normal: 'fa fa-check-circle',
   failure: 'fa fa-exclamation-circle',
   recovered: 'fa fa-check-circle',
   updates_started: 'fa fa-check-circle',
-  updates_stopped: 'fa fa-exclamation-circle'
+  updates_stopped: 'fa fa-times-circle'
 }
 
 const iconByType = {
@@ -68,7 +70,7 @@ const EmptyView = View.extend({
 
 const InboxRow = View.extend({
   props: {
-    severity: 'string',
+    colorClass: 'string',
     modelType: 'string',
     modelName: 'string',
     message: 'string',
@@ -83,7 +85,7 @@ const InboxRow = View.extend({
     time: { hook: 'time' },
     modelType: { hook: 'modelType' },
     modelName: { hook: 'modelName' },
-    severity: { type: 'class' },
+    colorClass: { type: 'class' },
     icon: {
       type: 'attribute',
       name: 'class',
@@ -121,7 +123,7 @@ const InboxRow = View.extend({
     this.modelType = resourceType[this.model.data.model_type]
     this.icon = ''
 
-    this.severity = stateToSeverity(state)
+    this.colorClass = stateToColorClass(state)
     this.modelType = ''
     if (type === 'Resource') { // it is resources notification
       let monitor_event = this.model.data.monitor_event
@@ -131,7 +133,9 @@ const InboxRow = View.extend({
       this.hostName = this.model.data.hostname
 
       // monitor execution always failure, unless used a recognized state
-      if (!this.severity) this.severity = StateConstants.FAILURE
+      if (!this.colorClass) {
+        this.colorClass = StateConstants.FAILURE
+      }
 
     } else if (/Job/.test(type)===true) { // it is a task execution
       let lifecycle = this.model.data.model.lifecycle
@@ -141,8 +145,20 @@ const InboxRow = View.extend({
       this.icon = icons[lifecycle]
       this.hostName = this.model.data.model.host.hostname
 
+      if (lifecycle===LifecycleConstants.FINISHED) {
+        if (state===StateConstants.FAILURE) {
+          this.icon = icons[state]
+        } else {
+          this.icon = icons[StateConstants.SUCCESS]
+        }
+      } else {
+        this.icon = icons[lifecycle]
+      }
+
       // task execution always success, unless declared a failure
-      if (!this.severity) this.severity = StateConstants.SUCCESS
+      if (!this.colorClass) {
+        this.colorClass = StateConstants.SUCCESS
+      }
 
     } else {
       console.warning(this.model)
@@ -168,7 +184,7 @@ const InboxRow = View.extend({
 
 const sanitizeState = (state) => state.toLowerCase().replace(/ /g,"_")
 
-const stateToSeverity = (state) => (StateConstants.STATES.indexOf(state)!==-1) ? state : null
+const stateToColorClass = (state) => (StateConstants.STATES.indexOf(state)!==-1) ? state : null
 
 module.exports = View.extend({
   template: `

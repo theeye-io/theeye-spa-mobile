@@ -31,21 +31,21 @@ module.exports = {
     })
 
     req.done(function(){
+      App.state.loader.visible = false
       bootbox.alert({
         title: 'User created',
         message: `You have successfully created ${body.username}`,
         callback: () => {
-          App.state.loader.visible = false
           App.Router.reload()
         }
       })
     })
     req.fail(function(jqXHR, textStatus, errorThrown){
+      App.state.loader.visible = false
       bootbox.alert({
         title: 'User creation error - ' + errorThrown,
         message: jqXHR.responseText,
         callback: () => {
-          App.state.loader.visible = false
           App.Router.reload()
         }
       })
@@ -70,23 +70,23 @@ module.exports = {
     })
 
     req.done(function(){
+      App.state.loader.visible = false
       bootbox.alert({
         title: 'User created',
         message: `You have successfully updated ${body.username}`,
         callback: () => {
           App.Router.reload()
-          App.state.loader.visible = false
         }
       })
     })
 
     req.fail(function(jqXHR, textStatus, errorThrown){
+      App.state.loader.visible = false
       bootbox.alert({
         title: `User update error - ${errorThrown}`,
         message: jqXHR.responseText,
         callback: () => {
           App.Router.reload()
-          App.state.loader.visible = false
         }
       })
     })

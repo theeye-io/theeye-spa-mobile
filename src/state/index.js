@@ -65,16 +65,16 @@ const AppState = State.extend({
     login: ['state',false,() => { return new LoginState() }],
     notify: ['state',false,() => { return new NotifyState() }],
     register: ['state',false,() => { return new RegisterState() }],
-    searchbox: ['state',false,() => { return new SearchBoxState() }],
-    inbox: ['state', true, () => new InboxState()]
+    searchbox: ['state',false,() => { return new SearchBoxState() }]
   },
   init () {
+    _initCollections.call(this)
+
     this.loader = new LoaderState()
     this.session = new SessionState()
     this.navbar = new NavbarState()
     this.credentials = new CredentialsCollection()
-
-    _initCollections.call(this)
+    this.inbox = new InboxState({ appState: this })
 
     const resetCredentialsCollection = () => {
       if (this.session.logged_in===undefined) {
