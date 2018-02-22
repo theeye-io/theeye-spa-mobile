@@ -21,6 +21,7 @@ import MonitoringOboardingPanel from './monitoring-onboarding'
 import TasksOboardingPanel from './tasks-onboarding'
 import InboxView from './inbox'
 import NotificationActions from 'actions/notifications'
+import DashboardActions from 'actions/dashboard'
 
 var slideCount, slideWidth, sliderUlWidth
 
@@ -96,9 +97,9 @@ module.exports = View.extend({
   },
   events: {
     'click [data-hook=up-and-running] i':'hideUpAndRunning',
-    'click [data-hook=show-tasks]':'showTasks',
-    'click [data-hook=show-monitors]':'showMonitors',
-    'click [data-hook=show-notifications]':'showNotifications'
+    'click [data-hook=show-monitors]':'setCurrentTab',
+    'click [data-hook=show-tasks]':'setCurrentTab',
+    'click [data-hook=show-notifications]':'setCurrentTab'
   },
   initialize () {
     View.prototype.initialize.apply(this,arguments)
@@ -182,42 +183,41 @@ module.exports = View.extend({
     screen.orientation.onchange = function() {
       self.setSliderSizes()
     }
+
+    this.listenToAndRun(App.state.dashboard,'change:currentTab',() => {
+      this.setSliderSizes()
+      if(!App.state.dashboard.currentTab)
+        return
+      switch (App.state.dashboard.currentTab) {
+        case 'monitors':
+          this.showTab(App.state.dashboard.currentTab, 0)
+          break;
+        case 'tasks':
+        this.showTab(App.state.dashboard.currentTab, -slideWidth)
+          break;
+        case 'notifications':
+        this.showTab(App.state.dashboard.currentTab, -(slideWidth*2))
+          break;
+      }
+    })
   },
-  showTasks() {
-    if ($('.dashboard-tabs .dashboard-tab.tasks-tab').hasClass('active'))
+  setCurrentTab(event) {
+    var tabName = event.target.dataset.hook.substr(5)
+    DashboardActions.setCurrentTab(tabName)
+  },
+  showTab(tabName, newLeft) {
+    var el = this.query(`.dashboard-tabs .dashboard-tab.${tabName}-tab`)
+    if(el.classList.contains('active'))
       return
-    $('.dashboard-tabs .dashboard-tab.tasks-tab').addClass('active')
-    $('.dashboard-tabs .dashboard-tab.monitors-tab').removeClass('active')
-    $('.dashboard-tabs .dashboard-tab.notifications-tab').removeClass('active')
+    this.queryAll('.dashboard-tabs .dashboard-tab').forEach(el => el.classList.remove('active'))
+    el.classList.add('active')
+
     $(window).scrollTop(0);
     $('#slider ul.tab-contents').animate({
-      left: - slideWidth
+      left: newLeft
     }, 400, function () {
-    });
-  },
-  showMonitors() {
-    if ($('.dashboard-tabs .dashboard-tab.monitors-tab').hasClass('active'))
-      return
-    $('.dashboard-tabs .dashboard-tab.monitors-tab').addClass('active')
-    $('.dashboard-tabs .dashboard-tab.tasks-tab').removeClass('active')
-    $('.dashboard-tabs .dashboard-tab.notifications-tab').removeClass('active')
-    $(window).scrollTop(0);
-    $('#slider ul.tab-contents').animate({
-      left: 0
-    }, 400, function () {
-    });
-  },
-  showNotifications() {
-    if ($('.dashboard-tabs .dashboard-tab.notifications-tab').hasClass('active'))
-      return
-    $('.dashboard-tabs .dashboard-tab.notifications-tab').addClass('active')
-    $('.dashboard-tabs .dashboard-tab.monitors-tab').removeClass('active')
-    $('.dashboard-tabs .dashboard-tab.tasks-tab').removeClass('active')
-    $(window).scrollTop(0);
-    $('#slider ul.tab-contents').animate({
-      left: - (slideWidth*2)
-    }, 400, function () {
-      NotificationActions.markAllRead()
+      if(tabName === 'notifications')
+        NotificationActions.markAllRead()
     });
   },
   /**

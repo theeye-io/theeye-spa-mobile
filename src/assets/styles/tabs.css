@@ -28,12 +28,13 @@
   color: #FFF;
   font-size: 25px;
   line-height: 50px;
+  pointer-events: none;
 }
 
 .dashboard-tabs > .dashboard-tab > .badge{
   position: absolute;
-  margin-left: -15px;
-  margin-top: 5px;
+  margin-left: -12px;
+  margin-top: 2px;
   background-color: #d88e47;
   padding: 3px 6px;
 }

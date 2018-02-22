@@ -68,7 +68,8 @@ module.exports = AmpersandState.extend({
   props: {
     resourcesDataSynced: ['boolean',false,false],
     tasksDataSynced: ['boolean',false,false],
-    monitorsGroupBy: ['object',false, () => { return { prop: 'name' } }]
+    monitorsGroupBy: ['object',false, () => { return { prop: 'name' } }],
+    currentTab: ['string',true,'monitors']
   },
   collections: {
     // representation of the current groups being display
