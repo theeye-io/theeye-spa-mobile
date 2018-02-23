@@ -239,40 +239,42 @@ const Menu = View.extend({
 module.exports = View.extend({
   autoRender: true,
   template: () => {
-    return template.call(this,{ logo: logo })
+    return template.call(this, { logo: logo })
   },
   render () {
     this.renderWithTemplate()
 
-    this.listenToAndRun(App.state.session,'change:logged_in',() => {
+    this.listenToAndRun(App.state.session, 'change:logged_in', () => {
       this.updateState(App.state.session)
     })
   },
   updateState (state) {
     const logged_in = state.logged_in
-    if (logged_in===undefined) return
-    if (logged_in===true) {
-      this.showSearchbox()
-      this.showMenu()
+    if (logged_in === undefined) return
+    if (logged_in === true) {
+      this.renderLoggedInComponents()
     } else {
-      this.hideSearchbox()
-      this.hideMenu()
+      this.destroyLoggedInComponents()
     }
   },
-  showSearchbox () {
-    const container = this.queryByHook('searchbox-container')
+  renderLoggedInComponents () {
+    // search box
     this.searchbox = new Searchbox()
-    this.renderSubview(this.searchbox, container)
-  },
-  hideSearchbox () {
-    if (this.searchbox) this.searchbox.remove()
-  },
-  showMenu () {
-    const container = this.queryByHook('menu-container')
+    this.renderSubview(
+      this.searchbox,
+      this.queryByHook('searchbox-container')
+    )
+
+    // menu
     this.menu = new Menu()
-    this.renderSubview(this.menu, container)
+    this.renderSubview(
+      this.menu,
+      this.queryByHook('menu-container')
+    )
   },
-  hideMenu () {
+  destroyLoggedInComponents () {
+    if (this.searchbox) this.searchbox.remove()
     if (this.menu) this.menu.remove()
+    if (this.inbox) this.inbox.remove()
   }
 })

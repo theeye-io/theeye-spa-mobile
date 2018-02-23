@@ -19,6 +19,9 @@ const searchRows = require('lib/filter-rows')
 import MonitorsOptions from './monitors-options'
 import MonitoringOboardingPanel from './monitoring-onboarding'
 import TasksOboardingPanel from './tasks-onboarding'
+import InboxView from './inbox'
+import NotificationActions from 'actions/notifications'
+import DashboardActions from 'actions/dashboard'
 
 var slideCount, slideWidth, sliderUlWidth
 
@@ -69,21 +72,38 @@ module.exports = View.extend({
     groupedResources: 'collection',
     monitors: 'collection',
     tasks: 'collection',
+    notifications: 'collection',
     renderStats: ['boolean',false,false],
     renderTasks: ['boolean',false,true],
     waitTimeout: ['number',false,null],
     upandrunningSign: ['boolean',false,() => {
       let enabled = config.dashboard.upandrunningSign
       return typeof enabled === 'boolean' ? enabled : true
-    }]
+    }],
+    unread: ['number', true, 0],
+    showBadge: ['boolean', false, false]
+  },
+  bindings: {
+    unread: [
+      {
+        type: 'text',
+        hook: 'badge'
+      },
+      {
+        type: 'toggle',
+        hook: 'badge'
+      }
+    ]
   },
   events: {
     'click [data-hook=up-and-running] i':'hideUpAndRunning',
-    'click [data-hook=show-tasks]':'showTasks',
-    'click [data-hook=show-monitors]':'showMonitors'
+    'click [data-hook=show-monitors]':'setCurrentTab',
+    'click [data-hook=show-tasks]':'setCurrentTab',
+    'click [data-hook=show-notifications]':'setCurrentTab'
   },
   initialize () {
     View.prototype.initialize.apply(this,arguments)
+    this.listenToAndRun(this.notifications, 'add sync reset remove', this.updateCounts)
   },
   hideUpAndRunning () {
     this.$upandrunning.slideUp()
@@ -99,8 +119,12 @@ module.exports = View.extend({
 
     if ($('.dashboard-tabs .dashboard-tab.monitors-tab').hasClass('active')) {
       $('#slider ul.tab-contents').css({ left: 0 })
-    } else {
+    }
+    if ($('.dashboard-tabs .dashboard-tab.tasks-tab').hasClass('active')) {
       $('#slider ul.tab-contents').css({ left: - slideWidth })
+    }
+    if ($('.dashboard-tabs .dashboard-tab.notifications-tab').hasClass('active')) {
+      $('#slider ul.tab-contents').css({ left: - (slideWidth*2) })
     }
   },
   render () {
@@ -145,9 +169,12 @@ module.exports = View.extend({
       this.queryByHook('tasks-panel').remove()
     }
 
-    if (this.renderStats === true) {
-      this.renderStatsPanel()
-    }
+    // notifications inbox
+    this.inbox = new InboxView({collection: this.notifications})
+    this.renderSubview(
+      this.inbox,
+      this.queryByHook('notifications-container')
+    )
 
     $(window).resize(function() {
       self.setSliderSizes()
@@ -156,25 +183,41 @@ module.exports = View.extend({
     screen.orientation.onchange = function() {
       self.setSliderSizes()
     }
+
+    this.listenToAndRun(App.state.dashboard,'change:currentTab',() => {
+      this.setSliderSizes()
+      if(!App.state.dashboard.currentTab)
+        return
+      switch (App.state.dashboard.currentTab) {
+        case 'monitors':
+          this.showTab(App.state.dashboard.currentTab, 0)
+          break;
+        case 'tasks':
+        this.showTab(App.state.dashboard.currentTab, -slideWidth)
+          break;
+        case 'notifications':
+        this.showTab(App.state.dashboard.currentTab, -(slideWidth*2))
+          break;
+      }
+    })
   },
-  showTasks() {
-    if ($('.dashboard-tabs .dashboard-tab.tasks-tab').hasClass('active'))
+  setCurrentTab(event) {
+    var tabName = event.target.dataset.hook.substr(5)
+    DashboardActions.setCurrentTab(tabName)
+  },
+  showTab(tabName, newLeft) {
+    var el = this.query(`.dashboard-tabs .dashboard-tab.${tabName}-tab`)
+    if(el.classList.contains('active'))
       return
-    $('.dashboard-tabs .dashboard-tab').toggleClass('active')
+    this.queryAll('.dashboard-tabs .dashboard-tab').forEach(el => el.classList.remove('active'))
+    el.classList.add('active')
+
     $(window).scrollTop(0);
     $('#slider ul.tab-contents').animate({
-      left: - slideWidth
+      left: newLeft
     }, 400, function () {
-    });
-  },
-  showMonitors() {
-    if ($('.dashboard-tabs .dashboard-tab.monitors-tab').hasClass('active'))
-      return
-    $('.dashboard-tabs .dashboard-tab').toggleClass('active')
-    $(window).scrollTop(0);
-    $('#slider ul.tab-contents').animate({
-      left: 0
-    }, 400, function () {
+      if(tabName === 'notifications')
+        NotificationActions.markAllRead()
     });
   },
   /**
@@ -374,14 +417,9 @@ module.exports = View.extend({
 
     this.listenToAndRun(App.state.searchbox,'change:search',search)
   },
-  renderStatsPanel () {
-    this.renderSubview(
-      new PanelView({
-        col_class: 'col-md-6',
-        title: 'Stats',
-        name: 'stats'
-      }),
-      this.queryByHook('.admin-container.dashboard')
-    )
+  updateCounts () {
+    const reducer = (acc, cur) => acc + (cur.read ? 0 : 1)
+    this.unread = this.notifications.toJSON().reduce(reducer, 0)
+    this.showBadge = this.unread !== 0
   }
 })

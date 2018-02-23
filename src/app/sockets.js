@@ -1,9 +1,11 @@
+/* global io */
 'use strict'
 
 import App from 'ampersand-app'
 import SocketsWrapper from 'lib/sockets'
-import ResourceAction from 'actions/resource'
-import JobAction from 'actions/job'
+import ResourceActions from 'actions/resource'
+import JobActions from 'actions/job'
+import NotificationActions from 'actions/notifications'
 import config from 'config'
 const logger = require('lib/logger')('app:sockets')
 import OperationsConstants from 'constants/operations'
@@ -29,6 +31,15 @@ const disconnect = () => {
   }
 }
 
+const defaultTopics = [
+  //'host-stats',
+  //'host-processes',
+  'monitor-state',
+  'job-crud',
+  // 'host-integrations-crud', // host integrations changes
+  // 'host-registered'
+]
+
 module.exports = () => {
   // initialize io.sails sockets
   io.sails = {
@@ -39,47 +50,69 @@ module.exports = () => {
   }
   SailsIOClient() // setup sails sockets connection
 
-  App.listenToAndRun(App.state.session,'change:logged_in',() => {
-    const logged_in = App.state.session.logged_in
+  let session = App.state.session
+
+  const updateSubscriptions = () => {
+    if (!session.customer.id) return
+
+    // unsubscribe
+    App.sockets.unsubscribe({
+      onUnsubscribed: () => {
+
+        // ... then subscribe again to new customer notifications
+        App.sockets.subscribe({
+          query: {
+            customer: session.customer.name,
+            topics: defaultTopics
+          }
+        })
+      }
+    })
+  }
+
+  App.listenToAndRun(session,'change:logged_in',() => {
+    const logged_in = session.logged_in
     if (logged_in===undefined) return
     if (logged_in===true) {
       connect((err,socket) => {
         if (!App.sockets) { // create wrapper to subscribe and start listening to events
-          App.sockets = new SocketsWrapper({
-            io: io,
-            channel: '/sockets/subscribe',
+          App.sockets = createWrapper({ io })
+          App.listenTo(session.customer, 'change:id', updateSubscriptions)
+          App.sockets.subscribe({
             query: {
-              customer: App.state.session.customer.name,
-              topics: [
-                'monitor-state',
-                'job-crud'
-              ]
-            },
-            onSubscribed (data,jwr) {
-              if (jwr.statusCode === 200) {
-                logger.log('subscribed to resources notifications')
-              } else {
-                logger.error('error subscribing to resources notifications')
-                logger.error(jwr);
-              }
-            },
-            events: {
-              'monitor-state': (event) => {
-                ResourceAction.update(event.model)
-              },
-              'job-crud': (event) => {
-                if (
-                  event.operation === OperationsConstants.UPDATE ||
-                  event.operation === OperationsConstants.CREATE ||
-                  event.operation === OperationsConstants.REPLACE
-                ) {
-                  JobAction.update(event.model)
-                }
-              }
+              customer: session.customer.name,
+              topics: defaultTopics
             }
           })
         }
       }) // create socket and connect to server
-    } else disconnect()
+    } else {
+      disconnect()
+      App.stopListening(session.customer, 'change:id', updateSubscriptions)
+    }
+  })
+}
+
+const createWrapper = ({ io }) => {
+  return new SocketsWrapper({
+    io,
+    events: {
+      // socket events handlers
+      'notification-crud': event => {
+        NotificationActions.add(event.model)
+      },
+      'monitor-state': (event) => {
+        ResourceActions.update(event.model)
+      },
+      'job-crud': (event) => {
+        if (
+          event.operation === OperationsConstants.UPDATE ||
+          event.operation === OperationsConstants.CREATE ||
+          event.operation === OperationsConstants.REPLACE
+        ) {
+          JobActions.update(event.model)
+        }
+      }
+    }
   })
 }

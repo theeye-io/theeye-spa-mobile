@@ -276,7 +276,7 @@ h3.light { color: #EEE}
 
 
 .admin-container { width:100%; color:white; }
-.admin-container h3 { background-color: #23324C;margin: 0;padding: 6px;color: #fff;font-size: 14px;text-align: center; }
+.admin-container h3 { background-color: #23324C;margin: 0;padding: 6px;color: #fff;font-size: 18px;text-align: center; }
 .admin-container .admin-panel { position:relative; }
 .admin-container .ladda-button {border: none;text-shadow: none;box-shadow: none}
 .admin-container .panel { background-color: transparent; }
@@ -804,11 +804,13 @@ a.flowchart-icon {
 .admin-container.dashboard .monitors.admin-panel h3 span.dropdown ul.dropdown-menu li:hover { background-color: #23324C; }
 
 .admin-container.dashboard .tasks-container .panel-heading h4.panel-title-icon ,
+.admin-container.dashboard .inbox-container .panel-heading h4.panel-title-icon ,
 .admin-container.dashboard .resource-container .panel-heading h4.panel-title-icon {
   float: left; margin-top: 0; margin-bottom: 0; font-size: 16px; color: inherit; padding: 5px; padding-left: 10px;
 }
 
 .admin-container.dashboard .tasks-container .panel-heading h4.panel-title-icon i ,
+.admin-container.dashboard .inbox-container .panel-heading h4.panel-title-icon i ,
 .admin-container.dashboard .resource-container .panel-heading h4.panel-title-icon i {
   min-height: 38px; width: 38px; padding-top: 5px; line-height: 28px; text-align: center; font-size: 18px;
 }
@@ -840,6 +842,7 @@ a.flowchart-icon {
 
 @media (max-width: 767px) {
 	.admin-container .panel-heading .panel-item.name { width:72%;padding-right:20px; }
+  .admin-container .panel-heading .panel-item.entry-text { width:80%;}
 	.admin-container .panel-heading .panel-title-content { position:relative; }
 	.admin-container .panel-heading .panel-item.icons.panel-item-mobile {}
 	.admin-container .panel-heading .panel-item.icons.panel-item-mobile ul.dropdown-menu { left:inherit;right:0;width:40px;min-width:inherit;background:none;margin:0;padding:0;background-color:#304269; }

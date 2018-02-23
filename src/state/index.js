@@ -15,12 +15,15 @@ import { Collection as Tags } from 'models/tag'
 import { Collection as Scripts } from 'models/file/script'
 import { Collection as Events } from 'models/event'
 import Alerts from 'components/alerts'
+import { Collection as Notifications } from 'models/notification'
+
 //import URI from 'urijs'
 
 import HostGroupPageState from './hostgroup-page'
 import DashboardPageState from './dashboard-page'
 import SessionState from './session'
 import NavbarState from './navbar'
+import InboxState from './inbox'
 
 const State = AmpersandState.extend({ extraProperties: 'allow' })
 
@@ -62,15 +65,16 @@ const AppState = State.extend({
     login: ['state',false,() => { return new LoginState() }],
     notify: ['state',false,() => { return new NotifyState() }],
     register: ['state',false,() => { return new RegisterState() }],
-    searchbox: ['state',false,() => { return new SearchBoxState() }],
+    searchbox: ['state',false,() => { return new SearchBoxState() }]
   },
   init () {
+    _initCollections.call(this)
+
     this.loader = new LoaderState()
     this.session = new SessionState()
     this.navbar = new NavbarState()
     this.credentials = new CredentialsCollection()
-
-    _initCollections.call(this)
+    this.inbox = new InboxState({ appState: this })
 
     const resetCredentialsCollection = () => {
       if (this.session.logged_in===undefined) {
@@ -92,6 +96,11 @@ const AppState = State.extend({
           description: 'Root'
         })
       }
+    })
+
+    this.listenToAndRun(this.session.customer,'change:id', () => {
+      if (!this.session.customer.id) return
+      this.notifications.fetch({ reset: true })
     })
   },
   reset () {
@@ -186,6 +195,7 @@ const _initCollections = function () {
     users: new Users([]),
     webhooks: new Webhooks([]),
     members: new Members([]),
-    events: new Events([])
+    events: new Events([]),
+    notifications: new Notifications([])
   })
 }

@@ -49,15 +49,34 @@
         </div>
       </li>
       <!-- /TASKS -->
+
+      <!-- NOTIFICATIONS -->
+      <li class="tab-content">
+        <div data-hook="notifications-panel">
+          <section class="notifications-panel events-panel">
+            <h3>Notifications</h3>
+            <div>
+              <div class="panel-group" id="notifications-accordion" role="tablist" aria-multiselectable="true">
+                <section data-hook="notifications-container"> </section>
+              </div>
+            </div>
+          </section>
+        </div>
+      </li>
+      <!-- /NOTIFICATIONS -->
     </ul>
   </div>
   <!-- TAB BUTTONS -->
   <div class="dashboard-tabs">
-    <div data-hook="show-monitors" class="dashboard-tab monitors-tab active">
-      <span>Monitors</span>
+    <div data-hook="show-monitors" class="dashboard-tab monitors-tab">
+      <i class="fa fa-television"></i>
     </div>
     <div data-hook="show-tasks" class="dashboard-tab tasks-tab">
-      <span>Tasks</span>
+      <i class="fa fa-list-ul"></i>
+    </div>
+    <div data-hook="show-notifications" class="dashboard-tab notifications-tab">
+      <i class="fa fa-bell-o"></i>
+      <span class="badge" data-hook="badge">0</span>
     </div>
   </div>
   <!-- /TAB BUTTONS -->

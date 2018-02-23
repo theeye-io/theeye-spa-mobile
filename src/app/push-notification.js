@@ -30,6 +30,9 @@ module.exports = () => {
           package_name: BuildInfo.packageName
         })
       });
+      App.push.on('notification', function(data) {
+        App.state.dashboard.currentTab = 'notifications'
+      });
       App.push.on('error', (e) => {
         console.log(e.message);
       });
