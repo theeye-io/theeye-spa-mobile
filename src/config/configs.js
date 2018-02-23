@@ -52,7 +52,7 @@ const configs = {
   production : assign({}, defaultConfigs, {
     env: 'production',
     app_url: 'https://app.theeye.io',
-    socket_url: 'https://app.theeye.io',
+    socket_url: 'https://app.theeye.io:443',
     api_url: 'https://app.theeye.io/apiv2',
     supervisor_api_url: 'https://supervisor.theeye.io',
   })
