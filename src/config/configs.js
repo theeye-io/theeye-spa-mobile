@@ -34,7 +34,7 @@ const configs = {
   development : assign({}, defaultConfigs, {
     env: 'development',
     app_url: 'https://development.theeye.io',
-    socket_url: 'https://development.theeye.io',
+    socket_url: 'https://development.theeye.io:443',
     api_url: 'https://development.theeye.io/apiv2',
     supervisor_api_url: 'https://supervisor.development.theeye.io',
   }),

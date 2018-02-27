@@ -6,6 +6,7 @@ import SocketsWrapper from 'lib/sockets'
 import ResourceActions from 'actions/resource'
 import JobActions from 'actions/job'
 import NotificationActions from 'actions/notifications'
+import SessionActions from 'actions/session'
 import config from 'config'
 const logger = require('lib/logger')('app:sockets')
 import OperationsConstants from 'constants/operations'
@@ -100,6 +101,9 @@ const createWrapper = ({ io }) => {
       // socket events handlers
       'notification-crud': event => {
         NotificationActions.add(event.model)
+      },
+      'session-customer-changed': event => { // temporal fix
+        SessionActions.verifyCustomerChange(event.organization)
       },
       'monitor-state': (event) => {
         ResourceActions.update(event.model)
