@@ -15,11 +15,5 @@ module.exports = {
     if(log)
       window.fabric.Crashlytics.addLog(log);
     window.fabric.Crashlytics.sendNonFatalCrash(JSON.stringify(error));
-  },
-  answersTrackLogin(providor, attributes) {
-    window.fabric.Answers.sendLogIn(providor, true, attributes);
-  },
-  answersTrackEvent(eventName, attributes) {
-    window.fabric.Answers.sendCustomEvent(eventName, attributes);
   }
 }

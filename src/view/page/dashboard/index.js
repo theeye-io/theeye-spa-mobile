@@ -22,6 +22,7 @@ import TasksOboardingPanel from './tasks-onboarding'
 import InboxView from './inbox'
 import NotificationActions from 'actions/notifications'
 import DashboardActions from 'actions/dashboard'
+import AnalyticsActions from 'actions/analytics'
 
 var slideCount, slideWidth, sliderUlWidth
 
@@ -188,6 +189,7 @@ module.exports = View.extend({
       this.setSliderSizes()
       if(!App.state.dashboard.currentTab)
         return
+      AnalyticsActions.trackView(App.state.dashboard.currentTab)
       switch (App.state.dashboard.currentTab) {
         case 'monitors':
           this.showTab(App.state.dashboard.currentTab, 0)

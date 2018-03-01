@@ -25,7 +25,6 @@ module.exports = {
         App.state.loader.visible = false
         if (xhr.status == 200){
           AnalyticsActions.trackEvent('Auth', 'Login')
-          AnalyticsActions.answersTrackLogin('Normal', {email: data.email})
 
           App.state.session.set({
             access_token: response.access_token
@@ -234,7 +233,6 @@ module.exports = {
           done: (response,xhr) => {
             if (xhr.status == 200){
               AnalyticsActions.trackEvent('Auth', 'Social Login', 'Google')
-              AnalyticsActions.answersTrackLogin('Google', {email: userData.email})
 
               App.state.session.set({
                 access_token: response.access_token
