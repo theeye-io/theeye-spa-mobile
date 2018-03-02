@@ -4,6 +4,7 @@ const logger = require('lib/logger')('actions:session')
 const config = require('config')
 import bootbox from 'bootbox'
 import reject from 'lodash/reject'
+import AnalyticsActions from './analytics'
 
 module.exports = {
   changeCustomer (id) {
@@ -89,6 +90,7 @@ module.exports = {
           sessionState.user.customers.reset()
           sessionState.user.customers.set(customers)
         }
+        AnalyticsActions.setMixpanelUser(user)
         sessionState.logged_in = true
       },
       fail: (err) => {

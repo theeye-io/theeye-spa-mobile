@@ -25,8 +25,7 @@ module.exports = {
         App.state.loader.visible = false
         if (xhr.status == 200){
           AnalyticsActions.trackEvent('Auth', 'Login')
-          AnalyticsActions.answersTrackLogin('Normal', {email: data.email})
-
+          AnalyticsActions.trackMixpanelEvent('login', {provider: 'Local'})
           App.state.session.set({
             access_token: response.access_token
           })
@@ -55,6 +54,7 @@ module.exports = {
       },
       done: (response,xhr) => {
         if (xhr.status == 200) {
+          AnalyticsActions.unsetMixpanelUser()
         }
       },
       fail: (err,xhr) => {
@@ -64,6 +64,7 @@ module.exports = {
     })
 
     AnalyticsActions.trackEvent('Auth', 'Logout')
+    AnalyticsActions.trackMixpanelEvent('logout')
     if(window.plugins && window.plugins.googleplus) {
       window.plugins.googleplus.disconnect(function (msg) {console.log(msg)})
     }
@@ -234,7 +235,7 @@ module.exports = {
           done: (response,xhr) => {
             if (xhr.status == 200){
               AnalyticsActions.trackEvent('Auth', 'Social Login', 'Google')
-              AnalyticsActions.answersTrackLogin('Google', {email: userData.email})
+              AnalyticsActions.trackMixpanelEvent('login', {provider: 'Google'})
 
               App.state.session.set({
                 access_token: response.access_token

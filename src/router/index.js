@@ -40,7 +40,6 @@ module.exports = Router.extend({
   },
   routes: {
     'dashboard': () => {
-      AnalyticsActions.trackView('dashboard')
       const route = new DashboardRoute()
       route.route('index')
     },

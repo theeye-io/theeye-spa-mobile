@@ -114,7 +114,8 @@ module.exports = View.extend({
               JobActions.create(this.model, taskArgs)
 
               AnalyticsActions.trackEvent('Task', 'Execution', this.model.id)
-              AnalyticsActions.answersTrackEvent('Task execution', {id: this.model.id})
+              AnalyticsActions.trackMixpanelEvent('Task execution', {task: this.model.id})
+              AnalyticsActions.trackMixpanelIncrement('Task execution',1)
             }
           }
         })

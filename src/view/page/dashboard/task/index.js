@@ -85,6 +85,7 @@ const TaskButtonsView = View.extend({
     event.stopPropagation()
 
     AnalyticsActions.trackView('executionOutputTask')
+    AnalyticsActions.trackMixpanelEvent('Check task output', {output: this.model.lastjob})
 
     const view = new JobResult({ job: this.model.lastjob })
     view.show()
