@@ -47,6 +47,7 @@
     "cordova-plugin-google-analytics": "^1.8.3",
     "cordova-plugin-googleplus": "^5.1.1",
     "cordova-plugin-inappbrowser": "^2.0.1",
+    "cordova-plugin-mixpanel": "^4.2.0",
     "cordova-plugin-screen-orientation": "~2.0.2",
     "cordova-plugin-splashscreen": "^4.0.3",
     "cordova-plugin-statusbar": "^2.2.3",
@@ -141,7 +142,8 @@
       "cordova-plugin-inappbrowser": {},
       "phonegap-plugin-push": {
         "FCM_VERSION": "11.6.2"
-      }
+      },
+      "cordova-plugin-mixpanel": {}
     },
     "platforms": [
       "ios",

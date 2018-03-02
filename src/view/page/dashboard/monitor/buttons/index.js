@@ -71,7 +71,7 @@ const LastEvent = View.extend({
     event.stopPropagation();
 
     AnalyticsActions.trackView('executionOutputMonitor')
-
+    AnalyticsActions.trackMixpanelEvent('Check monitor output', {output: this.model.last_event || 'it is empty'})
     const view = new JobOutput({
       output: this.model.last_event || 'it is empty'
     })

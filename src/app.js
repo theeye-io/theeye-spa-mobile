@@ -112,6 +112,6 @@ document.addEventListener("deviceready", function() {
   document.addEventListener("backbutton", function(e) {
     e.preventDefault()
   }, false);
-  AnalyticsActions.initPlugin('UA-108287519-1')
+  AnalyticsActions.initPlugins()
   App.init()
 }, false);
