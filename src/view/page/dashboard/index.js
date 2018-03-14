@@ -223,6 +223,48 @@ module.exports = View.extend({
         NotificationActions.markAllRead()
     });
   },
+  setUpAndRunningSign: function () {
+    if (!this.upandrunningSign) return // upandrunning is disabled
+    if (this.waitTimeout) return // the user is interacting
+    if (!(this.monitors.length > 0)) return
+
+    /** move ok monitors to fold container **/
+    const foldMonitors = () => {
+      this.monitorRows.views.forEach(view => {
+        let model = view.model
+        if (!model.hasError()) {
+          this.monitorsFolding.append(view.el)
+        } else {
+          this.$monitorsPanel.prepend(view.el)
+        }
+      })
+    }
+
+    /** restore to default **/
+    const unfoldMonitors = () => {
+      this.monitorRows.views.forEach(view => {
+        this.$monitorsPanel.append(view.el)
+      })
+    }
+
+    const failing = this.monitors.filter(monitor => {
+      let group = this.groupedResources.find(monitor)
+      if (!group) return false
+      return monitor.hasError()
+    })
+
+    if (failing.length > 0) {
+      foldMonitors()
+      this.$upandrunning.slideUp()
+      this.$monitorsPanel.slideDown()
+      this.monitorsFolding.showButton()
+    } else {
+      unfoldMonitors()
+      this.$upandrunning.slideDown()
+      this.$monitorsPanel.slideUp()
+      this.monitorsFolding.hideButton()
+    }
+  },
   /**
    *
    * should be converted into a Monitors Panel View
@@ -237,7 +279,7 @@ module.exports = View.extend({
       this.queryByHook('monitors-panel-header')
     )
 
-    const monitorRows = this.renderCollection(
+    this.monitorRows = this.renderCollection(
       this.groupedResources,
       MonitorRowView,
       this.queryByHook('monitors-container')
@@ -246,98 +288,66 @@ module.exports = View.extend({
     const rowtooltips = this.query('[data-hook=monitors-container] .tooltiped')
     $(rowtooltips).tooltip()
 
-    const monitorsFolding = this.renderSubview(
+    this.monitorsFolding = this.renderSubview(
       new ItemsFolding({}),
       this.queryByHook('monitors-fold-container')
     )
 
     /** bind searchbox **/
-    this.listenToAndRun(App.state.searchbox,'change:search',() => {
-      if (monitorRows) {
+    this.listenToAndRun(App.state.searchbox, 'change:search', () => {
+      if (this.monitorRows) {
         searchRows({
-          rows: monitorRows.views,
+          rows: this.monitorRows.views,
           search: App.state.searchbox.search,
           onrow: (row, hit) => {
             row.show = Boolean(hit)
           },
           onsearchend: () => {
-            monitorRows.views.forEach(row => row.show = true)
+            this.monitorRows.views.forEach(row => row.show = true)
           }
         })
       }
-      this.hideUpAndRunning()
-    })
-
-    const setUpAndRunningSign = () => {
-
-      if (!this.upandrunningSign) return // upandrunning is disabled
-      if (this.waitTimeout) return // the user is interacting
-      if (!(this.monitors.length>0)) return
-
-      /** move ok monitors to fold container **/
-      const foldMonitors = () => {
-        monitorRows.views.forEach(view => {
-          let model = view.model
-          if (! model.hasError()) {
-            monitorsFolding.append( view.el )
-          } else {
-            this.$monitorsPanel.prepend( view.el )
-          }
-        })
-      }
-
-      /** restore to default **/
-      const unfoldMonitors = () => {
-        monitorRows.views.forEach(view => {
-          this.$monitorsPanel.append( view.el )
-        })
-      }
-
-      const failing = this.monitors.filter(monitor => {
-        let group = this.groupedResources.find(monitor)
-        if (!group) return false
-        return monitor.hasError()
-      })
-
-      if (failing.length>0) {
-        foldMonitors()
-        this.$upandrunning.slideUp()
-        this.$monitorsPanel.slideDown()
-        monitorsFolding.showButton()
+      if (App.state.searchbox.search) {
+        this.hideUpAndRunning()
+        this.monitorsFolding.unfold()
       } else {
-        unfoldMonitors()
-        this.$upandrunning.slideDown()
-        this.$monitorsPanel.slideUp()
-        monitorsFolding.hideButton()
+        this.monitorsFolding.fold()
+        this.setUpAndRunningSign()
       }
-    }
+    })
 
-    const waitUntilStopInteraction = () => {
-      if (!(this.monitors.length>0)) return
-      if (this.waitTimeout) { // is already waiting
-        clearTimeout(this.waitTimeout)
-      }
-      this.waitTimeout = setTimeout(() => {
-        this.waitTimeout = null
-        if (!App.state.searchbox.search) {
-          setUpAndRunningSign()
-          monitorsFolding.fold()
+    this.listenToAndRun(App.state.dashboard.groupedResources,'add sync reset remove',() => {
+      var monitorOptionsElem = this.queryByHook('monitor-options')
+      if (App.state.dashboard.groupedResources.length>0) {
+        if (monitorOptionsElem)
+          monitorOptionsElem.style.visibility = ''
+        if(this.monitorsFolding){
+          this.monitorsFolding.unfold()
+          this.monitorsFolding.showButton()
         }
-      }, 10000) // wait for 10 secs and then fold/unfold again
-    }
-
-    this.listenTo(App,'document:input document:click',() => {
-      logger.log('user interacting...')
-      waitUntilStopInteraction()
+        if(this.onBoarding)
+          this.onBoarding.onboardingStart()
+      } else {
+        if (monitorOptionsElem)
+          monitorOptionsElem.style.visibility = 'hidden'
+        if(this.monitorsFolding) {
+          this.monitorsFolding.hideButton()
+          this.hideUpAndRunning()
+        }
+      }
     })
-    // events that can change monitors states
-    // check state every time and reorganize view
-    //this.listenTo(this.groupedResources,'reset change', () => { setUpAndRunningSign() })
 
-    this.listenToAndRun(this.monitors,'sync change:state',() => {
-      setUpAndRunningSign()
+    this.listenToAndRun(App.state.tasks,'add sync reset remove',() => {
+      if(this.tasksFolding) {
+        if (App.state.tasks.length>0) {
+          this.tasksFolding.showButton()
+        } else {
+          this.tasksFolding.hideButton()
+        }
+      }
     })
-    //setUpAndRunningSign()
+    // Will re-check up and running when sync or state change
+    this.listenToAndRun(this.monitors,'sync change:state', this.setUpAndRunningSign)
   },
   /**
    *
@@ -367,7 +377,7 @@ module.exports = View.extend({
     const rowtooltips = this.query('[data-hook=tasks-container] .tooltiped')
     $(rowtooltips).tooltip()
 
-    const tasksFolding = this.renderSubview(
+    this.tasksFolding = this.renderSubview(
       new ItemsFolding({}),
       this.queryByHook('tasks-fold-container')
     )
@@ -375,7 +385,7 @@ module.exports = View.extend({
     taskRows.views.forEach(row => {
       let task = row.model
       if (!task.canExecute) {
-        tasksFolding.append(row.el)
+        this.tasksFolding.append(row.el)
       }
     })
 
