@@ -109,6 +109,7 @@ module.exports = View.extend({
   hideUpAndRunning () {
     this.$upandrunning.slideUp()
     this.$monitorsPanel.slideDown()
+    this.upandrunningSign = false
   },
   setSliderSizes () {
     slideCount = $('#slider ul li.tab-content').length;
