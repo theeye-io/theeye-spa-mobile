@@ -312,7 +312,7 @@ module.exports = View.extend({
         this.monitorsFolding.unfold()
       } else {
         this.monitorsFolding.fold()
-        this.setUpAndRunningSign()
+        // this.setUpAndRunningSign()
       }
     })
 
@@ -347,7 +347,7 @@ module.exports = View.extend({
       }
     })
     // Will re-check up and running when sync or state change
-    this.listenToAndRun(this.monitors,'sync change:state', this.setUpAndRunningSign)
+    this.listenToOnce(this.monitors,'sync', this.setUpAndRunningSign)
   },
   /**
    *
