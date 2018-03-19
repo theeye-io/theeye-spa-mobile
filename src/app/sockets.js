@@ -6,6 +6,7 @@ import SocketsWrapper from 'lib/sockets'
 import ResourceActions from 'actions/resource'
 import JobActions from 'actions/job'
 import NotificationActions from 'actions/notifications'
+import DashboardActions from 'actions/dashboard'
 import SessionActions from 'actions/session'
 import config from 'config'
 const logger = require('lib/logger')('app:sockets')
@@ -38,7 +39,7 @@ const defaultTopics = [
   'monitor-state',
   'job-crud',
   // 'host-integrations-crud', // host integrations changes
-  // 'host-registered'
+  'host-registered'
 ]
 
 module.exports = () => {
@@ -116,6 +117,9 @@ const createWrapper = ({ io }) => {
         ) {
           JobActions.update(event.model)
         }
+      },
+      'host-registered': event => {
+        DashboardActions.loadNewRegisteredHostAgent(event.model)
       }
     }
   })
