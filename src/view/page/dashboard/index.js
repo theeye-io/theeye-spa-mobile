@@ -136,15 +136,7 @@ module.exports = View.extend({
 
     this.listenToAndRun(App.state.dashboard,'change:resourcesDataSynced',() => {
       if (App.state.dashboard.resourcesDataSynced===true) {
-        if (this.groupedResources.length>0) {
-          this.renderMonitorsPanel()
-        } else {
-          this.registerSubview(
-            new MonitoringOboardingPanel({
-              el: this.queryByHook('monitors-container')
-            }).render()
-          )
-        }
+        this.renderMonitorsPanel()
         this.stopListening(App.state.dashboard,'change:resourcesDataSynced')
         this.setSliderSizes()
       }
@@ -153,15 +145,7 @@ module.exports = View.extend({
     if (this.renderTasks === true) {
       this.listenToAndRun(App.state.dashboard,'change:tasksDataSynced',() => {
         if (App.state.dashboard.tasksDataSynced===true) {
-          if (this.tasks.length>0) {
-            this.renderTasksPanel()
-          } else {
-            this.registerSubview(
-              new TasksOboardingPanel({
-                el: this.queryByHook('tasks-container')
-              }).render()
-            )
-          }
+          this.renderTasksPanel()
           this.stopListening(App.state.dashboard,'change:tasksDataSynced')
           this.setSliderSizes()
         }
@@ -228,6 +212,21 @@ module.exports = View.extend({
     if (this.waitTimeout) return // the user is interacting
     if (!(this.monitors.length > 0)) return
 
+    const failing = this.getFailingMonitors()
+
+    if (failing.length > 0) {
+      this.$upandrunning.slideUp()
+      this.$monitorsPanel.slideDown()
+    } else {
+      this.$upandrunning.slideDown()
+      this.$monitorsPanel.slideUp()
+    }
+  },
+  sortGroupedResouces: function() {
+    if (!(this.groupedResources.length > 0)) return
+
+    const failing = this.getFailingMonitors()
+
     /** move ok monitors to fold container **/
     const foldMonitors = () => {
       this.monitorRows.views.forEach(view => {
@@ -247,23 +246,20 @@ module.exports = View.extend({
       })
     }
 
-    const failing = this.monitors.filter(monitor => {
+    if (failing.length > 0) {
+      foldMonitors()
+      this.monitorsFolding.showButton()
+    } else {
+      unfoldMonitors()
+      this.monitorsFolding.hideButton()
+    }
+  },
+  getFailingMonitors() {
+    return this.monitors.filter(monitor => {
       let group = this.groupedResources.find(monitor)
       if (!group) return false
       return monitor.hasError()
     })
-
-    if (failing.length > 0) {
-      foldMonitors()
-      this.$upandrunning.slideUp()
-      this.$monitorsPanel.slideDown()
-      this.monitorsFolding.showButton()
-    } else {
-      unfoldMonitors()
-      this.$upandrunning.slideDown()
-      this.$monitorsPanel.slideUp()
-      this.monitorsFolding.hideButton()
-    }
   },
   /**
    *
@@ -282,7 +278,10 @@ module.exports = View.extend({
     this.monitorRows = this.renderCollection(
       this.groupedResources,
       MonitorRowView,
-      this.queryByHook('monitors-container')
+      this.queryByHook('monitors-container'),
+      {
+        emptyView:MonitoringOboardingPanel
+      }
     )
 
     const rowtooltips = this.query('[data-hook=monitors-container] .tooltiped')
@@ -316,28 +315,24 @@ module.exports = View.extend({
       }
     })
 
-    this.listenToAndRun(App.state.dashboard.groupedResources,'add sync reset remove',() => {
+    this.listenToAndRun(App.state.dashboard.groupedResources,'add change sync reset',() => {
       var monitorOptionsElem = this.queryByHook('monitor-options')
-      if (App.state.dashboard.groupedResources.length>0) {
+      if (App.state.dashboard.groupedResources.length > 0) {
         if (monitorOptionsElem)
           monitorOptionsElem.style.visibility = ''
-        if(this.monitorsFolding){
-          this.monitorsFolding.unfold()
+        if(this.monitorsFolding) {
           this.monitorsFolding.showButton()
         }
-        if(this.onBoarding)
-          this.onBoarding.onboardingStart()
       } else {
         if (monitorOptionsElem)
           monitorOptionsElem.style.visibility = 'hidden'
-        if(this.monitorsFolding) {
+        if(this.monitorsFolding)
           this.monitorsFolding.hideButton()
-          this.hideUpAndRunning()
-        }
       }
+      this.sortGroupedResouces()
     })
 
-    this.listenToAndRun(App.state.tasks,'add sync reset remove',() => {
+    this.listenToAndRun(App.state.tasks,'add sync reset',() => {
       if(this.tasksFolding) {
         if (App.state.tasks.length>0) {
           this.tasksFolding.showButton()
@@ -346,7 +341,7 @@ module.exports = View.extend({
         }
       }
     })
-    // Will re-check up and running when sync or state change
+
     this.listenToOnce(this.monitors,'sync', this.setUpAndRunningSign)
   },
   /**
@@ -358,7 +353,10 @@ module.exports = View.extend({
     const taskRows = this.renderCollection(
       this.tasks,
       TaskRowView,
-      this.queryByHook('tasks-container')
+      this.queryByHook('tasks-container'),
+      {
+        emptyView:TasksOboardingPanel
+      }
     )
 
     const runAllButton = new RunAllTasksButton({
