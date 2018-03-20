@@ -31,7 +31,14 @@ const meaning = {
   updates_started: 'came back to life',
   failure: 'is not working properly',
   canceled: 'has been canceled',
-  recovered: 'came back to normal'
+  recovered: 'came back to normal',
+  success: 'finished running',
+  'file:restored': 'file restored',
+  'host:stats:normal': 'Host stats back to normal',
+  'host:stats:cpu:high': 'Host CPU high',
+  'host:stats:mem:high': 'Host memory high',
+  'host:stats:disk:high': 'Host disk high',
+  'host:stats:cache:high': 'Host cache high',
 }
 
 const icons = {
@@ -46,7 +53,13 @@ const icons = {
   failure: 'fa fa-exclamation-circle',
   recovered: 'fa fa-check-circle',
   updates_started: 'fa fa-check-circle',
-  updates_stopped: 'fa fa-times-circle'
+  updates_stopped: 'fa fa-times-circle',
+  'file:restored': 'fa fa-refresh',
+  'host:stats:normal': 'fa fa-check-circle',
+  'host:stats:cpu:high': 'fa fa-bar-chart',
+  'host:stats:mem:high': 'fa fa-bar-chart',
+  'host:stats:disk:high': 'fa fa-bar-chart',
+  'host:stats:cache:high': 'fa fa-bar-chart'
 }
 
 const iconByType = {

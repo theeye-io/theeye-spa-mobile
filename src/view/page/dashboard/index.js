@@ -110,6 +110,7 @@ module.exports = View.extend({
     this.$upandrunning.slideUp()
     this.$monitorsPanel.slideDown()
     this.upandrunningSign = false
+    this.stopListening(this.monitors, 'sync change:state', this.setUpAndRunningSign)
   },
   setSliderSizes () {
     slideCount = $('#slider ul li.tab-content').length;
@@ -208,9 +209,17 @@ module.exports = View.extend({
     });
   },
   setUpAndRunningSign: function () {
-    if (!this.upandrunningSign) return // upandrunning is disabled
-    if (this.waitTimeout) return // the user is interacting
-    if (!(this.monitors.length > 0)) return
+    if (!this.upandrunningSign) {
+      // upandrunning is disabled
+      return
+    }
+    if (this.waitTimeout) {
+      // the user is interacting
+      return
+    }
+    if (!(this.monitors.length > 0)) {
+      return
+    }
 
     const failing = this.getFailingMonitors()
 
@@ -342,7 +351,7 @@ module.exports = View.extend({
       }
     })
 
-    this.listenToOnce(this.monitors,'sync', this.setUpAndRunningSign)
+    this.listenTo(this.monitors, 'sync change:state', this.setUpAndRunningSign)
   },
   /**
    *
