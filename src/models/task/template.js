@@ -55,6 +55,18 @@ const Schema = AppModel.extend({
     }
 
     return serial
+  },
+  hostResource () {
+    let col = App.state.resources
+    let host = col.models.find(resource => {
+      return resource.host_id == this.host_id && resource.type == 'host'
+    })
+    return host
+  },
+  hostIsReporting () {
+    let host = this.hostResource()
+    if (!host) return true // I cannot determine, so go ahead
+    return host.state === 'normal'
   }
 })
 

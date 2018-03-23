@@ -77,7 +77,7 @@ module.exports = View.extend({
     event.preventDefault()
 
     if (this.model.lastjob.inProgress) {
-      const message = `Cancel task <b>${this.model.name}</b> execution?
+      const message = `Cancel <b>${this.model.name}</b> the execution of this task?
         <a target="_blank" href="https://github.com/theeye-io/theeye-docs/blob/master/tasks/cancellation">Why this happens?</a>`
 
       bootbox.confirm({
@@ -92,37 +92,53 @@ module.exports = View.extend({
     } else {
       if (!this.model.canExecute) return
 
-      this.askDinamicArguments(taskArgs => {
-        let message
-        if (taskArgs.length>0) {
-          message = runTaskWithArgsMessage({
-            name: this.model.name,
-            args: taskArgs
-          })
-        } else {
-          message = `
-            <h2>You are about to run the task <b>${this.model.name}</b></h2>
-            <h2>Continue?</h2>
-            `
-        }
-
+      let reporting = this.model.hostIsReporting()
+      if (reporting === null) return  /// cannot find the resource for this task
+      if (reporting === false) {
         bootbox.confirm({
-          message: message,
+          message: `
+            <h2>At this moment the host that runs this task is not reporting.</h2>
+            <h2>Would you like to queue this task for running when the host is restored?</h2>
+          `,
           backdrop: true,
           callback: (confirmed) => {
-            if (confirmed) {
-              JobActions.create(this.model, taskArgs)
-
-              AnalyticsActions.trackEvent('Task', 'Execution', this.model.id)
-              AnalyticsActions.trackMixpanelEvent('Task execution', {task: this.model.id})
-              AnalyticsActions.trackMixpanelIncrement('Task execution',1)
-            }
+            if (confirmed) this._confirmExecution()
           }
         })
-      })
+      } else this._confirmExecution()
     }
 
     return false
+  },
+  _confirmExecution () {
+    this.askDinamicArguments(taskArgs => {
+      let message
+      if (taskArgs.length>0) {
+        message = runTaskWithArgsMessage({
+          name: this.model.name,
+          args: taskArgs
+        })
+      } else {
+        message = `
+          <h2>You are about to run the task <b>${this.model.name}</b></h2>
+          <h2>Continue?</h2>
+          `
+      }
+
+      bootbox.confirm({
+        message: message,
+        backdrop: true,
+        callback: (confirmed) => {
+          if (confirmed) {
+            JobActions.create(this.model, taskArgs)
+
+            AnalyticsActions.trackEvent('Task', 'Execution', this.model.id)
+            AnalyticsActions.trackMixpanelEvent('Task execution', {task: this.model.id})
+            AnalyticsActions.trackMixpanelIncrement('Task execution',1)
+          }
+        }
+      })
+    })
   },
   initialize () {
     View.prototype.initialize.apply(this,arguments)
