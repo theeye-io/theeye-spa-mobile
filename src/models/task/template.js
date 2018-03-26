@@ -1,3 +1,4 @@
+import App from 'ampersand-app'
 import AppModel from 'lib/app-model'
 import AppCollection from 'lib/app-collection'
 import AmpersandCollection from 'ampersand-collection'
