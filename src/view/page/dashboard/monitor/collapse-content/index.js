@@ -399,15 +399,15 @@ const HostCollapsedContent =  GenericCollapsedContent.extend({
       this.dstat_disk = disksValue
     }
 
-    if (data.cache) {
+    if (data.cache || data.cache === 0) {
       this.dstat_cache = String(Math.floor(data.cache)) + ' / ' + String(config.limit.cache)
     }
 
-    if (data.cpu) {
+    if (data.cpu || data.cpu === 0) {
       this.dstat_cpu = String(Math.floor(data.cpu)) + ' / ' + String(config.limit.cpu)
     }
 
-    if (data.mem) {
+    if (data.mem || data.mem === 0) {
       this.dstat_mem = String(Math.floor(data.mem)) + ' / ' + String(config.limit.mem)
     }
   }
