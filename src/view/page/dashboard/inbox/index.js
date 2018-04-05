@@ -24,30 +24,37 @@ const DeleteNotificationsView = View.extend({
   `
 })
 
+const resourceType = {
+  Resource: 'Resource',
+  ScriptJob: 'Task'
+}
+
 const meaning = {
-  ready: 'queued, waiting for result',
-  finished: 'finished running',
-  updates_stopped: 'has gone silent',
-  updates_started: 'came back to life',
-  failure: 'is not working properly',
-  canceled: 'has been canceled',
-  recovered: 'came back to normal',
-  success: 'finished running',
-  'file:restored': 'file restored',
+  'lifecycle:ready': 'Queued',
+  'lifecycle:assigned': 'Task is being executed',
+  'lifecycle:finished': 'Finished running',
+  'lifecycle:canceled': 'Has been canceled',
+  'lifecycle:terminated': 'Terminated abnormally',
+  'lifecycle:completed': 'Completed',
+  updates_stopped: 'Has gone silent',
+  updates_started: 'Came back to life',
+  failure: 'Requires your attention',
+  recovered: 'Came back to normal',
+  'file:restored': 'File restored',
   'host:stats:normal': 'Host stats back to normal',
   'host:stats:cpu:high': 'Host CPU high',
   'host:stats:mem:high': 'Host memory high',
   'host:stats:disk:high': 'Host disk high',
-  'host:stats:cache:high': 'Host cache high',
+  'host:stats:cache:high': 'Host cache high'
 }
 
-const icons = {
-  ready: 'fa fa-clock-o',
-  assigned: 'fa fa-clock-o',
-  finished: 'fa fa-check-circle',
-  completed: 'fa fa-check-circle',
-  terminated: 'fa fa-question-circle',
-  canceled: 'fa fa-minus-circle',
+const eventIcons = {
+  'lifecycle:ready': 'fa fa-clock-o',
+  'lifecycle:assigned': 'fa fa-clock-o',
+  'lifecycle:finished': 'fa fa-check-circle',
+  'lifecycle:canceled': 'fa fa-minus-circle',
+  'lifecycle:terminated': 'fa fa-question-circle',
+  'lifecycle:completed': 'fa fa-check-circle',
   success: 'fa fa-check-circle',
   normal: 'fa fa-check-circle',
   failure: 'fa fa-exclamation-circle',
@@ -80,6 +87,7 @@ const InboxRow = View.extend({
   props: {
     colorClass: 'string',
     modelType: 'string',
+    modelSubType: 'string',
     modelName: 'string',
     message: 'string',
     time: 'string',
@@ -92,6 +100,7 @@ const InboxRow = View.extend({
     message: { hook: 'message' },
     time: { hook: 'time' },
     modelType: { hook: 'modelType' },
+    modelSubType: { hook: 'modelSubType' },
     modelName: { hook: 'modelName' },
     colorClass: { type: 'class' },
     icon: {
@@ -123,68 +132,87 @@ const InboxRow = View.extend({
     if (new Date().toDateString() === new Date(this.model.createdAt).toDateString()) {
       format = '[Today at] LT'
     }
-    const state = sanitizeState(this.model.data.model.state)
+
     const type = this.model.data.model._type
 
     this.time = moment(this.model.createdAt).format(format)
-    if(type === "AgentUpdateJob") {
-      this.modelName = 'Agent update'
-    } else {
-      this.modelName = this.model.data.model.name
-    }
+    this.modelName = this.model.data.model.name
+    this.modelType = resourceType[this.model.data.model_type]
+    this.modelSubType = ''
     this.icon = ''
 
-    this.colorClass = stateToColorClass(state)
-    this.modelType = ''
-    if (type === 'Resource') { // it is resources notification
-      let monitor_event = this.model.data.monitor_event
-      this.modelType = this.model.data.model.type
-      this.message = meaning[monitor_event] || `${monitor_event}:${state}`
-      this.icon = icons[monitor_event]
-      this.hostName = this.model.data.hostname
+    if (type === 'Resource') {
+      this.resourceInboxItem()
+    } else if (/Job/.test(type)===true) {
+      this.jobInboxItem()
+    } else {
+      this.defaultInboxItem()
+    }
+  },
+  resourceInboxItem () {
+    let state = sanitizeState(this.model.data.model.state)
+    let monitor_event = this.model.data.monitor_event
+    let custom_event = this.model.data.custom_event
 
-      // monitor execution always failure, unless used a recognized state
+    let eventIndex = custom_event || monitor_event
+
+    this.modelSubType = this.model.data.model.type
+    this.message = meaning[eventIndex] || meaning[monitor_event]
+    this.icon = eventIcons[eventIndex] || eventIcons[monitor_event]
+
+    // monitor execution always failure, unless used a recognized state
+    if (state!=='normal') {
+      this.colorClass = severityToColorClass(this.model.data.model.failure_severity)
       if (!this.colorClass) {
         this.colorClass = StateConstants.FAILURE
       }
-
-    } else if (/Job/.test(type)===true) { // it is a task execution
-      let lifecycle = this.model.data.model.lifecycle
-      if(this.model.data.model.task)
-        this.modelType = this.model.data.model.task.type
-      this.message = meaning[lifecycle] || `${lifecycle}:${state}`
-      this.icon = icons[lifecycle]
-      this.hostName = this.model.data.model.host.hostname
-
-      if (lifecycle===LifecycleConstants.FINISHED) {
-        if (state===StateConstants.FAILURE) {
-          this.icon = icons[state]
-        } else {
-          this.icon = icons[StateConstants.SUCCESS]
-        }
-      } else {
-        this.icon = icons[lifecycle]
-      }
-
-      // task execution always success, unless declared a failure
-      if (!this.colorClass) {
-        this.colorClass = StateConstants.SUCCESS
-      }
-
     } else {
-      console.warning(this.model)
-      this.icon = icons[state]
-      this.message = `${state}`
+      this.colorClass = StateConstants.SUCCESS
     }
+  },
+  jobInboxItem () {
+    // it is a task execution
+    let state = sanitizeState(this.model.data.model.state)
+    let lifecycle = this.model.data.model.lifecycle
+    if(this.model.data.model.task)
+      this.modelSubType = this.model.data.model.task.type
+    this.message = meaning['lifecycle:' + lifecycle] || `${lifecycle}:${state}`
+
+    if (this.modelName === 'agent:config:update') {
+      let hostname = this.model.data.model.host.hostname
+      this.modelName = `${hostname} configuration update`
+    }
+
+    if (lifecycle === LifecycleConstants.FINISHED) {
+      if (state === StateConstants.FAILURE) {
+        this.icon = eventIcons[state]
+      } else {
+        this.icon = eventIcons[StateConstants.SUCCESS]
+      }
+    } else {
+      this.icon = eventIcons['lifecycle:' + lifecycle]
+    }
+
+    // task execution always success, unless declared a failure
+    this.colorClass = stateToColorClass(state)
+    if (!this.colorClass) {
+      this.colorClass = StateConstants.SUCCESS
+    }
+  },
+  defaultInboxItem () {
+    let state = sanitizeState(this.model.data.model.state)
+    //console.warning(this.model)
+    this.icon = eventIcons[state]
+    this.message = `${state}`
   },
   render () {
     this.renderWithTemplate(this)
-    this.setModelIcon(this.modelType)
+    this.setModelIcon(this.modelSubType)
   },
-  setModelIcon(modelType) {
+  setModelIcon(modelSubType) {
     var iconClass = 'circle fa '
-    if(modelType) {
-      iconClass += ` ${iconByType[modelType]} ${modelType}-color`
+    if(modelSubType) {
+      iconClass += ` ${iconByType[modelSubType]} ${modelSubType}-color`
     } else {
       iconClass += ` ${iconByType['host']} host-color`
     }
@@ -197,6 +225,19 @@ const InboxRow = View.extend({
 const sanitizeState = (state) => state.toLowerCase().replace(/ /g,"_")
 
 const stateToColorClass = (state) => (StateConstants.STATES.indexOf(state)!==-1) ? state : null
+
+const severityToColorClass = sev => `severity-${sev.toLowerCase()}`
+
+const isDescendant = (parent, child) => {
+  let node = child.parentNode
+  while (node != null) {
+    if (node === parent) {
+      return true
+    }
+    node = node.parentNode
+  }
+  return false
+}
 
 module.exports = View.extend({
   template: `
