@@ -59,7 +59,8 @@ module.exports = View.extend({
               return {
                 order: this.model.taskArguments.get(label,'label').order,
                 label: label,
-                value: args[label]
+                value: args[label],
+                type: this.model.taskArguments.get(label,'label').type
               }
             })
           )
@@ -111,9 +112,17 @@ module.exports = View.extend({
     return false
   },
   _confirmExecution () {
+    JobActions.initJobExecution()
     this.askDinamicArguments(taskArgs => {
       let message
       if (taskArgs.length>0) {
+        taskArgs.map((arg) => {
+          if(arg.type == 'file')
+            arg.renderValue = arg.value.name
+          else
+            arg.renderValue = arg.value
+          return arg
+        })
         message = runTaskWithArgsMessage({
           name: this.model.name,
           args: taskArgs

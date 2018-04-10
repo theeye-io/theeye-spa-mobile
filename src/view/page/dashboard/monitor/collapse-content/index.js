@@ -15,6 +15,7 @@ const GenericCollapsedContent = View.extend({
     'monitor.host.hostname': { hook: 'hostname' },
     interval: { hook: 'interval' },
     description: { hook: 'description' },
+    'monitor.name': { hook: 'name' },
   },
   derived: {
     interval: {
@@ -45,6 +46,7 @@ const bindings = GenericCollapsedContent.prototype.bindings
 const ScraperCollapsedContent = GenericCollapsedContent.extend({
   template: `
     <div class="task-container">
+      <p><i data-hook="name"></i></p>
       <p>This monitor is executed on <i data-hook="hostname"></i> every <i data-hook="interval"></i></p>
       <i data-hook="description"></i>
       <h4>Request details</h4>
@@ -99,13 +101,14 @@ const ScraperCollapsedContent = GenericCollapsedContent.extend({
         const time = this.monitor.config.timeout
         return (time / 1000) + ' s'
       }
-    },
-  },
+    }
+  }
 })
 
 const ProcessCollapsedContent = GenericCollapsedContent.extend({
   template: `
     <div class="task-container">
+      <p><i data-hook="name"></i></p>
       <p>This monitor is executed on <i data-hook="hostname"></i> every <i data-hook="interval"></i></p>
       <i data-hook="description"></i>
       <h4>Process details</h4>
@@ -153,6 +156,7 @@ const ProcessCollapsedContent = GenericCollapsedContent.extend({
 const ScriptCollapsedContent = GenericCollapsedContent.extend({
   template: `
     <div class="task-container">
+      <p><i data-hook="name"></i></p>
       <p>This monitor is executed on <i data-hook="hostname"></i> every <i data-hook="interval"></i></p>
       <i data-hook="description"></i>
       <h4>Script details</h4>
@@ -241,6 +245,7 @@ const ScriptCollapsedContent = GenericCollapsedContent.extend({
 const FileCollapsedContent =  GenericCollapsedContent.extend({
   template: `
     <div class="task-container">
+      <p><i data-hook="name"></i></p>
       <p>This monitor is executed on <i data-hook="hostname"></i> every <i data-hook="interval"></i></p>
       <i data-hook="description"></i>
       <h4>File details</h4>

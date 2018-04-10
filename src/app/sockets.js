@@ -115,7 +115,7 @@ const createWrapper = ({ io }) => {
           event.operation === OperationsConstants.CREATE ||
           event.operation === OperationsConstants.REPLACE
         ) {
-          JobActions.update(event.model)
+          JobActions.receiveUpdate(event.model)
         }
       },
       'host-registered': event => {

@@ -65,7 +65,8 @@ const AppState = State.extend({
     login: ['state',false,() => { return new LoginState() }],
     notify: ['state',false,() => { return new NotifyState() }],
     register: ['state',false,() => { return new RegisterState() }],
-    searchbox: ['state',false,() => { return new SearchBoxState() }]
+    searchbox: ['state',false,() => { return new SearchBoxState() }],
+    userInteractionInProgress: ['boolean', false, false]
   },
   init () {
     _initCollections.call(this)

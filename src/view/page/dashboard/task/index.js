@@ -39,9 +39,8 @@ const TaskButtonsView = View.extend({
         if (lifecycle === LIFECYCLE.READY) return 'fa fa-spin fa-refresh'
         if (lifecycle === LIFECYCLE.ASSIGNED) return 'fa fa-spin fa-refresh remark-success'
         if (isCompleted(lifecycle)) {
-          if (state === 'success') return 'fa fa-check remark-success'
           if (state === 'failure') return 'fa fa-exclamation remark-alert'
-          else return 'fa fa-question remark-warning'
+          return 'fa fa-check remark-success'
         }
         if (lifecycle === LIFECYCLE.CANCELED) {
           return 'fa fa-ban remark-alert'
@@ -109,6 +108,7 @@ const TaskButtonsView = View.extend({
 const ScraperCollapsedContent = View.extend({
   template: `
     <div class="task-container">
+      <h4><i data-hook="name"></i></h4>
       <h4>This task is assigned to '<i data-hook="hostname"></i>'</h4>
       <p class="text-block" data-hook="description">no description</p>
       <h4>Request details</h4>
@@ -158,12 +158,14 @@ const ScraperCollapsedContent = View.extend({
     'model.status_code': { hook: 'status_code' },
     timeout: { hook: 'timeout' },
     description: { hook: 'description' },
+    'model.name': { hook: 'name'}
   }
 })
 
 const ScriptCollapsedContent = View.extend({
   template: `
     <div class="task-container">
+      <h4><i data-hook="name"></i></h4>
       <h4>This task is assigned to '<i data-hook="hostname"></i>'</h4>
       <p class="text-block" data-hook="description">no description</p>
       <h4>Script details</h4>
@@ -229,7 +231,8 @@ const ScriptCollapsedContent = View.extend({
       type: 'booleanAttribute',
       name: 'disabled',
       invert: true
-    }
+    },
+    'model.name': { hook: 'name'}
   }
 })
 

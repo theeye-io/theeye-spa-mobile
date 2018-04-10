@@ -878,3 +878,16 @@ a.flowchart-icon {
   padding: 0 !important;
   margin: 0 !important;
 }
+
+.file-preview img {
+  max-height: 70px;
+}
+
+.form-group section.preview{
+  position: absolute;
+  z-index: 2000;
+  border: 1px solid #dcdcdc;
+  padding: 10px;
+  background: #fff;
+  right: 15px;
+}
