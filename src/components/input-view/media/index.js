@@ -70,7 +70,7 @@ module.exports = InputView.extend({
    * Load an image, validate size and dimension and generate preview
    *
    */
-  _loadImage (file) {
+  loadFile (file) {
     const self = this
 
     var type = 'file'
@@ -121,7 +121,7 @@ module.exports = InputView.extend({
     const input = this.input
     if (input.files && input.files[0]) {
       var file = input.files[0]
-      this._loadImage(file)
+      this.loadFile(file)
     }
   },
   remove () {

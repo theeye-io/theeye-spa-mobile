@@ -43,6 +43,7 @@
     "cordova-fabric-plugin": "^1.1.9",
     "cordova-ios": "^4.4.0",
     "cordova-plugin-buildinfo": "^2.0.1",
+    "cordova-plugin-camera": "^4.0.2",
     "cordova-plugin-device": "^1.1.7",
     "cordova-plugin-google-analytics": "^1.8.3",
     "cordova-plugin-googleplus": "^5.1.1",
@@ -145,7 +146,8 @@
       "phonegap-plugin-push": {
         "FCM_VERSION": "11.6.2"
       },
-      "cordova-plugin-mixpanel": {}
+      "cordova-plugin-mixpanel": {},
+      "cordova-plugin-camera": {}
     },
     "platforms": [
       "ios",

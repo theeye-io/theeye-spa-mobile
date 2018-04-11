@@ -99,4 +99,5 @@
         <variable name="FCM_VERSION" value="11.6.2" />
     </plugin>
     <plugin name="cordova-plugin-mixpanel" spec="^4.2.0" />
+    <plugin name="cordova-plugin-camera" spec="^4.0.2" />
 </widget>
