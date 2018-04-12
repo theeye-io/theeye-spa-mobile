@@ -1,9 +1,12 @@
 import View from 'ampersand-view'
 import acls from 'lib/acls'
 import lang2ext from 'lib/lang2ext'
-import ScriptActions from 'actions/script'
+// import FileActions from 'actions/file'
 import moment from 'moment'
 import assign from 'lodash/assign'
+
+import State from 'ampersand-state'
+import Collection from 'ampersand-collection'
 
 const GenericCollapsedContent = View.extend({
   template: `<div>no definition</div>`,
@@ -25,7 +28,7 @@ const GenericCollapsedContent = View.extend({
         const secs = dur.seconds()
         const mins = dur.minutes()
 
-        if (!mins&&!secs) return 'error'
+        if (!mins && !secs) return 'error'
 
         if (!mins) return `${secs} secs`
         if (!secs) return `${mins} mins`
@@ -37,8 +40,8 @@ const GenericCollapsedContent = View.extend({
       fn () {
         return this.monitor.description || 'no details'
       }
-    },
-  },
+    }
+  }
 })
 
 const bindings = GenericCollapsedContent.prototype.bindings
@@ -150,7 +153,7 @@ const ProcessCollapsedContent = GenericCollapsedContent.extend({
     if (!this.monitor.config || !this.monitor.config.ps) return
     this.is_regexp = this.monitor.config.ps.is_regexp
     this.pattern = this.monitor.config.ps.pattern
-  },
+  }
 })
 
 const ScriptCollapsedContent = GenericCollapsedContent.extend({
@@ -190,7 +193,7 @@ const ScriptCollapsedContent = GenericCollapsedContent.extend({
 
     if (!this.script_id) return
 
-    ScriptActions.edit(this.script_id)
+    // FileActions.edit(this.script_id)
 
     return false
   },
@@ -240,9 +243,15 @@ const ScriptCollapsedContent = GenericCollapsedContent.extend({
     this.filename = script.filename
     this.description = script.description
   },
+  // render () {
+  //   this.renderWithTemplate(this)
+  //   if (acls.hasAccessLevel('admin')) {
+  //     this.query('tbody tr').innerHTML += `<td><button title="edit the script" data-hook="edit_script" class="fa fa-edit btn btn-sm btn-primary"></button></td>`
+  //   }
+  // }
 })
 
-const FileCollapsedContent =  GenericCollapsedContent.extend({
+const FileCollapsedContent = GenericCollapsedContent.extend({
   template: `
     <div class="task-container">
       <p><i data-hook="name"></i></p>
@@ -276,28 +285,56 @@ const FileCollapsedContent =  GenericCollapsedContent.extend({
     basename: { hook: 'basename' },
     os_username: { hook: 'os_username' },
     os_groupname: { hook: 'os_groupname' },
+    file_id: {
+      hook: 'edit_file',
+      type: 'booleanAttribute',
+      name: 'disabled',
+      invert: true
+    }
   }),
   props: {
     dirname: 'string',
     basename: 'string',
     os_username: 'string',
     os_groupname: 'string',
+    file_id: 'string'
   },
   initialize () {
     GenericCollapsedContent.prototype.initialize.apply(this,arguments)
+
     this.listenToAndRun(this.monitor,'change:config',this.updateState)
   },
   updateState () {
     if (!this.monitor.config) return
     const config = this.monitor.config
+    this.file_id = config.file
     this.dirname = config.dirname
     this.basename = config.basename
-    this.os_username = config.os_username || 'none'
-    this.os_groupname = config.os_groupname || 'none'
+    this.os_username = config.os_username || 'not specified'
+    this.os_groupname = config.os_groupname || 'not specified'
   },
+  events: {
+    'click button[data-hook=edit_file]': 'onClickEditFile'
+  },
+  onClickEditFile (event) {
+    event.preventDefault()
+    event.stopPropagation()
+
+    if (!this.file_id) return
+
+    // FileActions.edit(this.file_id)
+
+    return false
+  },
+  // render () {
+  //   this.renderWithTemplate(this)
+  //   if ( acls.hasAccessLevel('admin') ) {
+  //     this.query('tbody tr').innerHTML += `<td><button title="edit the script" data-hook="edit_file" class="fa fa-edit btn btn-sm btn-primary"></button></td>`
+  //   }
+  // }
 })
 
-const HostCollapsedContent =  GenericCollapsedContent.extend({
+const HostCollapsedContent = GenericCollapsedContent.extend({
   template: `
     <div>
       <p>This is <i data-hook="hostname"></i> keep alive.</p>
@@ -418,6 +455,55 @@ const HostCollapsedContent =  GenericCollapsedContent.extend({
   }
 })
 
+const NestedMonitorRowView = View.extend({
+  template: `
+    <tr>
+      <td>
+        <h4><i data-hook="name"></i></h4>
+      </td>
+      <td>
+        <h4><i data-hook="state-icon"></i></h4>
+      </td>
+    </tr>
+  `,
+  bindings: {
+    'model.name': { hook:'name'},
+    'model.stateIcon': {
+      hook: 'state-icon',
+      type: 'attribute',
+      name: 'class'
+    },
+  }
+})
+
+const NestedCollapsedContent = GenericCollapsedContent.extend({
+  template: `
+    <div>
+      <p>Nested Monitors</p>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>State</th>
+          </tr>
+        </thead>
+        <tbody data-hook="nested-monitors-container">
+        </tbody>
+      </table>
+    </div>
+  `,
+  render () {
+    this.renderWithTemplate(this)
+
+    let nestedMonitors = this.monitor.config.monitors
+    this.renderCollection(
+      nestedMonitors,
+      NestedMonitorRowView,
+      this.queryByHook('nested-monitors-container')
+    )
+  }
+})
+
 exports.Factory = (input) => {
   const type = input.model.type
 
@@ -432,6 +518,7 @@ exports.Factory = (input) => {
   if (type==='process') return new ProcessCollapsedContent(options)
   if (type==='file') return new FileCollapsedContent(options)
   if (type==='host') return new HostCollapsedContent(options)
+  if (type==='nested') return new NestedCollapsedContent(options)
   return new GenericCollapsedContent(options)
 }
 

@@ -76,7 +76,8 @@ module.exports = View.extend({
     startingValue: 'any',
     options: 'any', // should be any object with array functions interface
     idAttribute: ['string',false,'id'],
-    textAttribute: ['string',false,'text'],
+    //textAttribute: ['string',false,'text'],
+    textAttribute: ['any',false,'text'],
     type: ['string', true, 'text'],
     unselectedText: ['string', true, ''],
     label: ['string', true, ''],
@@ -90,6 +91,7 @@ module.exports = View.extend({
     validityClassSelector: ['string', true, 'select'],
     tabindex: ['number', true, 0],
     allowCreateTags: ['boolean',false,false],
+    allowClear: ['boolean',false,false],
     createTags: ['any',false,() => {
       // default create tags function
       return function(params){
@@ -98,7 +100,8 @@ module.exports = View.extend({
           text: params.term
         }
       }
-    }]
+    }],
+    removeEmptyValues: ['boolean', false, false]
   },
   derived: {
     value: {
@@ -164,11 +167,25 @@ module.exports = View.extend({
     // trigger change on the select2 element for proper UI update
     this.$select.val(this.startingValue).trigger('change')
   },
-  render: function () {
+  render () {
     this.renderWithTemplate(this)
+
+    this.listenTo(this,'change:valid',this.reportToParent)
+    this.listenTo(this,'change:validityClass',this.validityClassChanged)
+
     this.$select = $(this.query('select')).first()
+    // start select2 component first
+    this.renderSelect2Component(this.startingValue)
+  },
+  renderSelect2Component (value=null) {
+    this.$select
+      .select2({})
+      .select2('destroy')
+      .empty()
+      .html('<option></option>')
 
     const select2setup = {
+      allowClear: this.allowClear,
       placeholder: this.unselectedText,
       tags: this.tags,
       tokenSeparator: this.tokenSeparator,
@@ -182,10 +199,17 @@ module.exports = View.extend({
       })()
     }
 
+    let getTextAttribute
+    if (typeof this.textAttribute == 'function') {
+      getTextAttribute = this.textAttribute
+    } else {
+      getTextAttribute = (attrs) => attrs[this.textAttribute]
+    }
+
     if (this.options) {
       select2setup.data = this.options.map(value => {
         return {
-          text: value[this.textAttribute],
+          text: getTextAttribute(value),
           id: value[this.idAttribute]
         }
       })
@@ -194,36 +218,35 @@ module.exports = View.extend({
     // select2 instantiate
     this.$select.select2(select2setup)
 
-    this.listenTo(this,'change:valid',this.reportToParent)
-    this.listenTo(this,'change:validityClass', this.validityClassChanged)
-
     // darn jquery event cannot be handled by
     // a method on this object
     this.$select.on('change',this.handleInputChanged)
 
-    this.setValue(this.startingValue)
+    // then set value
+    this.setValue(value||this.value)
   },
   setValue (items) {
     if (!items) {
       this.$select.val(null)
     } else {
-      var data 
+      var data
       if (items.isCollection) {
         // items are treated as models
         data = items.map(model => model.get(this.idAttribute))
       } else if (Array.isArray(items)) {
         // items are treated as plain objects
         if (items.length>0) {
-          data = items.map(item => {
-            if (!item) return ''
+          data = []
+          items.forEach(item => {
+            if (!item) { return }
+
             if (typeof item == 'string') {
-              return item
+              data.push(item)
+            } else if (item.hasOwnProperty(this.idAttribute)) {
+              data.push(item[this.idAttribute])
+            } else {
+              console.warn(`${item} object properties invalid`)
             }
-            if (item.hasOwnProperty(this.idAttribute)) {
-              return item[this.idAttribute]
-            }
-            console.warn(`${item} object properties invalid`)
-            return ''
           })
         } else data = []
       } else {
@@ -296,4 +319,24 @@ module.exports = View.extend({
     this.shouldValidate = true;
     this.runTests();
   },
+  selected () {
+    let value = this.value
+    let selected
+
+    if (this.multiple) {
+      selected = []
+      this.options.forEach(option => {
+        if (value.indexOf(option.id) !== -1) {
+          selected.push(option)
+        }
+      })
+    } else {
+      this.options.forEach(option => {
+        if (option.id == value) {
+          selected = option
+        }
+      })
+    }
+    return selected
+  }
 })

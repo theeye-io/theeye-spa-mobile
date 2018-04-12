@@ -107,7 +107,7 @@ const createWrapper = ({ io }) => {
         SessionActions.verifyCustomerChange(event.organization)
       },
       'monitor-state': (event) => {
-        ResourceActions.update(event.model)
+        ResourceActions.receiveUpdate(event.model.id, event.model)
       },
       'job-crud': (event) => {
         if (

@@ -1,5 +1,7 @@
-const Script = require('models/file/script').Model
 import App from 'ampersand-app'
+import MonitorConstants from 'constants/monitor'
+
+const Script = require('models/file/script').Model
 
 const populateScriptMonitor = (model) => {
   if (!model.monitor.config.script) {
@@ -16,8 +18,25 @@ const populateScriptMonitor = (model) => {
 
 const populateHostMonitor = (model) => {
   model.submonitors.models.forEach(function(submonitor){
-    if(submonitor.type == 'dstat') {
+    if (submonitor.type == 'dstat') {
       submonitor.fetch()
+    }
+  })
+}
+
+const populateNestedMonitor = (model) => {
+  let monitors = model.monitor.config.monitors // resource models in fact
+  monitors.forEach(mon => {
+    if (!mon.state || !mon.name) {
+      let monitor = App.state.resources.get( mon.id || mon._id )
+      if (!monitor) {
+        mon.fetch() // fetch from server
+      } else {
+        mon.set( monitor.serialize() )
+        mon.listenTo(monitor, 'change', () => {
+          mon.set(monitor.changedAttributes())
+        })
+      }
     }
   })
 }
@@ -27,7 +46,8 @@ const populateMethods = {
   scraper: null,
   file: null,
   process: null,
-  host: populateHostMonitor
+  host: populateHostMonitor,
+  nested: populateNestedMonitor
 }
 
 const callPopulateByType = (model) => {
@@ -38,13 +58,16 @@ const callPopulateByType = (model) => {
 
 module.exports = {
   populate (model) {
-    if (!model.monitor.host.id) {
-      let host = App.state.hosts.get(model.monitor.host_id)
-      if (!host) {
-        model.monitor.host.id = model.monitor.host_id
-        model.monitor.host.fetch()
-      } else {
-        model.monitor.host.set( host.serialize() )
+    // nested monitor doesn't has host
+    if (model.type !== MonitorConstants.TYPE_NESTED) {
+      if (!model.monitor.host.id) {
+        let host = App.state.hosts.get(model.monitor.host_id)
+        if (!host) {
+          model.monitor.host.id = model.monitor.host_id
+          model.monitor.host.fetch()
+        } else {
+          model.monitor.host.set( host.serialize() )
+        }
       }
     }
 
