@@ -1,9 +1,10 @@
+import App from 'ampersand-app'
 import acls from 'lib/acls'
 import View from 'ampersand-view'
 import JobOutput from './job-output'
 import SearchActions from 'actions/searchbox'
 import ResourceActions from 'actions/resource'
-import HostActions from 'actions/host'
+import MonitorConstants from 'constants/monitor'
 import AnalyticsActions from 'actions/analytics'
 
 const Edit = View.extend({
@@ -97,7 +98,9 @@ const HostStats = View.extend({
   onClickStats (event) {
     event.stopPropagation();
     event.preventDefault();
-    HostActions.stats(this.model.host_id)
+    // esto no es un action, deberia ser un navigate nomas
+    // HostActions.stats(this.model.host_id)
+    App.navigate('/admin/hoststats/' + this.model.host_id)
     return false;
   },
 })
@@ -114,21 +117,39 @@ module.exports = View.extend({
     const container = this.el
     let buttons
 
-    if (type == 'host') {
-      buttons = [ Search ]
+    switch (type) {
+      case MonitorConstants.TYPE_HOST:
+        buttons = [ Search ]
+        break;
+      case MonitorConstants.TYPE_NESTED:
+        buttons = [ Search ]
+        break;
+      case MonitorConstants.TYPE_SCRIPT:
+      case MonitorConstants.TYPE_SCRAPER:
+      case MonitorConstants.TYPE_PROCESS:
+      case MonitorConstants.TYPE_FILE:
+        buttons = [ LastEvent, Search ]
+        break;
+      default:
+        buttons = []
+        break;
     }
-    else if (['script','scraper','process','file'].indexOf(type) !== -1) {
-      buttons = [ LastEvent, Search ]
-    }
+
+    // if (Array.isArray(buttons)) {
+    //   if (acls.hasAccessLevel('admin')) {
+    //     buttons.splice(1, 0, Edit)
+    //   }
+    // }
 
     if (!buttons) return
 
     buttons.forEach(button => {
+      if (!button) return
       let view = new button({ model: this.model })
       view.render()
 
       let li = document.createElement('li')
-      li.appendChild( view.el )
+      li.appendChild(view.el)
       container.appendChild(li)
     })
   }

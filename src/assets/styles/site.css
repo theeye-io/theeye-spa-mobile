@@ -760,14 +760,35 @@ a.flowchart-icon {
   .admin-container .panel-heading .panel-item.icons .resource-search { margin-left:2px; }
 }
 
-.icon-check { color: green; }
+/* .icon-check { color: green; }
 .icon-info { color: #00dcff; }
 .icon-warn { color: #ffff00; }
 .icon-fatal, .icon-error { color: #ff3300; }
 
 .severity-low { color: #00dcff; }
 .severity-high { color: #ffff00; }
-.severity-critical { color: #ff3300; }
+.severity-critical { color: #ff3300; } */
+
+/*.icon-info { color: #00dcff; }*/
+/*.icon-warn { color: #ffff00; }*/
+/**
+ * this classes extends laurifonts
+ * [class^="icon-"], [class*=" icon-"]
+ *
+ */
+.icon-state-normal { color: #50d841; }
+.icon-state-failure { color: #ff4d4d; }
+.icon-state-updates_stopped { color: #ff4d4d; }
+.icon-severity-low { color: #ffe400; }
+.icon-severity-high { color: #ff8640; }
+.icon-severity-critical { color: #ff4d4d; }
+
+.icon-state-normal:before { content: "\e914"; }
+.icon-state-failure:before { content: "\e912"; }
+.icon-state-updates_stopped:before { content: "\e913"; }
+.icon-severity-low:before { content: "\e912"; }
+.icon-severity-high:before { content: "\e912"; }
+.icon-severity-critical:before { content: "\e912"; }
 
 .task-done { background-color: #4D719E; }
 
@@ -817,13 +838,14 @@ a.flowchart-icon {
 
 .admin-container.dashboard .panel-item.icons { }
 .admin-container.dashboard i.circle { border-radius: 50%; }
-.admin-container.dashboard i.host-color { background-color: #ea7526 }
-.admin-container.dashboard i.script-color { background-color: #cc006f }
+.admin-container.dashboard i.host-color { background-color: #00b4bc }
+.admin-container.dashboard i.script-color { background-color: #c6639b }
+.admin-container.dashboard i.nested-color { background-color: #06b777 }
 .admin-container.dashboard i.process-color { background-color: #1c73b9 }
-.admin-container.dashboard i.scraper-color { background-color: #ba45ff }
-.admin-container.dashboard i.file-color { background-color: #8da452 }
+.admin-container.dashboard i.scraper-color { background-color: #158df9 }
+.admin-container.dashboard i.file-color { background-color: #ff8a6d }
 .admin-container.dashboard i.dstat-color { background-color: #338412 }
-.admin-container.dashboard i.psaux-color { background-color: #5d5b65 }
+.admin-container.dashboard i.psaux-color { background-color: #c69c6d }
 
 .admin-container .table-header.admin div.icons { float: right; }
 .admin-container .table-header.admin div.panel-item.icons li {float:right; list-style:none; margin-left: 5px;}

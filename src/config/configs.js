@@ -4,10 +4,10 @@ import assign from 'lodash/assign'
 
 const defaultConfigs = {
   env: 'default',
-  app_url: 'http://localhost:6080',
-  socket_url: 'http://localhost:6080',
-  api_url: 'http://localhost:6080/apiv2',
-  supervisor_api_url: 'http://localhost:60080',
+  app_url: 'http://192.168.0.18:6080',
+  socket_url: 'http://192.168.0.18:6080',
+  api_url: 'http://192.168.0.18:6080/apiv2',
+  supervisor_api_url: 'http://192.168.0.18:60080',
   session: {
     refresh_interval: 1000 * 60 * 30
   },

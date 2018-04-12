@@ -76,7 +76,8 @@ const iconByType = {
   process: 'fa-cog',
   file: 'fa-file-o',
   dstat: 'fa-bar-chart',
-  psaux: 'fa-cogs'
+  psaux: 'fa-cogs',
+  nested: 'fa-bullseye'
 }
 
 const EmptyView = View.extend({

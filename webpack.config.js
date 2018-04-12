@@ -121,6 +121,17 @@ module.exports = {
           }
         ]
       },
+      {
+        test: /\.(eot|ttf|woff|woff2)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              outputPath: TARGET_PATH + '/fonts/'
+            }
+          }
+        ]
+      }
       //{
       //  test: /\.(svg|jpg|png|gif)$/,
       //  loader: 'url-loader?limit=4000&name=images/[name].[ext]'
