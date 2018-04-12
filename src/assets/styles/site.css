@@ -83,7 +83,7 @@ button {outline:none}
 .navbar-collapse {padding:0;}
 .navbar-inverse {background:#eee;border-bottom:3px solid #d88e47}
 .navbar-brand>img {height:32px;}
-.navbar-brand {height:auto;padding:0px 15px;border-right:1px solid #7c98ac;margin: 10px 0}
+.navbar-brand {position: absolute;left: 50%;margin-left: -46px !important;display: block;height:auto;padding:0px 15px;border-right:1px solid #7c98ac;margin: 10px 0}
 .login .navbar-brand {border:none}
 .navbar-right, .navbar-right li {margin:0;padding:0}
 .navbar-right li {list-style-type:none;border-bottom:1px solid #ccc}
@@ -797,7 +797,7 @@ a.flowchart-icon {
 .admin-container.dashboard { }
 .admin-container.dashboard .group select {border:none;background:#fff;padding:8px 40px 8px 12px;width:100%;color:#38688a;}
 .admin-container.dashboard .group .select2-container--default .select2-selection--multiple { border-radius: 0; background-color:#44567d; border:none; }
-.admin-container.dashboard .monitors.admin-panel h3 span.dropdown {float:right;cursor:pointer;color:#44567d;position:relative;}
+.admin-container.dashboard .monitors.admin-panel h3 span.dropdown {line-height: 40px;position: absolute;top: 0;right: 20px;font-size: 22px;display: unset;}
 .admin-container.dashboard .monitors.admin-panel h3 span.dropdown button {
   padding: 2px;
   padding-left: 4px;
