@@ -786,9 +786,6 @@ a.flowchart-icon {
 .icon-state-normal:before { content: "\e914"; }
 .icon-state-failure:before { content: "\e912"; }
 .icon-state-updates_stopped:before { content: "\e913"; }
-.icon-state-refresh:before { content: "\f021"; }
-.icon-state-cancelled:before { content: "\f056"; }
-.icon-state-stats:before { content: "\f080"; }
 .icon-severity-low:before { content: "\e912"; }
 .icon-severity-high:before { content: "\e912"; }
 .icon-severity-critical:before { content: "\e912"; }

@@ -51,22 +51,22 @@ const meaning = {
 const eventIcons = {
   'lifecycle:ready': 'fa fa-clock-o',
   'lifecycle:assigned': 'fa fa-clock-o',
-  'lifecycle:finished': 'icon-state-normal',
-  'lifecycle:canceled': 'icon-state-cancelled',
+  'lifecycle:finished': 'fa fa-check-circle',
+  'lifecycle:canceled': 'fa fa-minus-circle',
   'lifecycle:terminated': 'fa fa-question-circle',
-  'lifecycle:completed': 'icon-state-normal',
-  success: 'icon-state-normal',
-  normal: 'icon-state-normal',
-  failure: 'icon-state-failure',
-  recovered: 'icon-state-normal',
-  updates_started: 'icon-state-normal',
-  updates_stopped: 'icon-state-updates_stopped',
-  'file:restored': 'icon-state-refresh',
-  'host:stats:normal': 'icon-state-normal',
-  'host:stats:cpu:high': 'icon-state-stats',
-  'host:stats:mem:high': 'icon-state-stats',
-  'host:stats:disk:high': 'icon-state-stats',
-  'host:stats:cache:high': 'icon-state-stats'
+  'lifecycle:completed': 'fa fa-check-circle',
+  success: 'fa fa-check-circle',
+  normal: 'fa fa-check-circle',
+  failure: 'fa fa-exclamation-circle',
+  recovered: 'fa fa-check-circle',
+  updates_started: 'fa fa-check-circle',
+  updates_stopped: 'fa fa-times-circle',
+  'file:restored': 'fa fa-refresh',
+  'host:stats:normal': 'fa fa-check-circle',
+  'host:stats:cpu:high': 'fa fa-bar-chart',
+  'host:stats:mem:high': 'fa fa-bar-chart',
+  'host:stats:disk:high': 'fa fa-bar-chart',
+  'host:stats:cache:high': 'fa fa-bar-chart'
 }
 
 const iconByType = {
