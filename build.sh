@@ -12,3 +12,4 @@ maincss=$(find "www/bundles/styles" -name "main.*css")
 sed -i'bkp' -e "s/\/images/images/g" www/bundles/styles/"${maincss##*/}"
 
 sed -i'bkp' -e "s/bundles\/fonts/..\/fonts/g" www/bundles/styles/"${maincss##*/}"
+sed -i'bkp' -e "s/bundles\/fonts/..\/fonts/g" www/bundles/styles/main.css

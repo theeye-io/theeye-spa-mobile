@@ -141,7 +141,11 @@ const applyMonitorsGroupBy = (resources, groupBy) => {
   if (Object.keys(groupBy).length === 0) return null
 
   if (prop) {
-    return groupByProperty(resources, prop)
+    if (prop === 'name') {
+      return groupByName(resources)
+    } else {
+      return groupByProperty(resources, prop)
+    }
   } else if (tags) {
     return groupByTags(resources, tags)
   } else {
@@ -149,19 +153,7 @@ const applyMonitorsGroupBy = (resources, groupBy) => {
   }
 }
 
-/**
- * @summary Group resources using a single property of each model
- *
- * @param {GroupedResourceCollection} resources
- * @param {String} prop
- *
- * @return {GroupedResource[]}
- */
-const groupByProperty = (resources, prop) => {
-  if (!prop||typeof prop != 'string') {
-    return resources
-  }
-
+const populateGroups = (resources, prop) => {
   // build groups by distinct property values
   const groups = {}
 
@@ -188,7 +180,49 @@ const groupByProperty = (resources, prop) => {
     addToGroup(resource,name)
   })
 
+  return groups
+}
+
+/**
+ * @summary Group resources using a single property of each model
+ *
+ * @param {GroupedResourceCollection} resources
+ * @param {String} prop
+ *
+ * @return {GroupedResource[]}
+ */
+const groupByProperty = (resources, prop) => {
+  if (!prop||typeof prop != 'string') {
+    return resources
+  }
+
+  const groups = populateGroups(resources, prop)
+
   return Object.keys(groups).map(key => groups[key])
+}
+
+
+/**
+ * @summary Group resources using name property
+ *
+ * @param {GroupedResourceCollection} resources
+ * @param {String} prop
+ *
+ * @return {GroupedResource[]}
+ */
+const groupByName = (resources) => {
+
+  const groups = populateGroups(resources, 'name')
+
+  const results = Object.keys(groups).map(key => {
+    if (groups[key].submonitors.length === 1) {
+      return groups[key].submonitors.models[0]
+    } else {
+      return groups[key]
+    }
+  })
+
+  return results
 }
 
 /**
