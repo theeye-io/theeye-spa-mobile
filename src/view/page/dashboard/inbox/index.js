@@ -154,9 +154,11 @@ const InboxRow = View.extend({
     let state = sanitizeState(this.model.data.model.state)
     let monitor_event = this.model.data.monitor_event
     let custom_event = this.model.data.custom_event
+    let hostname = this.model.data.hostname
 
     let eventIndex = custom_event || monitor_event
 
+    this.hostName = hostname
     this.modelSubType = this.model.data.model.type
     this.message = meaning[eventIndex] || meaning[monitor_event]
     this.icon = eventIcons[eventIndex] || eventIcons[monitor_event]
@@ -175,12 +177,15 @@ const InboxRow = View.extend({
     // it is a task execution
     let state = sanitizeState(this.model.data.model.state)
     let lifecycle = this.model.data.model.lifecycle
+    let hostname = this.model.data.model.host.hostname
+
+    this.hostName = hostname
+
     if(this.model.data.model.task)
       this.modelSubType = this.model.data.model.task.type
     this.message = meaning['lifecycle:' + lifecycle] || `${lifecycle}:${state}`
 
     if (this.modelName === 'agent:config:update') {
-      let hostname = this.model.data.model.host.hostname
       this.modelName = `${hostname} configuration update`
     }
 
