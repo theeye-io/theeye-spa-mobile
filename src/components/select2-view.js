@@ -101,7 +101,8 @@ module.exports = View.extend({
         }
       }
     }],
-    removeEmptyValues: ['boolean', false, false]
+    removeEmptyValues: ['boolean', false, false],
+    ajaxUrl: ['string', false, '']
   },
   derived: {
     value: {
@@ -178,6 +179,8 @@ module.exports = View.extend({
     this.renderSelect2Component(this.startingValue)
   },
   renderSelect2Component (value=null) {
+    var self = this
+
     this.$select
       .select2({})
       .select2('destroy')
@@ -199,20 +202,30 @@ module.exports = View.extend({
       })()
     }
 
-    let getTextAttribute
-    if (typeof this.textAttribute == 'function') {
-      getTextAttribute = this.textAttribute
-    } else {
-      getTextAttribute = (attrs) => attrs[this.textAttribute]
-    }
-
     if (this.options) {
       select2setup.data = this.options.map(value => {
         return {
-          text: getTextAttribute(value),
+          text: this.getTextAttribute(value),
           id: value[this.idAttribute]
         }
       })
+    }
+
+    if (this.ajaxUrl !== '') {
+      select2setup.ajax = {
+        url: this.ajaxUrl,
+        dataType: 'json',
+        processResults: function (data) {
+          return {
+            results: data.map(value => {
+              return {
+                text: self.getTextAttribute(value),
+                id: value[self.idAttribute]
+              }
+            })
+          }
+        }
+      }
     }
 
     // select2 instantiate
@@ -224,6 +237,37 @@ module.exports = View.extend({
 
     // then set value
     this.setValue(value||this.value)
+
+    // the change:options will trigger only when the options object is completelly replaced
+    this.listenTo(this, 'change:options', this.updateOptions)
+  },
+  getTextAttribute (attrs) {
+    // use a custom user function to build the display text
+    if (typeof this.textAttribute == 'function') {
+      return this.textAttribute(attrs)
+    } else {
+      return attrs[this.textAttribute]
+    }
+  },
+  updateOptions () {
+    // get current config. options
+    var options = this.$select.data('select2').options.options;
+    // delete all items of the native select element
+    this.$select.html('')
+
+    this.$select.append( new Option(this.unselectedText, 0, false, false) )
+
+    var items = []
+    this.options.forEach(option => {
+      items.push({
+        text: this.getTextAttribute(option),
+        id: option[this.idAttribute]
+      })
+    })
+
+    options.data = items
+    this.$select.select2(options)
+    //this.$select.trigger('change')
   },
   setValue (items) {
     if (!items) {
@@ -279,7 +323,7 @@ module.exports = View.extend({
   getErrorMessage: function () {
     var message = ''
     if (this.required) {
-      if (!this.value) {
+      if (!this.value||Number(this.value)===0) {
         return this.requiredMessage
       }
       if (Array.isArray(this.value) && this.value.length === 0) {

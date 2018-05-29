@@ -4,10 +4,11 @@ import assign from 'lodash/assign'
 
 const defaultConfigs = {
   env: 'default',
-  app_url: 'http://localhost:6080',
-  socket_url: 'http://localhost:6080',
-  api_url: 'http://localhost:6080/apiv2',
-  supervisor_api_url: 'http://localhost:60080',
+  app_url: 'http://192.168.0.11:6080',
+  socket_url: 'http://192.168.0.11:6080',
+  api_url: 'http://192.168.0.11:6080/apiv2',
+  api_v3_url: 'http://192.168.0.11:6080/apiv3',
+  supervisor_api_url: 'http://192.168.0.11:60080',
   session: {
     refresh_interval: 1000 * 60 * 30
   },
@@ -36,6 +37,7 @@ const configs = {
     app_url: 'https://development.theeye.io',
     socket_url: 'https://development.theeye.io:443',
     api_url: 'https://development.theeye.io/apiv2',
+    api_v3_url: 'https://development.theeye.io/apiv3',
     supervisor_api_url: 'https://supervisor.development.theeye.io',
   }),
 
@@ -45,6 +47,7 @@ const configs = {
     app_url: 'https://staging.theeye.io',
     socket_url: 'https://staging.theeye.io',
     api_url: 'https://staging.theeye.io/apiv2',
+    api_v3_url: 'https://staging.theeye.io/apiv3',
     supervisor_api_url: 'https://supervisor.staging.theeye.io',
   }),
 
@@ -54,6 +57,7 @@ const configs = {
     app_url: 'https://app.theeye.io',
     socket_url: 'https://app.theeye.io:443',
     api_url: 'https://app.theeye.io/apiv2',
+    api_v3_url: 'https://app.theeye.io/apiv3',
     supervisor_api_url: 'https://supervisor.theeye.io',
   })
 }

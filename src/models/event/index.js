@@ -3,20 +3,21 @@
 import App from 'ampersand-app'
 import AppModel from 'lib/app-model'
 import AppCollection from 'lib/app-collection'
+import Collection from 'ampersand-collection'
 const config = require('config')
-import EVENT from 'constants/event'
+import EventConstants from 'constants/event'
 import EMITTER from 'constants/emitter'
 import MONITOR from 'constants/monitor'
 
 const displayType = (emitter) => {
   const type = emitter.type
-  if (type===MONITOR.TYPE_FILE) return 'File'
-  if (type===MONITOR.TYPE_PROCESS) return 'Process'
-  if (type===MONITOR.TYPE_SCRAPER) return 'WebCheck'
-  if (type===MONITOR.TYPE_HOST) return 'Host'
-  if (type===MONITOR.TYPE_SCRIPT) return 'Script'
-  if (type===MONITOR.TYPE_DSTAT) return 'Health'
-  if (type===MONITOR.TYPE_PSAUX) return 'Processes'
+  if (type===MONITOR.TYPE_FILE) return 'file'
+  if (type===MONITOR.TYPE_PROCESS) return 'process'
+  if (type===MONITOR.TYPE_SCRAPER) return 'webcheck'
+  if (type===MONITOR.TYPE_HOST) return 'host'
+  if (type===MONITOR.TYPE_SCRIPT) return 'script'
+  if (type===MONITOR.TYPE_DSTAT) return 'health'
+  if (type===MONITOR.TYPE_PSAUX) return 'processes'
 }
 
 class EmitterFactory {
@@ -35,8 +36,9 @@ class EmitterFactory {
       case 'ScraperTask': // scraper task
         EmitterClass = App.Models.Task.Scraper
         break
-      case 'ResourceMonitor': // monitors with config subdocument
-        EmitterClass = App.Models.Monitor
+      //case 'ResourceMonitor': // monitors with config subdocument
+      case 'Resource': // monitors with config subdocument
+        EmitterClass = App.Models.Resource
         break
       case 'Webhook': // Incomming Webhook
         EmitterClass = App.Models.Webhook
@@ -81,44 +83,54 @@ const Model = AppModel.extend({
         let eventName = this.name
         let emitterType = this.emitter._type
         let summary
+        let hostname
+        if (this.emitter.host) {
+          hostname = this.emitter.host.hostname.toLowerCase()
+        }
 
         switch (emitterType) {
           case EMITTER.WEBHOOK:
             summary = `Incomming Webhook ${this.emitter.name} trigger`
             break;
+
           case EMITTER.MONITOR:
             let typeStr = displayType(this.emitter)
-            if (eventName === EVENT.RECOVERED) {
+            if (eventName === EventConstants.RECOVERED) {
               if (this.emitter.type===MONITOR.TYPE_FILE) {
-                summary = `${typeStr} monitor ${this.emitter.name} created`
+                summary = `Monitor ${typeStr}, ${this.emitter.name}, ${hostname} created`
               } else {
-                summary = `${typeStr} monitor ${this.emitter.name} recovered`
+                summary = `Monitor ${typeStr}, ${this.emitter.name}, ${hostname} recovered`
               }
             }
-            else if (eventName === EVENT.FAILURE) {
-              summary = `${typeStr} monitor ${this.emitter.name} failure`
+            else if (eventName === EventConstants.FAILURE) {
+              summary = `Monitor ${typeStr}, ${this.emitter.name}, ${hostname} failure`
             }
-            else if (eventName === EVENT.STOPPED) {
-              summary = `${typeStr} monitor ${this.emitter.name} stopped`
+            else if (eventName === EventConstants.UPDATES_STOPPED) {
+              summary = `Monitor ${typeStr}, ${this.emitter.name}, ${hostname} updates stopped`
             }
-            else if (eventName === EVENT.CHANGED) {
-              summary = `${typeStr} monitor ${this.emitter.name} changed`
+            else if (eventName === EventConstants.UPDATES_STARTED) {
+              summary = `Monitor ${typeStr}, ${this.emitter.name}, ${hostname} updates started`
+            }
+            else if (eventName === EventConstants.CHANGED) {
+              summary = `Monitor ${typeStr}, ${this.emitter.name}, ${hostname} changed`
             }
             break;
+
           case EMITTER.TASK_SCRIPT:
-            if (eventName === EVENT.SUCCESS) {
-              summary = `Script task ${this.emitter.name} success`
+            if (eventName === EventConstants.SUCCESS) {
+              summary = `Task script, ${this.emitter.name}, ${hostname} success`
             }
-            if (eventName === EVENT.FAILURE) {
-              summary = `Script task ${this.emitter.name} failure`
+            if (eventName === EventConstants.FAILURE) {
+              summary = `Task script, ${this.emitter.name}, ${hostname} failure`
             }
             break
+
           case EMITTER.TASK_SCRAPER:
-            if (eventName === EVENT.SUCCESS) {
-              summary = `WebCheck task ${this.emitter.name} success`
+            if (eventName === EventConstants.SUCCESS) {
+              summary = `Task webcheck, ${this.emitter.name}, ${hostname} success`
             }
-            if (eventName === EVENT.FAILURE) {
-              summary = `WebCheck task ${this.emitter.name} failure`
+            if (eventName === EventConstants.FAILURE) {
+              summary = `Task webcheck, ${this.emitter.name}, ${hostname} failure`
             }
             break;
         }
@@ -140,20 +152,30 @@ const Model = AppModel.extend({
           let subtype = this.emitter.type // only monitors has subtype for now
           // ignore "updates_stopped"
           if (subtype === MONITOR.TYPE_FILE) {
-            return Boolean(eventName === EVENT.RECOVERED || eventName === EVENT.CHANGED)
+            return Boolean(
+              eventName === EventConstants.RECOVERED ||
+              eventName === EventConstants.CHANGED
+            )
           }
           else if (subtype === MONITOR.TYPE_HOST) {
-            return Boolean(eventName === EVENT.RECOVERED || eventName === EVENT.STOPPED)
+            return Boolean(
+              //eventName === EventConstants.RECOVERED ||
+              eventName === EventConstants.UPDATES_STOPPED ||
+              eventName === EventConstants.UPDATES_STARTED
+            )
           }
-          else if (subtype === MONITOR.TYPE_DSTAT || subtype === MONITOR.TYPE_PSAUX) {
+          else if (
+            subtype === MONITOR.TYPE_DSTAT ||
+            subtype === MONITOR.TYPE_PSAUX
+          ) {
             return false
           }
           else {
-            return Boolean(eventName === EVENT.RECOVERED || eventName === EVENT.FAILURE)
+            return Boolean(eventName === EventConstants.RECOVERED || eventName === EventConstants.FAILURE)
           }
         }
         else if (emitterType === EMITTER.TASK_SCRIPT || emitterType === EMITTER.TASK_SCRAPER) {
-          return Boolean(eventName === EVENT.SUCCESS)
+          return Boolean(eventName === EventConstants.SUCCESS)
         }
       }
     }
@@ -163,11 +185,51 @@ const Model = AppModel.extend({
   //}
 })
 
-const Collection = AppCollection.extend({
-  url: urlRoot,
-  model: Model
+const EmitterCollection = Collection.extend({
+  model: EmitterFactory,
+  isModel: function (model) {
+    const isModel =
+      model instanceof App.Models.Task.Script ||
+      model instanceof App.Models.Task.Scraper ||
+      model instanceof App.Models.Resource ||
+      model instanceof App.Models.Webhook
+    return isModel
+  }
 })
 
-exports.Collection = Collection
+const EventsCollection = AppCollection.extend({
+  url: urlRoot,
+  model: Model,
+  /**
+   * @param {Emitter} emitter
+   * @param {AmpersandCollection} excludes
+   */
+  filterEmitterEvents (emitter, excludes) {
+    let type = emitter._type
+    let events
+
+    if (type === 'Resource') {
+      events = this.filter((ev) => {
+        var keep = (
+          ev.emitter_id == emitter.monitor.id &&
+          excludes.get(ev.id) === undefined
+        )
+        return keep
+      })
+    } else {
+      events = this.filter((ev) => {
+        var keep = (
+          ev.emitter_id == emitter.id &&
+          excludes.get(ev.id) === undefined
+        )
+        return keep
+      })
+    }
+    return events
+  }
+})
+
+exports.EmitterCollection = EmitterCollection
+exports.Collection = EventsCollection
 exports.Model = Model
 exports.EmitterFactory = EmitterFactory

@@ -8,6 +8,7 @@ import JobActions from 'actions/job'
 import NotificationActions from 'actions/notifications'
 import DashboardActions from 'actions/dashboard'
 import SessionActions from 'actions/session'
+import TaskActions from 'actions/task'
 import config from 'config'
 const logger = require('lib/logger')('app:sockets')
 import OperationsConstants from 'constants/operations'
@@ -107,7 +108,7 @@ const createWrapper = ({ io }) => {
         SessionActions.verifyCustomerChange(event.organization)
       },
       'monitor-state': (event) => {
-        ResourceActions.receiveUpdate(event.model.id, event.model)
+        ResourceActions.applyStateUpdate(event.model.id, event.model)
       },
       'job-crud': (event) => {
         if (
@@ -115,11 +116,21 @@ const createWrapper = ({ io }) => {
           event.operation === OperationsConstants.CREATE ||
           event.operation === OperationsConstants.REPLACE
         ) {
-          JobActions.receiveUpdate(event.model)
+          JobActions.applyStateUpdate(event.model)
         }
       },
       'host-registered': event => {
         DashboardActions.loadNewRegisteredHostAgent(event.model)
+      },
+      // ONLY FOR HOST STATS PAGE
+      // 'host-stats': event => {
+      //   HostStatsActions.applyStateUpdate('dstat', event.model)
+      // },
+      // 'host-processes': event => {
+      //   HostStatsActions.applyStateUpdate('psaux', event.model)
+      // },
+      'task-crud': (event) => {
+        TaskActions.applyStateUpdate(event.model)
       }
     }
   })

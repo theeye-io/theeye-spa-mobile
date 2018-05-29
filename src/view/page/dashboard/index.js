@@ -9,6 +9,7 @@ import TaskRowView from './task'
 import MonitorRowView from './monitor'
 import RunAllTasksButton from './task/run-all-button'
 import JobActions from 'actions/job'
+import WorkflowActions from 'actions/workflow'
 import bootbox from 'bootbox'
 import LIFECYCLE from 'constants/lifecycle'
 
@@ -32,7 +33,7 @@ const runAllTasks = (rows) => {
     const tasks = rows.map(row => row.model)
 
     const boxTitle = `With great power comes great responsibility`
-		const boxMessage = `You are going to run all the following tasks.<br> This operation cannot be canceled`
+    const boxMessage = `You are going to run various tasks.<br> This operation cannot be canceled`
 
 		bootbox.confirm({
 			title: boxTitle,
@@ -50,7 +51,13 @@ const runAllTasks = (rows) => {
 			},
 			callback (confirmed) {
 				if (confirmed===true) {
-          tasks.forEach(task => JobActions.create(task))
+          tasks.forEach(task => {
+            if (/Workflow/.test(task._type)) {
+              WorkflowActions.run(task)
+            } else {
+              JobActions.create(task)
+            }
+          })
 				}
 			}
 		})
@@ -415,19 +422,22 @@ module.exports = View.extend({
 
         if (App.state.searchbox.search.length > 3) {
           const rows = taskRows.views.filter(row => row.show === true)
-          if (!rows || rows.length===0) {
+          if (!rows || rows.length === 0) {
             // no rows to show
             runAllButton.disabled = true
           } else {
             // verify if all the tasks are not being executed
-            const jobsInProgress = rows
+            const nonExecutableTasks = rows
               .map(row => row.model)
               .find(task => {
-                const lifecycle = task.lastjob.lifecycle
-                return LIFECYCLE.inProgress(lifecycle)
+                if (/Task/.test(task._type)) {
+                  const lifecycle = task.lastjob.lifecycle
+                  return (LIFECYCLE.inProgress(lifecycle) || task.hasDinamicArguments)
+                }
+                return false // <<<< workflow
               })
 
-            runAllButton.disabled = (jobsInProgress !== undefined)
+            runAllButton.disabled = (nonExecutableTasks !== undefined)
           }
         } else {
           runAllButton.disabled = true

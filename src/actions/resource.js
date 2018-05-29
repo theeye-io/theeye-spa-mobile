@@ -41,7 +41,7 @@ module.exports = {
     })
   },
   // apply incomming changes (socket/pull) to local cache
-  receiveUpdate (id, data) {
+  applyStateUpdate (id, data) {
     var model = App.state.resources.get(data.id)
     if (!model) {
       logger.error('resource not found')
@@ -57,7 +57,7 @@ module.exports = {
     window.location = "/admin/monitor#search=" + id
   },
   workflow (id) {
-    window.location = '/admin/workflow?node=' + id
+    App.navigate('/admin/workflow/' + id)
   },
   createMany (hosts, data) {
     const done = after(hosts.length, () => {

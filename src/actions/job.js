@@ -26,9 +26,7 @@ module.exports = {
    * @param {Object} data job model properties
    *
    */
-  receiveUpdate (data) {
-    logger.log('job updates received')
-
+  applyStateUpdate (data) {
     const task_id = data.task_id
     const task = App.state.tasks.get(task_id)
 
@@ -38,37 +36,15 @@ module.exports = {
       return
     }
 
-    logger.log('updating task job')
     updateJob(task.lastjob, data)
   },
   create (task, taskArgs) {
     logger.log('creating new job with task %o', task)
 
-    App.state.userInteractionInProgress = false
-
-    var data = []
-    taskArgs.forEach(function(arg){
-      switch (arg.type) {
-        case 'date':
-          if(Array.isArray(arg.value) && arg.value.length == 1) {
-            arg.value = arg.value[0]
-          }
-          break;
-        case 'file':
-          arg.value = arg.value.dataUrl
-          break;
-        default:
-          break;
-      }
-      delete arg.renderValue
-      delete arg.type
-      data.push(arg)
-    })
-
     XHR.send({
       method: 'post',
       url: `${config.api_url}/job`,
-      jsonData: { task: task.id, task_arguments: data },
+      jsonData: { task: task.id, task_arguments: taskArgs },
       headers: {
         Accept: 'application/json;charset=UTF-8'
       },
@@ -101,8 +77,5 @@ module.exports = {
         console.log(arguments)
       }
     })
-  },
-  initJobExecution () {
-    App.state.userInteractionInProgress = true
   }
 }
