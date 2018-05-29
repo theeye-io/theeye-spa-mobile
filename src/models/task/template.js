@@ -23,6 +23,7 @@ const Schema = AppModel.extend({
     id: 'string',
     user_id: 'string',
     customer_id: 'string',
+    workflow_id: 'string',
     public: 'boolean',
     name: 'string',
     description: ['string',false,''],
@@ -65,7 +66,7 @@ const Schema = AppModel.extend({
         .map(eve => {
           if (typeof eve === 'object') {
             return eve._id
-          } else return eve // the id
+          } else return eve // this is the id string
         })
     }
 
@@ -135,7 +136,8 @@ const ScriptTask = Schema.extend({
             arg.type===FIELD.TYPE_INPUT ||
             arg.type===FIELD.TYPE_SELECT ||
             arg.type===FIELD.TYPE_DATE ||
-            arg.type===FIELD.TYPE_FILE
+            arg.type===FIELD.TYPE_FILE ||
+            arg.type===FIELD.TYPE_REMOTE_OPTIONS
           )
         })
       )

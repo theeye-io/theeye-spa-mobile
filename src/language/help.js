@@ -3,24 +3,35 @@
  * @module En/Help
  */
 
-const acl = 'Add permissions to specific users (or emails) that will be able to execute this task and receive notifications.'
+const acl = 'Give permissions to specific users (or user emails) that will be able to execute tasks, see monitors state and receive notifications.'
 const triggers = 'Select a task, monitor or webhook event that will trigger this task automagically.'
 const grace_time = 'If you select to Trigger with an event, you can choose a grace time to delay the execution of this action and have some time to cancel it via email if necessary.'
+const tags = 'Using Tags will help you to find your resources quickly'
+const description = 'A description'
 
 module.exports = {
   looptime: 'This is the check interval in minutes. The shorter the interval you choose, the more CPU and resource will consume.',
   description: 'We recomend to use a descriptions to improve teamwork and problem solving.',
   scripts: 'Select the script it has to execute.',
   script_arguments: 'Put here a comma separated list of arguments.',
-  host: 'Where it has to run?',
-  tags: 'To help you find your resources quickly.',
+  host: 'Where will the file be hosted?',
+  tags: tags,
   acls: acl,
   triggers: triggers,
   severity: 'You can set a severity to this monitor, which can be LOW, HIGH or CRITICAL.',
   monitor: {
+    monitors: 'Add or remove monitors',
     name: 'Give this monitor a name',
-    process: 'Which process it has to search for?',
-    copy: 'Select the monitor you want to copy from'
+    description: description,
+    acl: acl,
+    tags: tags,
+    process: 'The running system process to search for',
+    copy: 'Use another monitor setup to copy',
+    sfailure_everity: 'Set the severity to HIGH or CRITICAL to receive notifications',
+    wizard: {
+      nested: 'Create a monitor to notify when all the monitors inside it needs attention',
+      others: 'Go to Monitors page'
+    }
   },
   task: {
     creation: {
@@ -49,18 +60,24 @@ module.exports = {
       copy_task: 'Select the task you want to copy from',
       script_runas: 'Execute the selected script using a different username. You have to use \'%script%\' in the place where the script has to be included. This "keyword" will be replaced during execution with the real script path. This is the perfect place to use "sudo". Windows users, requires to mimic this action putting the password for the first time.',
     },
+    cannot_schedule: 'A Scheduled Task cannot have dynamic input/select arguments',
+    cannot_trigger: 'A Task with dynamic arguments cannot be automatically triggered by Workflow',
   },
   file: {
     path: 'The full path to put the file in',
     uid: 'The user id for the file',
     gid: 'The group id for the file',
     permissions: 'Permissions in octal format. Default is 0755',
-    select: 'Select a file'
+    select: 'Select a file',
+    state: "Error Handling. Print 'fail', 'failure' or 'error' for unsuccessful execution.",
+    shebang: 'Keep in mind that the  shebang (#!) is required when writing a Linux/Unix script.',
+    //env: 'Workflow. You can get the result of the previous task execution by inquiring the env variable THEEYE_WF_LASTLINE. Check in advance that the env variable THEEYE_WF is defined'
+    env: 'Workflow. You can get the result of the previous task execution by inquiring the env variable THEEYE_WF_LASTLINE.'
   },
   titles:{
     user_page: 'Users CRUD operations',
     customer_page: 'Customers CRUD operations',
-    script_page: 'Tasks/Monitors Scripts CRUD operations',
+    file_page: 'Scripts and Files CRUD operations',
     task_page: 'Tasks allow\'s you to run Web/APi requests and custom scripts. You can then schedule the tasks.',
     monitor_page: 'Monitors watches your Web/API endpoints, files, processes, hosts health and scripts changes and send alerts to You.',
     webhook_page: 'Webhooks allows you to Trigger tasks automagically, through requests from outside applications.',
@@ -81,5 +98,10 @@ module.exports = {
       datetime: 'pick-a-date',
       frequency: 'Use a "human interval" expression like "1 hour", "3 days", "2 weeks", etc... Leave empty for no repetition'
     }
+  },
+  onboarding: {
+    installer: 'Show installer tutorial.',
+    task: 'Show task tutorial.',
+    script: 'Show script tutorial'
   }
 }

@@ -25,61 +25,66 @@ const setStateFromQueryString = (query) => {
   }
 }
 
-const fetchData = (options) => {
+const prepareData = (options) => {
   const { fetchTasks } = options
 
-  App.state.dashboard.resourcesDataSynced = false
+  App.state.loader.visible = false
 
+  App.state.dashboard.resourcesDataSynced = false
   App.state.dashboard.groupedResources.once('reset',() => {
     logger.log('resources synced and grouped resources prepared')
     App.state.dashboard.resourcesDataSynced = true
   })
 
   App.state.dashboard.tasksDataSynced = false
-
   App.state.tasks.once('sync',() => {
     logger.log('tasks synced')
     App.state.dashboard.tasksDataSynced = true
   })
 
-  App.state.loader.visible = true
-
-  var resourcesToFetch = ['hosts', 'monitors']
-  if (fetchTasks)
-    resourcesToFetch.push('tasks')
-
-  var done = after(resourcesToFetch.length, function(){
+  var resourcesToFetch = 6
+  if (fetchTasks) resourcesToFetch += 2
+  var done = after(resourcesToFetch, () => {
     App.state.loader.visible = false
   })
 
-  App.state.hosts.fetch({
-    success: () => {
-      done()
-    }
-  })
+  const step = () => {
+    // App.state.loader.step()
+    done()
+  }
 
+  if (fetchTasks) {
+    const nextStep = () => {
+      step()
+      App.state.tasks.fetch({ success: () => {
+        App.state.dashboard.groupTasks()
+        step()
+      }, error: step })
+    }
+    App.state.workflows.fetch({ success: nextStep, error: nextStep })
+  }
+
+  App.state.events.fetch({ success: step, error: step })
+  // App.state.scripts.fetch({ success: step, error: step })
+  App.state.files.fetch({ success: step, error: step })
+  App.state.hosts.fetch({ success: step, error: step })
+  App.state.tags.fetch({ success: step, error: step })
+  App.state.members.fetch({ success: step, error: step })
   App.state.resources.fetch({
     success: () => {
       App.state.dashboard.groupResources()
-      done()
-    }
+      step()
+    },
+    error: step
   })
-
-  if (fetchTasks) {
-    App.state.tasks.fetch({
-      success: () => {
-        done()
-      }
-    })
-  }
 }
 
 const index = (query) => {
-  const credential = App.state.session.user.credential
-  const tasksEnabled = Boolean(query.tasks != 'hide' && credential != 'viewer')
+  // const credential = App.state.session.user.credential
+  const tasksEnabled = Boolean(query.tasks != 'hide')
   const statsEnabled = Boolean(query.stats == 'show')
 
-  fetchData({ fetchTasks: tasksEnabled })
+  prepareData({ fetchTasks: tasksEnabled })
 
   return renderPageView({
     renderTasks: tasksEnabled,
@@ -97,7 +102,7 @@ const renderPageView = (options) => {
   return new PageView({
     groupedResources: App.state.dashboard.groupedResources,
     monitors: App.state.resources,
-    tasks: App.state.tasks,
+    tasks: App.state.dashboard.groupedTasks,
     renderTasks: options.renderTasks,
     renderStats: options.renderStats,
     notifications: App.state.inbox.filteredNotifications

@@ -13,14 +13,17 @@ import { Collection as Resources } from 'models/resource'
 import { Collection as Tasks } from 'models/task'
 import { Collection as Tags } from 'models/tag'
 import { Collection as Scripts } from 'models/file/script'
+import { Collection as Files } from 'models/file'
 import { Collection as Events } from 'models/event'
+import { Workflows } from 'models/workflow'
+
 import Alerts from 'components/alerts'
 import { Collection as Notifications } from 'models/notification'
 
-//import URI from 'urijs'
-
 import HostGroupPageState from './hostgroup-page'
 import DashboardPageState from './dashboard-page'
+import WorkflowPageState from './workflow-page'
+import WorkflowVisualizerState from './workflow-visualizer'
 import SessionState from './session'
 import NavbarState from './navbar'
 import InboxState from './inbox'
@@ -83,7 +86,9 @@ const AppState = State.extend({
     notify: ['state',false,() => { return new NotifyState() }],
     register: ['state',false,() => { return new RegisterState() }],
     searchbox: ['state',false,() => { return new SearchBoxState() }],
-    userInteractionInProgress: ['boolean', false, false]
+    userInteractionInProgress: ['boolean', false, false],
+    workflowPage: ['state', false, () => new WorkflowPageState()],
+    workflowVisualizer: ['state', false, () => new WorkflowVisualizerState()]
   },
   init () {
     _initCollections.call(this)
@@ -213,10 +218,12 @@ const _initCollections = function () {
     tasks: new Tasks([]),
     tags: new Tags([]),
     scripts: new Scripts([]),
+    files: new Files([]),
     users: new Users([]),
     webhooks: new Webhooks([]),
     members: new Members([]),
     events: new Events([]),
-    notifications: new Notifications([])
+    notifications: new Notifications([]),
+    workflows: new Workflows([])
   })
 }

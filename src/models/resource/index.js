@@ -89,7 +89,7 @@ const Monitor = MonitorBaseModel.extend({
   },
   children: {
     host: Host
-  }
+  },
 })
 
 const NestedMonitorConfig = State.extend({
@@ -216,7 +216,6 @@ const ResourceBaseModel = ResourceSchema.extend({
     data.id = this.id
 
     delete data.customer
-    delete data.monitor
     delete data.user
 
     return data
@@ -367,6 +366,7 @@ const GroupedResourceCollection = ResourceCollection.extend({
 })
 
 exports.Model = Resource
+exports.Monitor = Monitor
 exports.Nested = NestedResource
 exports.GroupedResource = GroupedResource
 exports.Factory = ResourceFactory

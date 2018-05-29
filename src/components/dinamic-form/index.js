@@ -6,9 +6,7 @@ import HelpIcon from 'components/help-icon'
 import Datepicker from 'components/input-view/datepicker'
 import OneLineMediaInputView from 'components/input-view/media/oneline'
 import { Model as MediaFileModel } from 'models/media-file'
-
-
-const moment = require('moment-timezone')
+import isURL from 'validator/lib/isURL'
 
 module.exports = FormView.extend({
   props: {
@@ -16,27 +14,14 @@ module.exports = FormView.extend({
   },
   initialize (options) {
     const fieldsSpecs = options.fieldsDefinitions
-    const fields = [ ]
+    const fields = []
 
     fieldsSpecs.forEach(spec => {
-      //if (spec.type === FIELD.TYPE_FIXED) {
-      //  fields.push(
-      //    new InputView({
-      //      readonly: true,
-      //      label: spec.label,
-      //      name: spec.label,
-      //      required: spec.required,
-      //      invalidClass: 'text-danger',
-      //      validityClassSelector: '.control-label',
-      //      value: spec.value
-      //    })
-      //  )
-      //} else
       if (spec.type === FIELD.TYPE_INPUT) {
         fields.push(
           new InputView({
             label: spec.label,
-            name: spec.label,
+            name: spec.order.toString(),
             required: spec.required,
             invalidClass: 'text-danger',
             validityClassSelector: '.control-label',
@@ -47,7 +32,7 @@ module.exports = FormView.extend({
         fields.push(
           new SelectView({
             label: spec.label,
-            name: spec.label,
+            name: spec.order.toString(),
             multiple: false,
             tags: false,
             options: spec.options,
@@ -66,7 +51,7 @@ module.exports = FormView.extend({
         fields.push(
           new Datepicker({
             label: spec.label,
-            name: spec.label,
+            name: spec.order.toString(),
             required: spec.required,
             enableTime: true,
             dateFormat: 'F J, Y at H:i',
@@ -90,12 +75,35 @@ module.exports = FormView.extend({
           new OneLineMediaInputView({
             type: 'file',
             label: spec.label,
-            name: spec.label,
+            name: spec.order.toString(),
             value: new MediaFileModel(),
             required: spec.required,
             maxFileSize: 300
           })
         )
+      } else if (spec.type === FIELD.TYPE_REMOTE_OPTIONS) {
+        var options = {
+          label: spec.label,
+          name: spec.order.toString(),
+          multiple: false,
+          tags: false,
+          required: spec.required,
+          unselectedText: `Select a ${spec.label}`,
+          requiredMessage: 'Selection required',
+          invalidClass: 'text-danger',
+          validityClassSelector: '.control-label',
+          idAttribute: spec.id_attribute,
+          textAttribute: spec.text_attribute
+        }
+
+        if (isURL(spec.endpoint_url, {
+          protocols: ['http', 'https'],
+          require_protocol: true
+        })) {
+          options.ajaxUrl = spec.endpoint_url
+        }
+
+        fields.push(new SelectView(options))
       }
     })
 
@@ -129,7 +137,7 @@ module.exports = FormView.extend({
   renderHelpIcons () {
     this.fieldsDefinitions.forEach(def => {
       if (def.help) {
-        const view = this._fieldViews[def.label]
+        const view = this._fieldViews[def.order.toString()]
         if (!view) return
         view.renderSubview(
           new HelpIcon({

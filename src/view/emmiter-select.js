@@ -7,21 +7,25 @@ import FilteredCollection from 'ampersand-filtered-subcollection'
 
 module.exports = SelectView.extend({
   initialize (options) {
+    console.warn('use emitter-select with caution!')
     var filters = [
-      item => item.displayable == true
+      item => {
+        return true
+      }
     ]
 
     if (Array.isArray(options.filterOptions) && options.filterOptions.length) {
       filters = filters.concat(options.filterOptions)
     }
 
-    this.options = new FilteredCollection(App.state.events, { filters })
-    this.multiple = true
-    this.tags = true
-    this.label = options.label || 'Events'
-    this.name = options.name || 'events'
+    this.options = new FilteredCollection(App.state.emitters, { filters })
+
+    this.multiple = false
+    this.tags = false
+    this.label = options.label || 'Event emitters'
+    this.name = options.name || 'emitter'
     this.styles = 'form-group'
-    this.unselectedText = 'Select one or more events'
+    this.unselectedText = 'Select an event emitter'
     this.idAttribute = 'id'
     this.textAttribute = 'summary'
 
