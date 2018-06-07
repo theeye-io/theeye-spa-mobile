@@ -81,12 +81,14 @@ module.exports = () => {
         if (!App.sockets) { // create wrapper to subscribe and start listening to events
           App.sockets = createWrapper({ io })
         }
+
         App.sockets.subscribe({
           query: {
             customer: session.customer.name,
             topics: defaultTopics
           }
         })
+
         App.listenTo(session.customer, 'change:id', updateSubscriptions)
       }) // create socket and connect to server
     } else {
@@ -99,14 +101,23 @@ module.exports = () => {
 const createWrapper = ({ io }) => {
   return new SocketsWrapper({
     io,
-    events: {
+    events: { // topics
       // socket events handlers
-      'notification-crud': event => {
+      'notification-crud': event => { // always subscribed
         NotificationActions.add(event.model)
       },
       'session-customer-changed': event => { // temporal fix
         SessionActions.verifyCustomerChange(event.organization)
       },
+      // // subscribed on demand
+      // 'host-stats': event => {
+      //   HostStatsActions.applyStateUpdate('dstat', event.model)
+      // },
+      // // subscribed on demand
+      // 'host-processes': event => {
+      //   HostStatsActions.applyStateUpdate('psaux', event.model)
+      // },
+      // subscribed by default. see defaultTopics definition
       'monitor-state': (event) => {
         ResourceActions.applyStateUpdate(event.model.id, event.model)
       },
@@ -117,18 +128,15 @@ const createWrapper = ({ io }) => {
           event.operation === OperationsConstants.REPLACE
         ) {
           JobActions.applyStateUpdate(event.model)
+          // HostActions.applyIntegrationJobStateUpdates(event.model)
         }
       },
+      // 'host-integrations-crud': (event) => {
+      //   HostActions.applyStateUpdate(event.model.id, event.model)
+      // },
       'host-registered': event => {
         DashboardActions.loadNewRegisteredHostAgent(event.model)
       },
-      // ONLY FOR HOST STATS PAGE
-      // 'host-stats': event => {
-      //   HostStatsActions.applyStateUpdate('dstat', event.model)
-      // },
-      // 'host-processes': event => {
-      //   HostStatsActions.applyStateUpdate('psaux', event.model)
-      // },
       'task-crud': (event) => {
         TaskActions.applyStateUpdate(event.model)
       }

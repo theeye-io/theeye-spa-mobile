@@ -11,19 +11,12 @@ const logger = require('lib/logger')('router:dashboard')
 class Dashboard extends Route {
   indexRoute () {
     const query = search.get()
-    setStateFromQueryString(query)
+    App.state.dashboard.setMonitorsGroupBy(query.monitorsgroupby)
     return index(query)
   }
 }
 
 module.exports = Dashboard
-
-const setStateFromQueryString = (query) => {
-  let groupBy = query.monitorsgroupby
-  if (groupBy) {
-    App.state.dashboard.setMonitorsGroupBy(groupBy)
-  }
-}
 
 const prepareData = (options) => {
   const { fetchTasks } = options

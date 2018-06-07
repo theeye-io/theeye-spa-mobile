@@ -41,8 +41,9 @@ App.extend({
     })
   },
   initState (next) {
-    this.state.init()
-    next()
+    // listen session restored
+    this.listenToOnce(this.state.session,'restored',next)
+    this.state.appInit()
   },
   navigate (page) {
     var url = (page.charAt(0) === '/') ? page.slice(1) : page
@@ -72,6 +73,7 @@ App.extend({
       root.updateState({ currentPage: state.currentPage })
     })
     root.on('click:localPath',(event) => {
+      if (event.localPath === window.location.pathname) return
       App.navigate(event.localPath)
     })
   },

@@ -27,6 +27,7 @@ import WorkflowVisualizerState from './workflow-visualizer'
 import SessionState from './session'
 import NavbarState from './navbar'
 import InboxState from './inbox'
+import LocalSettings from './local-settings'
 
 const State = AmpersandState.extend({ extraProperties: 'allow' })
 
@@ -90,17 +91,25 @@ const AppState = State.extend({
     workflowPage: ['state', false, () => new WorkflowPageState()],
     workflowVisualizer: ['state', false, () => new WorkflowVisualizerState()]
   },
-  init () {
+  initialize () {
+    State.prototype.initialize.apply(this,arguments)
+
+    // init empty collections
     _initCollections.call(this)
 
     this.loader = new LoaderState()
     this.session = new SessionState()
+    this.localSettings = new LocalSettings()
     this.navbar = new NavbarState()
     this.credentials = new CredentialsCollection()
     this.looptimes = new Collection(looptimes)
     this.severities = new Collection(severities)
 
     this.inbox = new InboxState({ appState: this })
+  },
+  appInit () {
+    this.localSettings.appInit()
+      .then(ls => this.session.appInit())
 
     const resetCredentialsCollection = () => {
       if (this.session.logged_in===undefined) {
@@ -124,6 +133,11 @@ const AppState = State.extend({
       }
     })
 
+    /**
+     *
+     * customer switch
+     *
+     */
     this.listenToAndRun(this.session.customer,'change:id', () => {
       if (!this.session.customer.id) return
       this.notifications.fetch({ reset: true })
