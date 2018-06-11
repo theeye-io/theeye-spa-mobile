@@ -9,7 +9,8 @@ const iconByType = {
   file: 'fa-file-o',
   dstat: 'fa-bar-chart',
   psaux: 'fa-cogs',
-  nested: 'fa-bullseye'
+  nested: 'fa-bullseye',
+  approval: 'fa-thumbs-o-up'
 }
 
 const resourceType = {

@@ -5,6 +5,7 @@ module.exports = {
   'lifecycle:canceled': 'fa fa-minus-circle',
   'lifecycle:terminated': 'fa fa-question-circle',
   'lifecycle:completed': 'fa fa-check-circle',
+  'lifecycle:onhold': 'fa fa-clock-o',
   success: 'fa fa-check-circle',
   normal: 'fa fa-check-circle',
   failure: 'fa fa-exclamation-circle',

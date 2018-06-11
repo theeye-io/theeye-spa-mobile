@@ -10,9 +10,15 @@ const stateToColorClass = (state) => (StateConstants.STATES.indexOf(state)!==-1)
 module.exports = BaseItem.extend({
   customizeItem () {
     // it is a task execution
+    const type = this.model.data.model._type
+
     let state = this.sanitizeState(this.model.data.model.state)
     let lifecycle = this.model.data.model.lifecycle
-    let hostname = this.model.data.model.host.hostname
+
+    let hostname = ''
+    if (/ApprovalJob/.test(type)===false) {
+      hostname = this.model.data.model.host.hostname
+    }
 
     this.hostName = hostname
 
