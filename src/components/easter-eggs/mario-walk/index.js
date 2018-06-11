@@ -7,7 +7,7 @@
 var jquery = require('jquery');
 
 
-const MarioWalk = function (options) {
+function MarioWalk (options) {
 
   options||(options={});
 
@@ -31,11 +31,11 @@ const MarioWalk = function (options) {
 
   function animate ($el,next) {
     $el.animate({
-      left: $(window).width() 
+      left: $(window).width()
     },3600,'swing',function complete(){
       $el.remove(); // remove when animation ends
     });
-    
+
     setTimeout(next,500);
   }
 

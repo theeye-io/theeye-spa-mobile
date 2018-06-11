@@ -5,7 +5,67 @@ import JobOutput from './job-output'
 import SearchActions from 'actions/searchbox'
 import ResourceActions from 'actions/resource'
 import MonitorConstants from 'constants/monitor'
+// import MonitorEditView from 'view/page/monitor/edit'
+import HelpMessages from 'language/help'
 import AnalyticsActions from 'actions/analytics'
+
+const Mute = View.extend({
+  template: `
+    <button class="btn btn-primary tooltiped" data-hook="mute-toggler">
+      <i class="fa" aria-hidden="true"></i>
+    </button>
+  `,
+  derived: {
+    is_muted: {
+      deps: ['model.alerts'],
+      fn () {
+        return this.model.alerts === false
+      }
+    },
+    title_text: {
+      deps: ['is_muted'],
+      fn () {
+        if (this.is_muted) {
+          return HelpMessages.monitor.unmute_button
+        } else {
+          return HelpMessages.monitor.mute_button
+        }
+      }
+    }
+  },
+  bindings: {
+    is_muted: [{
+      selector: 'button i',
+      type: 'booleanClass',
+      no: 'fa-volume-up',
+      yes: 'fa-volume-off',
+    },{
+      selector: 'button i',
+      type: 'booleanClass',
+      yes: 'remark-alert'
+    }],
+    title_text: {
+      type: 'attribute',
+      name: 'title',
+      hook: 'mute-toggler'
+    }
+  },
+  events: {
+    'click button[data-hook=mute-toggler]':'onClickButton'
+  },
+  onClickButton: function(event){
+    event.stopPropagation();
+    event.preventDefault();
+
+    if (this.is_muted) {
+      ResourceActions.unmute(this.model.id)
+    } else {
+      ResourceActions.mute(this.model.id)
+    }
+
+    return false;
+  }
+})
 
 const Edit = View.extend({
   template: `
@@ -19,6 +79,11 @@ const Edit = View.extend({
   onClickEdit: function(event){
     event.stopPropagation();
     event.preventDefault();
+    // if (this.model.type===MonitorConstants.TYPE_NESTED) {
+    //   let view = new MonitorEditView(this.model)
+    // } else {
+    //   ResourceActions.edit(this.model.id)
+    // }
     ResourceActions.edit(this.model.id)
     return false;
   }
