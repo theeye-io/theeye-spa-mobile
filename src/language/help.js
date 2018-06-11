@@ -31,7 +31,9 @@ module.exports = {
     wizard: {
       nested: 'Create a monitor to notify when all the monitors inside it needs attention',
       others: 'Go to Monitors page'
-    }
+    },
+    unmute_button: 'Click to start receiving monitor notifications',
+    mute_button: 'Click to stop receiving monitor notifications'
   },
   task: {
     creation: {
@@ -56,7 +58,7 @@ module.exports = {
       acl: acl,
       triggers: triggers,
       grace_time: grace_time,
-      taskArguments: 'Task arguments',
+      task_arguments: 'Task arguments',
       copy_task: 'Select the task you want to copy from',
       script_runas: 'Execute the selected script using a different username. You have to use \'%script%\' in the place where the script has to be included. This "keyword" will be replaced during execution with the real script path. This is the perfect place to use "sudo". Windows users, requires to mimic this action putting the password for the first time.',
     },

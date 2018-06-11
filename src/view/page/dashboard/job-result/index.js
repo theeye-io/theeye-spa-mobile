@@ -9,6 +9,42 @@ import ansi2html from 'ansi-to-html'
 
 import './styles.less'
 
+/**
+ *
+ * @summary modal to display jobs output
+ *
+ */
+module.exports = Modalizer.extend({
+  props: {
+    job: 'state'
+  },
+  initialize (options) {
+    Modalizer.prototype.initialize.apply(this, arguments)
+
+    this.backdrop = true
+    this.title = 'Execution Output'
+    this.bodyView = new JobView({ job: this.job })
+
+    this.listenTo(this,'hidden',() => {
+      this.bodyView.remove()
+      delete this.bodyView
+    })
+
+    //this.listenTo(this.job,'change:result',() => {
+    //  if (!this.job.result) return
+    //  this.bodyView.json = this.job.result
+    //  this.bodyView.render()
+    //})
+  }
+})
+
+const ApprovalJobResult = View.extend({
+  props: {
+    result: 'state'
+  },
+  template: `<div class="result approval-result"></div>`
+})
+
 const ScriptJobResult = View.extend({
   props: {
     result: 'state'
@@ -35,12 +71,6 @@ const ScriptJobResult = View.extend({
       hook:'log'
     },
     killed: { hook:'killed' }
-    //'result.killed': {
-    //  hook:'killed',
-    //  type:'booleanClass',
-    //  yes:'fa-check',
-    //  no:'fa-remove'
-    //},
   },
   derived: {
     killed: {
@@ -55,6 +85,14 @@ const ScriptJobResult = View.extend({
         if (!this.result||!this.result.log) return ''
         let converter = new ansi2html()
         return converter.toHtml(this.result.log)
+      }
+    },
+    html_lastline: {
+      deps: ['result.lastline'],
+      fn () {
+        if (!this.result||!this.result.lastline) return ''
+        let converter = new ansi2html()
+        return converter.toHtml(this.result.lastline)
       }
     }
   }
@@ -163,41 +201,14 @@ const JobView = View.extend({
       this.result = new ScriptJobResult(opts)
     } else if (type === 'ScraperJob') {
       this.result = new ScraperJobResult(opts)
+    } else if (type === 'ApprovalJob') {
+      this.result = new ApprovalJobResult(opts)
     } else {
       if (!type) {
-        throw new Error('job _type unrecognised')
+        console.error('unrecognised job type %s', type)
       }
     }
 
     this.renderSubview(this.result, this.queryByHook('output-container'))
-  }
-})
-
-/**
- *
- * @summary modal to display jobs output
- *
- */
-module.exports = Modalizer.extend({
-  props: {
-    job: 'state'
-  },
-  initialize (options) {
-    Modalizer.prototype.initialize.apply(this, arguments)
-
-    this.backdrop = true
-    this.title = 'Execution Output'
-    this.bodyView = new JobView({ job: this.job })
-
-    this.listenTo(this,'hidden',() => {
-      this.bodyView.remove()
-      delete this.bodyView
-    })
-
-    //this.listenTo(this.job,'change:result',() => {
-    //  if (!this.job.result) return
-    //  this.bodyView.json = this.job.result
-    //  this.bodyView.render()
-    //})
   }
 })

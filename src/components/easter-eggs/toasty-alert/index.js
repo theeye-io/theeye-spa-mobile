@@ -5,7 +5,7 @@
  */
 var jquery = require('jquery');
 
-const ToastyAlert = function (options) {
+function ToastyAlert (options) {
 
   var $template = $('<div style="position:fixed;bottom:0px;right:-200px;z-index:1000;"><img src=/toasty/avatar_1.png></div>');
 
@@ -14,7 +14,7 @@ const ToastyAlert = function (options) {
   var $audio = $('<audio src="/toasty/avatar_1.mp3" preload="auto"></audio>');
 
   $template.animate({ right:'0px' },200,'swing',function complete(){
-    /* on complete */ 
+    /* on complete */
   });
   $audio[0].play();
 
