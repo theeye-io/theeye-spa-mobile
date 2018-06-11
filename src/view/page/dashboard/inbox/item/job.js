@@ -37,13 +37,8 @@ module.exports = BaseItem.extend({
 
     // task execution always success, unless declared a failure
     this.colorClass = stateToColorClass(state)
-    console.log(this.message)
-    console.log(this.state)
-    console.log(this.colorClass)
     if (!this.colorClass) {
-      console.log('entra al if')
       this.colorClass = StateConstants.SUCCESS
     }
-    console.log(this.colorClass)
   }
 })
