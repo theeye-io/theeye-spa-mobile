@@ -50,7 +50,7 @@ At this point you should see the adHoc certificate in xcode
 2. `npm install`
 3. `NODE_ENV=<your_environment> ./build.sh`
 4. run `cordova prepare ios`
-5. Open xcde and import the ios generated build in *platform/ios
+5. Open xcde and import the ios generated build in *platform/ios*
 6. in xcode Product -> clean
 7. in xcode Product -> Build
 
