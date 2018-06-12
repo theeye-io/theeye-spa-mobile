@@ -13,7 +13,7 @@ be sure you have the src/config/oauth-config.js file (git ignored)
 
 ## iOS Build Instructions
 
-IMPORTANT! Don't create a new build using *cordoba build ios*, because the actual platform/ios version generated has a lot of fixes to 
+**IMPORTANT!** Don't create a new build using `cordoba build ios`, because the actual platform/ios version generated has a lot of fixes to 
 make the plug-ins work properly. Eg. Push notifications needs some package versions to be setted by hand.
 
 
