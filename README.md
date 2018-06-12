@@ -34,17 +34,17 @@ In file Fastfile you will find the directives to execute the deployment for each
 Eg. beta, the process will run an *ad-hoc* deployment, using  *match AdHoc io.theeye.mobile* provinsioning files.
 
 
-#####For local environment deployment & testing
+##### For local environment deployment & testing
 1. Go to */platform/ios*
 2. run `fastlane match adhoc --readonly` (--readonly is important because you dont want to regenerate certificates)
 At this point you should see the adHoc certificate in xcode 
 
-#####For production environment deployment
+##### For production environment deployment
 1. Go to */platform/ios*
 2. run `fastlane match appstore --readonly`
 
 
-###Build & Test
+### Build & Test
 
 1. git pull from master branch
 2. `npm install`
@@ -55,7 +55,7 @@ At this point you should see the adHoc certificate in xcode
 7. in xcode Product -> Build
 
 
-** xcode build properties ** 
+**xcode build properties** 
 + Deployment Target: 9.0
 + Devices: Universal
 + Be sure that Signing (Debug) has *Provisioning Profile: match AdHoc io.theeye.mobile* *Team: Javier Ailbirt* 
@@ -89,9 +89,9 @@ As you are pulling from a builded *platform/ios* this files are already imported
 7. Run application test should work OK in an emulator device.
 
 
-###Deployment
+### Deployment
 
-####Local deployment & Testing
+#### Local deployment & Testing
 This is covered in above section *Build & Test*, after downloading the adHoc provisioning files, run directly from xcode
 
 #### Beta deployment
