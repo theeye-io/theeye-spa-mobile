@@ -98,7 +98,7 @@ This is covered in above section *Build & Test*, after downloading the adHoc pro
 To deploy app in Crashlytics / Fabric.io,
 
 1. Be sure that you have succesfully completed adhoc steps from *Provisioning files & Certificates*
-2. from project root dir run `fastlane beta`
+2. go to */platform/ios* and run `fastlane beta`
 3. Wait for the magic to finish
 4. Go to Fabric.io and check new version uploaded correctly
 
@@ -107,7 +107,7 @@ To deploy app in Crashlytics / Fabric.io,
 To deploy app in App Store
 
 1. Be sure that you have succesfully completed appstore steps from *Provisioning files & Certificates*
-2. from project root dir run `fastlane release`
+2. go to */platform/ios* and run `fastlane release`
 3. Wait for the magic to finish
 5. Go to [itunes connect](https://itunesconnect.apple.com/) and finish the release processo to the App Store 
 
