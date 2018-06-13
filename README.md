@@ -18,7 +18,7 @@ make the plug-ins work properly. Eg. Push notifications needs some package versi
 
 
 ### Provisioning files & Certificates
-To manage signing certificates and provisioning files, we use fastlane (https://github.com/fastlane/fastlane) and match (https://docs.fastlane.tools/actions/match/) tools. With this tools we can concentrate all cerificates and provisioning files in a common repository, and then automate the deploy process to the AppStore.
+To manage signing certificates and provisioning files, we use fastlane (https://github.com/fastlane/fastlane) and match (https://docs.fastlane.tools/actions/match/) tools. With this tools we can centralize all cerificates and provisioning files in a common repository, and then automate the deploy process to the AppStore.
 
 In *platform/ios* you will find the directory */fastlane*. Inside you will find all the files provided by the tool to execute the provisioning & certificates sync and the deployment process.
 Inside */fastlane* you will find 2 importante files:
