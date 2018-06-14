@@ -1,3 +1,8 @@
+# Read carefully and stick to the instructions below
+![I choose my words carefully and I don't repeat myself](https://i.pinimg.com/originals/1d/93/f2/1d93f28f2f32bb516b1544ea2b0d1f5d.jpg)
+
+## Install & Dependencies
+
 ```bash
 sudo gem install cocoapods
 pod setup
