@@ -22,13 +22,13 @@ cordova plugin add phonegap-plugin-push
 Get `credentials.js` & `oauth-config.js` and place them on `src/config` folder
 
 
-### Open platform ios with XCode
+### Open platform ios with Xcode
 
-On the welcome screen of Xcode, use the 'Open another project...' on the bottom right of the splash and navigate to `platforms/ios` and choose _Open_
+On the welcome screen of **Xcode**, use the _Open another project..._ on the bottom right of the splash, navigate to `platforms/ios` directory of the cloned repo and choose _Open_
 
-Get `google-services.json` from the root of the repo directory & `GoogleService-info.plist` and import them on the Xcode project
+Get `google-services.json` from the root of the repo directory & `GoogleService-info.plist` and import them on the **Xcode** project
 
-Go to Preferences, Accounts. Add account: jailbirt@theeye.io
+Go to _Preferences -> Accounts_, add account: jailbirt@theeye.io (you'll need the password)
 
 ### Import certificates:
 
@@ -46,7 +46,7 @@ fastlane init
 
 Once initialized you'll get a `fastlane` directory. Get `Fastfile` and `Matchfile` files and copy them inside the `fastlane` directory. Usually this will be `platforms/ios/fastlane`.
 
-**NOTE** Next step will need the **passphrase**
+**NOTE** Next step will need the credentials **passphrase**
 
 From `platforms/ios` run the these commands:
 ```bash
@@ -54,7 +54,7 @@ fastlane match adhoc --readonly
 fastlane match appstore --readonly
 ```
 
-If any of those commands raise a warning: (delete expired certs)[https://stackoverflow.com/questions/35390072/this-certificate-has-an-invalid-issuer-apple-push-services] on Keychain and try again. Keep trying till you succeed.
+If any of those commands raise a warning, try (deleting expired certs)[https://stackoverflow.com/questions/35390072/this-certificate-has-an-invalid-issuer-apple-push-services] on Keychain and run again. Keep trying till you succeed.
 
 
 ### Xcode
