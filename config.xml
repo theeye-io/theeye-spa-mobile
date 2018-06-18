@@ -45,14 +45,18 @@
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
-        <icon height="57" src="res/icon/ios/icon.png" width="57" />
-        <icon height="114" src="res/icon/ios/icon@2x.png" width="114" />
+        <icon height="20" src="res/icon/ios/icon-20.png" width="20" />
         <icon height="40" src="res/icon/ios/icon-40.png" width="40" />
-        <icon height="80" src="res/icon/ios/icon-40@2x.png" width="80" />
-        <icon height="120" src="res/icon/ios/icon-40@3x.png" width="120" />
+        <icon height="48" src="res/icon/ios/icon-24@2x.png" width="48" />
         <icon height="50" src="res/icon/ios/icon-50.png" width="50" />
-        <icon height="100" src="res/icon/ios/icon-50@2x.png" width="100" />
+        <icon height="55" src="res/icon/ios/icon-27.5@2x.png" width="55" />
+        <icon height="57" src="res/icon/ios/icon.png" width="57" />
         <icon height="60" src="res/icon/ios/icon-60.png" width="60" />
+        <icon height="80" src="res/icon/ios/icon-40@2x.png" width="80" />
+        <icon height="88" src="res/icon/ios/icon-44@2x.png" width="88" />
+        <icon height="100" src="res/icon/ios/icon-50@2x.png" width="100" />
+        <icon height="114" src="res/icon/ios/icon@2x.png" width="114" />
+        <icon height="120" src="res/icon/ios/icon-40@3x.png" width="120" />
         <icon height="120" src="res/icon/ios/icon-60@2x.png" width="120" />
         <icon height="180" src="res/icon/ios/icon-60@3x.png" width="180" />
         <icon height="72" src="res/icon/ios/icon-72.png" width="72" />
@@ -66,7 +70,9 @@
         <splash height="1136" src="res/screen/ios/Default-568h@2x~iphone.png" width="640" />
         <splash height="1334" src="res/screen/ios/Default-667h.png" width="750" />
         <splash height="2208" src="res/screen/ios/Default-736h.png" width="1242" />
+        <splash height="2436" src="res/screen/ios/Default-2436h.png" width="1125" />
         <splash height="1242" src="res/screen/ios/Default-Landscape-736h.png" width="2208" />
+        <splash height="1125" src="res/screen/ios/Default-Landscape-2436h.png" width="2436" />
         <splash height="1536" src="res/screen/ios/Default-Landscape@2x~ipad.png" width="2048" />
         <splash height="2048" src="res/screen/ios/Default-Landscape@~ipadpro.png" width="2732" />
         <splash height="768" src="res/screen/ios/Default-Landscape~ipad.png" width="1024" />
