@@ -122,3 +122,7 @@ document.addEventListener('deviceready', function () {
   }
   App.init()
 }, false)
+
+if (!window.cordova) {
+  document.dispatchEvent(new window.Event('deviceready'))
+}
