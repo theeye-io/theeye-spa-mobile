@@ -22,3 +22,4 @@ www/bundles/styles/main.css
 src/config/credentials.js
 src/config/oauth-config.js
 GoogleService-Info.plist
+_assets
