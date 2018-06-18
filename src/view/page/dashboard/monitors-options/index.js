@@ -24,13 +24,13 @@ module.exports = View.extend({
   //  }
   //},
   initialize () {
-    View.prototype.initialize.apply(this,arguments)
+    View.prototype.initialize.apply(this, arguments)
 
     this.groupBy = App.state.dashboard.monitorsGroupBy
   },
   events: {
-    'click button':'showMoreOptions',
-    'click li[data-hook=group-by]':'onClickGroupBy'
+    'click button': 'showMoreOptions',
+    'click li[data-hook=group-by]': 'onClickGroupBy'
   },
   showMoreOptions (event) {
     //event.preventDefault()
@@ -41,14 +41,14 @@ module.exports = View.extend({
     const item = event.target
     const prop = item.dataset.prop
 
-    if (prop===this.groupBy.prop) return
+    if (prop === this.groupBy.prop) return
 
     DashboardActions.setMonitorsGroupByProperty(prop)
   },
   render () {
     this.renderWithTemplate(this)
 
-    this.listenToAndRun(this,'change:groupBy',() => {
+    this.listenToAndRun(this, 'change:groupBy', () => {
       const prop = this.groupBy.prop
       if (!prop) {
         return
