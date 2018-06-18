@@ -24,13 +24,13 @@ const prepareData = (options) => {
   App.state.loader.visible = false
 
   App.state.dashboard.resourcesDataSynced = false
-  App.state.dashboard.groupedResources.once('reset',() => {
+  App.state.dashboard.groupedResources.once('reset', () => {
     logger.log('resources synced and grouped resources prepared')
     App.state.dashboard.resourcesDataSynced = true
   })
 
   App.state.dashboard.tasksDataSynced = false
-  App.state.tasks.once('sync',() => {
+  App.state.tasks.once('sync', () => {
     logger.log('tasks synced')
     App.state.dashboard.tasksDataSynced = true
   })
@@ -74,8 +74,8 @@ const prepareData = (options) => {
 
 const index = (query) => {
   // const credential = App.state.session.user.credential
-  const tasksEnabled = Boolean(query.tasks != 'hide')
-  const statsEnabled = Boolean(query.stats == 'show')
+  const tasksEnabled = Boolean(query.tasks !== 'hide')
+  const statsEnabled = Boolean(query.stats === 'show')
 
   prepareData({ fetchTasks: tasksEnabled })
 

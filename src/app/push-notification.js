@@ -3,9 +3,9 @@ import credentials from 'config/credentials'
 import UserActions from 'actions/user'
 
 module.exports = () => {
-  App.state.session.on('change:logged_in',() => {
-    if(App.state.session.logged_in){
-      App.push = PushNotification.init({
+  App.state.session.on('change:logged_in', () => {
+    if (App.state.session.logged_in && window.cordova) {
+      App.push = window.PushNotification.init({
         android: {
           senderID: credentials.notifications.gcm.sender_id,
           sound: "true",
