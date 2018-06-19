@@ -20,4 +20,6 @@ www/bundles/js/common.bundle.js
 www/bundles/js/main.bundle.js
 www/bundles/styles/main.css
 src/config/credentials.js
+src/config/oauth-config.js
 GoogleService-Info.plist
+_assets
