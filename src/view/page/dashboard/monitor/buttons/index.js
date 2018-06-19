@@ -184,16 +184,16 @@ module.exports = View.extend({
 
     switch (type) {
       case MonitorConstants.TYPE_HOST:
-        buttons = [ Search ]
+        buttons = [ Search, Mute ]
         break;
       case MonitorConstants.TYPE_NESTED:
-        buttons = [ Search ]
+        buttons = [ Search, Mute ]
         break;
       case MonitorConstants.TYPE_SCRIPT:
       case MonitorConstants.TYPE_SCRAPER:
       case MonitorConstants.TYPE_PROCESS:
       case MonitorConstants.TYPE_FILE:
-        buttons = [ LastEvent, Search ]
+        buttons = [ LastEvent, Search, Mute ]
         break;
       default:
         buttons = []
