@@ -33,9 +33,7 @@ module.exports = View.extend({
     'click li[data-hook=group-by]': 'onClickGroupBy'
   },
   showMoreOptions (event) {
-    //event.preventDefault()
-    //event.stopPropagation()
-    //return false
+    $(this.el).toggleClass('open')
   },
   onClickGroupBy (event) {
     const item = event.target
@@ -59,9 +57,10 @@ module.exports = View.extend({
       }
     })
 
-    $( this.query('button') ).tooltip({
+    this.tooltip = $(this.query('button'))
+    this.tooltip.tooltip({
       placement: 'left',
-      trigger: 'hover'
+      trigger: 'click'
     })
   }
 })
