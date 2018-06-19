@@ -104,7 +104,7 @@ const createWrapper = ({ io }) => {
     events: { // topics
       // socket events handlers
       'notification-crud': event => { // always subscribed
-        NotificationActions.add(event.model)
+        NotificationActions.handleNotification(event.model)
       },
       'session-customer-changed': event => { // temporal fix
         SessionActions.verifyCustomerChange(event.organization)
