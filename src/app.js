@@ -27,7 +27,6 @@ if (config.env !== 'production') { window.App = App }
 // Extends our main app singleton
 App.extend({
   config: config,
-  EasterEggs: require('components/easter-eggs'),
   Router: new Router(),
   state: new AppState(),
   init () {
