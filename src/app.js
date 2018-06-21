@@ -1,6 +1,3 @@
-'use strict'
-
-// import 'jquery' // imported by webpack. not required
 import 'bootstrap'
 import config from 'config'
 
@@ -9,20 +6,15 @@ import AppState from 'state'
 import Router from 'router'
 import Loader from 'components/loader'
 import RootContainer from 'view/root-container'
-import query from 'lib/query-params'
 import AnalyticsActions from 'actions/analytics'
-import assign from 'lodash/assign'
-// const logger = require('lib/logger')('app')
 
 require('app/events')
 const sockets = require('app/sockets')
 const session = require('app/session')
-const pushNotification = require('app/push-notification')
 const models = require('app/models')
+const pushNotification = require('app/push-notification')
 
 import 'assets/styles'
-
-if (config.env !== 'production') { window.App = App }
 
 // Extends our main app singleton
 App.extend({
@@ -35,8 +27,8 @@ App.extend({
       this.registerComponents()
       session()
       sockets()
-      pushNotification()
       models()
+      pushNotification()
     })
   },
   initState (next) {
@@ -46,18 +38,8 @@ App.extend({
   },
   navigate (page) {
     var url = (page.charAt(0) === '/') ? page.slice(1) : page
-    if (window.location.pathname.slice(1) === url) return // cancel if page is current
-    App.Router.history.navigate(url, { trigger: true })
-  },
-  reload (params, append = false) {
-    let qs
-    if (!append) {
-      qs = query.set(params)
-    } else {
-      qs = query.set(assign({}, query.get(), params))
-    }
-    App.Router.navigate(window.location.pathname + `?${qs}`, {replace: true})
-    App.Router.reload()
+    // App.Router.history.navigate(url, { trigger: true })
+    App.Router.navigate(url)
   },
   registerComponents () {
     const state = App.state
@@ -101,6 +83,7 @@ App.extend({
   customerChange (customer) {
     this.state.session.customer.clear()
     this.state.session.customer.set(customer.serialize())
+    this.state.session.customer.fetch()
     this.state.reset()
     this.Router.reload()
   }
