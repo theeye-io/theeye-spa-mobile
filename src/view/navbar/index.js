@@ -238,6 +238,22 @@ const Menu = View.extend({
 
 module.exports = View.extend({
   autoRender: true,
+  props: {
+    licenseExpired: ['boolean', true, false]
+  },
+  bindings: {
+    licenseExpired: [
+      {
+        type: 'toggle',
+        invert: true,
+        selector: '.header-tools'
+      },
+      {
+        type: 'toggle',
+        selector: '.license-header'
+      }
+    ]
+  },
   template: () => {
     return template.call(this, { logo: logo })
   },
@@ -247,6 +263,14 @@ module.exports = View.extend({
     this.listenToAndRun(App.state.session, 'change:logged_in', () => {
       this.updateState(App.state.session)
     })
+    this.listenToAndRun(App.state.session, 'change:logged_in change:licenseExpired', () => {
+      this.updateLicenseStatus(App.state.session)
+    })
+  },
+  updateLicenseStatus (state) {
+    const {logged_in: loggedIn, licenseExpired} = state
+
+    this.licenseExpired = (licenseExpired === true && Boolean(loggedIn))
   },
   updateState (state) {
     const logged_in = state.logged_in

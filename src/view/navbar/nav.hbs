@@ -1,14 +1,21 @@
 <nav class="navbar navbar-inverse navbar-fixed-top navbar-eyemenu">
-
 	<div class="navbar-header">
-    <!--<div class="col-xs-8 col-sm-4 col-md-3">-->
+    <div>
       <div data-hook="menu-container"></div>
-      <div class="brand-container">
-        <a class="navbar-brand" href="/dashboard">
-          <img src="{{ logo }}" alt="The eye">
-        </a>
-      </div>
-
-		<div data-hook="searchbox-container"></div>
+      <a class="navbar-brand" data-hook="theeye-logo">
+        <img src="{{ logo }}" alt="TheEye">
+      </a>
+		</div>
+    <div class="license-header col-xs-10 col-sm-8 col-md-9">
+      <p class="alert alert-warning">
+        Your license has expired!
+        <br />
+        Please contact your service provider to activate the product again
+      </p>
+    </div>
+    <div class="header-tools navbar-right col-xs-5 col-sm-8 col-md-9">
+      <div data-hook="buttons-container" class="navbar-right"></div>
+      <div data-hook="searchbox-container"></div>
+    </div>
 	</div>
 </nav>
