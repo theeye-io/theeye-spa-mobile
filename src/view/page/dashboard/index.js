@@ -9,6 +9,7 @@ import TaskRowView from './task'
 import MonitorRowView from './monitor'
 import RunAllTasksButton from './task/run-all-button'
 import JobActions from 'actions/job'
+import TaskActions from 'actions/task'
 import WorkflowActions from 'actions/workflow'
 import bootbox from 'bootbox'
 import LIFECYCLE from 'constants/lifecycle'
@@ -446,6 +447,8 @@ module.exports = View.extend({
     }
 
     this.listenToAndRun(App.state.searchbox,'change:search',search)
+
+    TaskActions.checkPedingApprovals()
   },
   updateCounts () {
     const reducer = (acc, cur) => acc + (cur.read ? 0 : 1)
