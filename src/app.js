@@ -116,9 +116,8 @@ document.addEventListener('deviceready', function () {
     e.preventDefault()
   }, false)
 
-  if (window.cordova) {
-    AnalyticsActions.initPlugins()
-  }
+  AnalyticsActions.initPlugins()
+
   App.init()
 }, false)
 
