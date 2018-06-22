@@ -2,12 +2,14 @@ import App from 'ampersand-app'
 import fetch from 'isomorphic-fetch'
 import config from 'config'
 
+const defaultConfig = Object.assign({}, config);
+
 const swallow = () => {
   App.state.session.licenseExpired = false
 }
 
 const handleError = () => {
-  App.config = config
+  App.config = defaultConfig
   App.state.enterprise.showEnterpriseForm = false
 }
 
