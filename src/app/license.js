@@ -6,8 +6,9 @@ const swallow = () => {
   App.state.session.licenseExpired = false
 }
 
-const showError = () => {
-  App.state.alerts.danger('Error. Please try again later.')
+const handleError = () => {
+  App.config = config
+  App.state.enterprise.showEnterpriseForm = false
 }
 
 module.exports = {
@@ -41,7 +42,7 @@ module.exports = {
       })
       .catch(err => swallow(err))
   },
-  setEnterprise (customerName) {
+  setConfigUris (customerName) {
     if (!customerName) return
 
     const licenseServiceUri = config.lc_url
@@ -55,7 +56,7 @@ module.exports = {
       mode: 'cors'
     }
     return fetch(url, fetchOptions)
-      .catch(err => showError(err))
+      .catch(err => handleError())
       .then(res => res.json())
       .then(json => {
         if (json && json.ip) {
@@ -64,11 +65,11 @@ module.exports = {
           App.config.api_v3_url = `${json.ip}/apiv3`
           App.config.socket_url = `${json.ip}:443`
 
-          App.state.enterprise.toggle('showEnterpriseForm')
+          App.state.enterprise.showEnterpriseForm = false
         } else {
-          showError()
+          handleError()
         }
       })
-      .catch(err => showError(err))
+      .catch(err => handleError())
   }
 }

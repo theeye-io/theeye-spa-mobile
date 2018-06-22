@@ -3,6 +3,7 @@ import FormView from 'ampersand-form-view'
 import InputView from 'ampersand-input-view'
 import AuthActions from 'actions/auth'
 import App from 'ampersand-app'
+import {setConfigUris} from 'app/license'
 
 const LoginForm = FormView.extend({
   autoRender: true,
@@ -86,7 +87,7 @@ module.exports = View.extend({
       this.enterpriseForm.beforeSubmit()
       if (this.enterpriseForm.valid) {
         var data = this.enterpriseForm.data
-        AuthActions.setEnterprise(data)
+        setConfigUris(data.organization)
       }
     }
   },
