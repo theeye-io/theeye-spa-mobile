@@ -7,7 +7,6 @@ import assign from 'lodash/assign'
 import config from 'config'
 import credentials from 'config/credentials'
 import AnalyticsActions from './analytics'
-
 const xhr = $.ajax
 
 module.exports = {
