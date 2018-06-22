@@ -7,6 +7,7 @@ import assign from 'lodash/assign'
 import config from 'config'
 import credentials from 'config/credentials'
 import AnalyticsActions from './analytics'
+import {setEnterprise} from 'app/license'
 const xhr = $.ajax
 
 module.exports = {
@@ -273,5 +274,8 @@ module.exports = {
         }
       })
     }
+  },
+  setEnterprise (data) {
+    setEnterprise(data.organization)
   }
 }

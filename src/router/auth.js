@@ -4,6 +4,7 @@ import LoginPageView from 'view/page/login'
 import RegisterPageView from 'view/page/register'
 import ActivatePageView from 'view/page/activate'
 import ActivateOwnerPageView from 'view/page/activate-owner'
+import EnterprisePageView from 'view/page/enterprise'
 import Cookies from 'js-cookie'
 import App from 'ampersand-app'
 import Route from 'lib/router-route'
@@ -66,6 +67,10 @@ class Auth extends Route {
     App.state.session.set({
       access_token: access_token
     })
+  }
+
+  enterpriseRoute () {
+    return new EnterprisePageView()
   }
 }
 
