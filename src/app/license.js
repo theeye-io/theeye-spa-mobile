@@ -1,16 +1,17 @@
 import App from 'ampersand-app'
 import fetch from 'isomorphic-fetch'
 import config from 'config'
+import bootbox from 'bootbox'
 
-const defaultConfig = Object.assign({}, config);
+const defaultConfig = Object.assign({}, config)
 
 const swallow = () => {
   App.state.session.licenseExpired = false
 }
 
-const handleError = () => {
+const handleError = (err) => {
   App.config = defaultConfig
-  App.state.enterprise.showEnterpriseForm = false
+  bootbox.alert('Enterprise account not found, please try again.')
 }
 
 module.exports = {
@@ -58,20 +59,24 @@ module.exports = {
       mode: 'cors'
     }
     return fetch(url, fetchOptions)
-      .catch(err => handleError())
+      .catch(err => handleError(err))
       .then(res => res.json())
       .then(json => {
         if (json && json.ip) {
-          App.config.app_url = json.ip
-          App.config.api_url = `${json.ip}/apiv2`
-          App.config.api_v3_url = `${json.ip}/apiv3`
-          App.config.socket_url = `${json.ip}:443`
+          if (json.type && json.type === 'inhouse') {
+            App.config.app_url = json.ip
+            App.config.api_url = `${json.ip}/apiv2`
+            App.config.api_v3_url = `${json.ip}/apiv3`
+            App.config.socket_url = `${json.ip}:443`
 
-          App.state.enterprise.showEnterpriseForm = false
+            App.state.enterprise.showEnterpriseForm = false
+          } else {
+            throw new Error('no inhouse')
+          }
         } else {
-          handleError()
+          throw new Error('no license')
         }
       })
-      .catch(err => handleError())
+      .catch(err => handleError(err))
   }
 }
