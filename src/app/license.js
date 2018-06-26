@@ -3,14 +3,12 @@ import fetch from 'isomorphic-fetch'
 import config from 'config'
 import bootbox from 'bootbox'
 
-const defaultConfig = Object.assign({}, config)
-
 const swallow = () => {
   App.state.session.licenseExpired = false
 }
 
 const handleError = (err) => {
-  App.config = defaultConfig
+  App.config = Object.assign({}, config)
   bootbox.alert('Enterprise account not found, please try again.')
 }
 
