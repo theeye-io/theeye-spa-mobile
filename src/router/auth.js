@@ -11,10 +11,12 @@ import Route from 'lib/router-route'
 import search from 'lib/query-params'
 import XHR from 'lib/xhr'
 import bootbox from 'bootbox'
+import config from 'config'
 
 class Auth extends Route {
 
   loginRoute () {
+    App.config = Object.assign({}, config)
     return new LoginPageView()
   }
 
