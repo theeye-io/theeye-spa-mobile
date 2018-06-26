@@ -10,12 +10,14 @@ const iconByType = {
   dstat: 'fa-bar-chart',
   psaux: 'fa-cogs',
   nested: 'fa-bullseye',
-  approval: 'fa-thumbs-o-up'
+  approval: 'fa-thumbs-o-up',
+  webhook: 'fa-exchange'
 }
 
 const resourceType = {
   Resource: 'Resource',
-  ScriptJob: 'Task'
+  ScriptJob: 'Task',
+  Webhook: 'Webhook'
 }
 
 export default View.extend({
@@ -83,11 +85,13 @@ export default View.extend({
   },
   render () {
     this.renderWithTemplate(this)
-    this.setModelIcon(this.modelSubType)
+    this.setModelIcon(this.modelType, this.modelSubType)
   },
-  setModelIcon (modelSubType) {
+  setModelIcon (modelType, modelSubType) {
     var iconClass = 'circle fa '
-    if (modelSubType) {
+    if (modelType === 'Webhook') {
+      iconClass += ` ${iconByType['webhook']} webhook-color`
+    } else if (modelSubType) {
       iconClass += ` ${iconByType[modelSubType]} ${modelSubType}-color`
     } else {
       iconClass += ` ${iconByType['host']} host-color`
