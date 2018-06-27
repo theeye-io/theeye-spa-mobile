@@ -1,10 +1,12 @@
+import App from 'ampersand-app'
 import BaseModel from 'lib/app-model'
 import BaseCollection from 'lib/app-collection'
 import Cookies from 'js-cookie'
 import { Model as Customer } from './customer'
-const config = require('config')
 
-const urlRoot = `${config.api_url}/webhook`
+const urlRoot = function () {
+  return `${App.config.api_url}/webhook`
+}
 
 const Model = BaseModel.extend({
   urlRoot: urlRoot,
@@ -28,7 +30,7 @@ const Model = BaseModel.extend({
     triggerUrl: {
       deps: ['id','secret','customer'],
       fn () {
-        const url = config.supervisor_api_url
+        const url = App.config.supervisor_api_url
         const customer_name = this.customer.name
         const secret = this.secret
         const id = this.id

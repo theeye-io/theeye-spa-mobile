@@ -4,7 +4,6 @@ import App from 'ampersand-app'
 import AppModel from 'lib/app-model'
 import AppCollection from 'lib/app-collection'
 import Collection from 'ampersand-collection'
-const config = require('config')
 import EventConstants from 'constants/event'
 import EMITTER from 'constants/emitter'
 import MONITOR from 'constants/monitor'
@@ -53,7 +52,10 @@ class EmitterFactory {
   }
 }
 
-const urlRoot = `${config.api_url}/event`
+const urlRoot = function () {
+  return `${App.config.api_url}/event`
+}
+
 const Model = AppModel.extend({
   urlRoot: urlRoot,
   props: {

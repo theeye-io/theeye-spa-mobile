@@ -1,12 +1,13 @@
 import App from 'ampersand-app'
 import BaseModel from 'lib/app-model'
 import BaseCollection from 'lib/app-collection'
-import config from 'config'
 
 import { Model as User } from './user'
 //import { Model as Customer } from './customer'
 
-const urlRoot = `${config.app_url}/member`
+const urlRoot = function () {
+  return `${App.config.app_url}/member`
+}
 
 const Model = BaseModel.extend({
   urlRoot: urlRoot,

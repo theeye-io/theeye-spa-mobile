@@ -1,3 +1,4 @@
+import App from 'ampersand-app'
 import State from 'ampersand-state'
 import AppCollection from 'lib/app-collection'
 import isURL from 'validator/lib/isURL'
@@ -9,9 +10,10 @@ import LIFECYCLE from 'constants/lifecycle'
 
 const Job = require('models/job')
 const Template = require('./template')
-const config = require('config')
 
-const urlRoot = `${config.api_url}/task`
+const urlRoot = function () {
+  return `${App.config.api_url}/task`
+}
 
 const formattedTags = () => {
   return {

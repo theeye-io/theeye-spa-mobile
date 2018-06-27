@@ -1,9 +1,11 @@
+import App from 'ampersand-app'
 import AppModel from 'lib/app-model'
 import AppCollection from 'lib/app-collection'
-import config from 'config'
 import assign from 'lodash/assign'
 
-const urlRoot = `${config.app_url}/customer`
+const urlRoot = function () {
+  return `${App.config.app_url}/customer`
+}
 
 const defaultConfig = {
   kibana: null,

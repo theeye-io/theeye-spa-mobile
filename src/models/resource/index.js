@@ -1,3 +1,4 @@
+import App from 'ampersand-app'
 import State from 'ampersand-state'
 import AppCollection from 'lib/app-collection'
 import moment from 'moment'
@@ -10,8 +11,10 @@ const MonitorTemplate = require('./monitor-template')
 const ResourceTemplate = require('./resource-template')
 const Host = require('models/host/index').Model
 
-const config = require('config')
-const urlRoot = `${config.api_url}/resource`
+const urlRoot = function () {
+  return `${App.config.api_url}/resource`
+}
+
 const stateIcons = {
   low: 'icon-severity-low',
   high: 'icon-severity-high',
@@ -240,7 +243,9 @@ const Resource = ResourceBaseModel.extend({
 })
 
 const NestedResource = ResourceBaseModel.extend({
-  urlRoot: `${config.api_v3_url}/resource/nested`,
+  urlRoot: function () {
+    return `${App.config.api_v3_url}/resource/nested`
+  },
   children: {
     monitor: NestedMonitor, // has one
   },

@@ -1,3 +1,4 @@
+import App from 'ampersand-app'
 import AmpersandState from 'ampersand-state'
 import AmpersandCollection from 'ampersand-collection'
 import AppModel from 'lib/app-model'
@@ -9,7 +10,9 @@ const TaskTemplates = require('models/task/template').Collection
 const ResourceTemplate = require('models/resource').Template
 const config = require('config')
 
-const urlRoot = `${config.api_url}/hostgroup`
+const urlRoot = function () {
+  return `${App.config.api_url}/hostgroup`
+}
 
 const EventTemplate = AmpersandState.extend({
 	props: {
