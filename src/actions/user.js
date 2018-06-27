@@ -1,7 +1,5 @@
-//import jquery from 'jquery'
 import bootbox from 'bootbox'
 import App from 'ampersand-app'
-import config from 'config'
 import XHR from 'lib/xhr'
 const xhr = $.ajax
 
@@ -117,7 +115,7 @@ module.exports = {
   },
   registerDeviceToken (id, data) {
     XHR.send({
-      url: `${config.app_url}/user/${id}/registerdevicetoken`,
+      url: `${App.config.app_url}/user/${id}/registerdevicetoken`,
       method: 'post',
       jsonData: data,
       timeout: 5000,

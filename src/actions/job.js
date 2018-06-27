@@ -4,7 +4,6 @@ import App from 'ampersand-app'
 import XHR from 'lib/xhr'
 import bootbox from 'bootbox'
 const logger = require('lib/logger')('actions:jobs')
-const config = require('config')
 import LIFECYCLE from 'constants/lifecycle'
 
 const updateJob = (job, data) => {
@@ -43,7 +42,7 @@ module.exports = {
 
     XHR.send({
       method: 'post',
-      url: `${config.api_url}/job`,
+      url: `${App.config.api_url}/job`,
       jsonData: { task: task.id, task_arguments: args },
       headers: {
         Accept: 'application/json;charset=UTF-8'
@@ -61,7 +60,7 @@ module.exports = {
   cancel (job) {
     XHR.send({
       method: 'put',
-      url: `${config.api_url}/job/${job.id}/cancel`,
+      url: `${App.config.api_url}/job/${job.id}/cancel`,
       headers: {
         Accept: 'application/json;charset=UTF-8'
       },
@@ -80,7 +79,7 @@ module.exports = {
   approve (job, args) {
     XHR.send({
       method: 'put',
-      url: `${config.api_v3_url}/job/${job.id}/approve`,
+      url: `${App.config.api_v3_url}/job/${job.id}/approve`,
       jsonData: {
         result: {
           state: 'success',
@@ -105,7 +104,7 @@ module.exports = {
   reject (job, args) {
     XHR.send({
       method: 'put',
-      url: `${config.api_v3_url}/job/${job.id}/reject`,
+      url: `${App.config.api_v3_url}/job/${job.id}/reject`,
       jsonData: {
         result: {
           state: 'failure',

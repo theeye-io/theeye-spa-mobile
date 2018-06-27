@@ -1,6 +1,5 @@
 import App from 'ampersand-app'
 import XHR from 'lib/xhr'
-import config from 'config'
 import { Model as Notification } from 'models/notification'
 // import DesktopNotification from 'lib/desktop-notification'
 
@@ -18,7 +17,7 @@ module.exports = {
 
     // remove only read notifications by default
     XHR.send({
-      url: `${config.app_url}/inbox${query}`,
+      url: `${App.config.app_url}/inbox${query}`,
       method: 'DELETE',
       headers: { Accept: 'application/json;charset=UTF-8' },
       done (response,xhr) {
@@ -34,7 +33,7 @@ module.exports = {
     if (notif.length === 0) return
 
     XHR.send({
-      url: `${config.app_url}/inbox/markallread`,
+      url: `${App.config.app_url}/inbox/markallread`,
       method: 'PATCH',
       headers: { Accept: 'application/json;charset=UTF-8' },
       jsonData: notif,

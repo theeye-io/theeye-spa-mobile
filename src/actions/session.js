@@ -1,7 +1,6 @@
 import App from 'ampersand-app'
 import XHR from 'lib/xhr'
 const logger = require('lib/logger')('actions:session')
-const config = require('config')
 import bootbox from 'bootbox'
 import reject from 'lodash/reject'
 import AnalyticsActions from './analytics'
@@ -16,7 +15,7 @@ module.exports = {
     App.state.loader.visible = true
     XHR.send({
       method: 'post',
-      url: `${config.app_url}/session/customer/${customer.name}`,
+      url: `${App.config.app_url}/session/customer/${customer.name}`,
       withCredentials: true,
       timeout: 5000,
       headers: {
@@ -57,7 +56,7 @@ module.exports = {
 
     XHR.send({
       method: 'post',
-      url: `${config.app_url}/session/refresh`,
+      url: `${App.config.app_url}/session/refresh`,
       withCredentials: true,
       timeout: 5000,
       headers: {
@@ -77,7 +76,7 @@ module.exports = {
     const sessionState = App.state.session
     XHR.send({
       method: 'get',
-      url: `${config.app_url}/session/profile`,
+      url: `${App.config.app_url}/session/profile`,
       withCredentials: true,
       done: (user) => {
         logger.log('user profile data fetch success')
@@ -102,7 +101,7 @@ module.exports = {
   },
   getUserPassport() {
     XHR.send({
-      url: `${config.app_url}/userpassport`,
+      url: `${App.config.app_url}/userpassport`,
       method: 'get',
       done: (response,xhr) => {
         if (xhr.status !== 200) {
@@ -130,7 +129,7 @@ module.exports = {
 
     // App.state.loader.step()
     XHR.send({
-      url: `${config.app_url}/session/profile/settings`,
+      url: `${App.config.app_url}/session/profile/settings`,
       method: 'PUT',
       jsonData: body,
       fail: (err) => {

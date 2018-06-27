@@ -3,8 +3,6 @@
 import App from 'ampersand-app'
 import XHR from 'lib/xhr'
 import bootbox from 'bootbox'
-import assign from 'lodash/assign'
-import config from 'config'
 import credentials from 'config/credentials'
 import AnalyticsActions from './analytics'
 const xhr = $.ajax
@@ -13,7 +11,7 @@ module.exports = {
   login (data) {
     App.state.loader.visible = true
     XHR.send({
-      url: `${config.app_url}/auth/login`,
+      url: `${App.config.app_url}/auth/login`,
       method: 'post',
       jsonData: data,
       timeout: 5000,
@@ -45,7 +43,7 @@ module.exports = {
   },
   logout () {
     XHR.send({
-      url: `${config.app_url}/logout`,
+      url: `${App.config.app_url}/logout`,
       method: 'get',
       timeout: 5000,
       withCredentials: true,
@@ -76,7 +74,7 @@ module.exports = {
   resetMail (data) {
     App.state.loader.visible = true
     XHR.send({
-      url: `${config.app_url}/password/resetmail`,
+      url: `${App.config.app_url}/password/resetmail`,
       method: 'post',
       jsonData: data,
       timeout: 5000,
@@ -116,7 +114,7 @@ module.exports = {
     body.username = data.email
 
     const req = xhr({
-      url: `${config.app_url}/registeruser`,
+      url: `${App.config.app_url}/registeruser`,
       type: 'POST',
       data: JSON.stringify(body),
       dataType: 'json',
@@ -138,7 +136,7 @@ module.exports = {
   },
   checkUsernameActivation (username, token) {
     XHR.send({
-      url: `${config.app_url}/checkusernameactivation?token=` + encodeURIComponent(token) + '&username=' + encodeURIComponent(username),
+      url: `${App.config.app_url}/checkusernameactivation?token=` + encodeURIComponent(token) + '&username=' + encodeURIComponent(username),
       method: 'get',
       done: (response,xhr) => {
         if (xhr.status !== 201) {
@@ -165,7 +163,7 @@ module.exports = {
     var token = encodeURIComponent(token);
 
     XHR.send({
-      url: `${config.app_url}/auth/activateuser?token=${token}`,
+      url: `${App.config.app_url}/auth/activateuser?token=${token}`,
       method: 'post',
       jsonData: data,
       timeout: 5000,
@@ -224,7 +222,7 @@ module.exports = {
       },
       function(userData) {
         XHR.send({
-          url: `${config.app_url}/auth/verifysocialtoken`,
+          url: `${App.config.app_url}/auth/verifysocialtoken`,
           method: 'post',
           jsonData: {email: userData.email, idToken: userData.idToken},
           timeout: 5000,

@@ -49,7 +49,7 @@ module.exports = () => {
     autoConnect: false,
     useCORSRouteToGetCookie: true,
     environment: config.env,
-    url: config.socket_url
+    url: App.config.socket_url
   }
   SailsIOClient() // setup sails sockets connection
 
