@@ -9,34 +9,35 @@ import NotificationActions from 'actions/notifications'
 import DashboardActions from 'actions/dashboard'
 import SessionActions from 'actions/session'
 import TaskActions from 'actions/task'
-import config from 'config'
+// import config from 'config'
 const logger = require('lib/logger')('app:sockets')
 import OperationsConstants from 'constants/operations'
+import sailsSockets from 'lib/sails.io.js'
 
-const connect = (next) => {
+const connect = (sailsIO, next) => {
   // first time connect is called it is autoconnected
   if (!io.socket) {
     logger.log('connecting sails socket')
-    io.sails.connect(next)
+    sailsIO.connect({ url: App.config.socket_url }, next)
   } else {
     if (!io.socket.socket.connected) {
       logger.log('reconnecting socket')
       io.socket.socket.connect()
-      next(null,io.socket)
+      next(null, io.socket)
     }
   }
 }
 
-const disconnect = () => {
+const disconnect = (sailsIO) => {
   if (!io.socket) return
   if (io.socket.socket.connected) {
-    io.socket.disconnect()
+    sailsIO.disconnect()
   }
 }
 
 const defaultTopics = [
-  //'host-stats',
-  //'host-processes',
+  // 'host-stats',
+  // 'host-processes',
   'monitor-state',
   'job-crud',
   // 'host-integrations-crud', // host integrations changes
@@ -44,15 +45,8 @@ const defaultTopics = [
 ]
 
 module.exports = () => {
-  // initialize io.sails sockets
-  io.sails = {
-    autoConnect: false,
-    useCORSRouteToGetCookie: true,
-    environment: config.env,
-    url: App.config.socket_url
-  }
-  SailsIOClient() // setup sails sockets connection
-
+  // initialize sails sockets
+  let sailsIO = sailsSockets(io) // setup sails sockets connection
   let session = App.state.session
 
   const updateSubscriptions = () => {
@@ -61,7 +55,6 @@ module.exports = () => {
     // unsubscribe
     App.sockets.unsubscribe({
       onUnsubscribed: () => {
-
         // ... then subscribe again to new customer notifications
         App.sockets.subscribe({
           query: {
@@ -73,11 +66,11 @@ module.exports = () => {
     })
   }
 
-  App.listenToAndRun(session,'change:logged_in',() => {
+  App.listenToAndRun(session, 'change:logged_in', () => {
     const logged_in = session.logged_in
-    if (logged_in===undefined) return
-    if (logged_in===true) {
-      connect((err,socket) => {
+    if (logged_in === undefined) return
+    if (logged_in === true) {
+      connect(sailsIO, (err, socket) => {
         if (!App.sockets) { // create wrapper to subscribe and start listening to events
           App.sockets = createWrapper({ io })
         }
@@ -92,7 +85,7 @@ module.exports = () => {
         App.listenTo(session.customer, 'change:id', updateSubscriptions)
       }) // create socket and connect to server
     } else {
-      disconnect()
+      disconnect(sailsIO)
       App.stopListening(session.customer, 'change:id', updateSubscriptions)
     }
   })
