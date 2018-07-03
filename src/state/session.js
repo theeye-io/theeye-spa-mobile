@@ -9,7 +9,7 @@ import SessionActions from 'actions/session'
 import { Model as User } from 'models/user'
 import { Model as Customer } from 'models/customer'
 
-import checkLicense from 'app/license'
+import {checkLicense} from 'app/license'
 
 module.exports = AmpersandState.extend({
   props: {

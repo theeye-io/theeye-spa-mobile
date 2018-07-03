@@ -13,7 +13,7 @@ import DashboardRoute from './dashboard'
 module.exports = Router.extend({
   execute (callback, args) {
     if (callback) {
-      let publicRoute = ['login','register','activate','sociallogin', 'passwordreset'].find(route => {
+      let publicRoute = ['login','register','activate','sociallogin', 'passwordreset','enterprise'].find(route => {
         let routeRegex = new RegExp(route)
         return (routeRegex.test(window.location.pathname)||routeRegex.test(window.location.hash))
       })
@@ -70,6 +70,10 @@ module.exports = Router.extend({
     'passwordreset': () => {
       const route = new AuthRoute()
       route.passwordResetRoute()
+    },
+    'enterprise': () => {
+      const route = new AuthRoute()
+      route.route('enterprise')
     },
     '(*path)': function () {
       App.navigate('dashboard')

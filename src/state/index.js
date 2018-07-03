@@ -89,7 +89,8 @@ const AppState = State.extend({
     searchbox: ['state',false,() => { return new SearchBoxState() }],
     userInteractionInProgress: ['boolean', false, false],
     workflowPage: ['state', false, () => new WorkflowPageState()],
-    workflowVisualizer: ['state', false, () => new WorkflowVisualizerState()]
+    workflowVisualizer: ['state', false, () => new WorkflowVisualizerState()],
+    enterprise: ['state',false,() => { return new EnterpriseState() }],
   },
   initialize () {
     State.prototype.initialize.apply(this,arguments)
@@ -197,6 +198,12 @@ const NotifyState = State.extend({
 const LoginState = State.extend({
   props: {
     showRecoverForm: ['boolean',false,false]
+  }
+})
+
+const EnterpriseState = State.extend({
+  props: {
+    showEnterpriseForm: ['boolean',false,true]
   }
 })
 

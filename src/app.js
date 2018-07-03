@@ -18,7 +18,7 @@ import 'assets/styles'
 
 // Extends our main app singleton
 App.extend({
-  config: config,
+  config: Object.assign({}, config),
   Router: new Router(),
   state: new AppState(),
   init () {
