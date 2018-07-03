@@ -32,6 +32,9 @@ const disconnect = (sailsIO) => {
   if (!io.socket) return
   if (io.socket.socket.connected) {
     sailsIO.disconnect()
+    delete io.socket
+    delete App.sockets
+    io.sockets = {}
   }
 }
 
