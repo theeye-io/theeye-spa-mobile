@@ -76,10 +76,10 @@ const bindEvents = (socket, emitter, events) => {
 }
 
 SocketsWrapper.prototype.connect = function (done) {
+  const sailsIO = sailsSockets(io) // setup sails sockets connection using global socket.io object
   let socket = this.socket
   if (!socket) {
     logger.log('connecting sails socket')
-    const sailsIO = sailsSockets(io) // setup sails sockets connection using global socket.io object
     sailsIO.connect({ url: App.config.socket_url }, (err, socket) => {
       this.socket = socket
       bindEvents(socket, this, this.events)
@@ -87,9 +87,20 @@ SocketsWrapper.prototype.connect = function (done) {
     })
   } else {
     if (!socket.socket.connected) {
-      logger.log('reconnecting socket')
-      socket.socket.connect()
-      done(null,socket)
+      var host = new RegExp(socket.socket.options.host)
+      if (host.test(App.config.socket_url)) {
+        // If host url matches, reconnect socket.
+        logger.log('reconnecting socket')
+        socket.socket.connect()
+        done(null, socket)
+      } else {
+        // If host url doesn't match, connect new socket.
+        sailsIO.connect({ url: App.config.socket_url }, (err, socket) => {
+          this.socket = socket
+          bindEvents(socket, this, this.events)
+          done(null, socket)
+        })
+      }
     }
   }
 }
@@ -104,7 +115,6 @@ SocketsWrapper.prototype.disconnect = function (done) {
       }
     })
   }
-  delete this.socket
 }
 
 SocketsWrapper.prototype.destroy = function (done) {
