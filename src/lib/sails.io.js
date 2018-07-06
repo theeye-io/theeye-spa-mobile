@@ -240,34 +240,34 @@ module.exports = function (io) {
   }
 
   const goAheadAndActuallyConnect = (url, next) => {
-    // Initiate connection
-    io.socket = _connect(url)
+    // Initiate a socket connection
+    const socket = _connect(url)
 
     /**
      * 'connect' event is triggered when the socket establishes a connection
      *  successfully.
      */
-    io.socket.on('connect', function socketConnected() {
+    socket.on('connect', function socketConnected() {
 
-      if (!io.socket.$events.disconnect) {
-        io.socket.on('disconnect', function() {
+      if (!socket.$events.disconnect) {
+        socket.on('disconnect', function() {
         });
       }
 
-      if (!io.socket.$events.reconnect) {
-        io.socket.on('reconnect', function(transport, numAttempts) {
-          var numSecsOffline = io.socket.msSinceConnectionLost / 1000;
+      if (!socket.$events.reconnect) {
+        socket.on('reconnect', function(transport, numAttempts) {
+          var numSecsOffline = socket.msSinceConnectionLost / 1000;
           consolog(
-            'io.socket reconnected successfully after being offline ' +
+            'socket reconnected successfully after being offline ' +
             'for ' + numSecsOffline + ' seconds.');
         });
       }
 
-      if (!io.socket.$events.reconnecting) {
-        io.socket.on('reconnecting', function(msSinceConnectionLost, numAttempts) {
-          io.socket.msSinceConnectionLost = msSinceConnectionLost;
+      if (!socket.$events.reconnecting) {
+        socket.on('reconnecting', function(msSinceConnectionLost, numAttempts) {
+          socket.msSinceConnectionLost = msSinceConnectionLost;
           consolog(
-            'io.socket is trying to reconnect...' +
+            'socket is trying to reconnect...' +
             '(attempt #' + numAttempts + ')');
         });
       }
@@ -276,8 +276,8 @@ module.exports = function (io) {
       // 'error' event is triggered if connection can not be established.
       // (usually because of a failed authorization, which is in turn
       // usually due to a missing or invalid cookie)
-      if (!io.socket.$events.error) {
-        io.socket.on('error', function failedToConnect(err) {
+      if (!socket.$events.error) {
+        socket.on('error', function failedToConnect(err) {
 
           consolog(
             'Failed to connect socket (probably due to failed authorization on server)',
@@ -287,7 +287,7 @@ module.exports = function (io) {
       }
     });
 
-    if (next) next(null,io.socket) // use callback to ensure io.socket is defined
+    if (next) next(null,socket) // use callback to ensure socket is defined
   }
 
   return {
@@ -316,9 +316,6 @@ module.exports = function (io) {
       } else {
         goAheadAndActuallyConnect(config.url, next)
       }
-    },
-    disconnect () {
-      io.socket.disconnect()
     }
   }
 }

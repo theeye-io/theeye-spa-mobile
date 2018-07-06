@@ -9,34 +9,8 @@ import NotificationActions from 'actions/notifications'
 import DashboardActions from 'actions/dashboard'
 import SessionActions from 'actions/session'
 import TaskActions from 'actions/task'
-// import config from 'config'
 const logger = require('lib/logger')('app:sockets')
 import OperationsConstants from 'constants/operations'
-import sailsSockets from 'lib/sails.io.js'
-
-const connect = (sailsIO, next) => {
-  // first time connect is called it is autoconnected
-  if (!io.socket) {
-    logger.log('connecting sails socket')
-    sailsIO.connect({ url: App.config.socket_url }, next)
-  } else {
-    if (!io.socket.socket.connected) {
-      logger.log('reconnecting socket')
-      io.socket.socket.connect()
-      next(null, io.socket)
-    }
-  }
-}
-
-const disconnect = (sailsIO) => {
-  if (!io.socket) return
-  if (io.socket.socket.connected) {
-    sailsIO.disconnect()
-    delete io.socket
-    delete App.sockets
-    io.sockets = {}
-  }
-}
 
 const defaultTopics = [
   // 'host-stats',
@@ -49,7 +23,6 @@ const defaultTopics = [
 
 module.exports = () => {
   // initialize sails sockets
-  let sailsIO = sailsSockets(io) // setup sails sockets connection
   let session = App.state.session
 
   const updateSubscriptions = () => {
@@ -58,6 +31,7 @@ module.exports = () => {
     // unsubscribe
     App.sockets.unsubscribe({
       onUnsubscribed: () => {
+
         // ... then subscribe again to new customer notifications
         App.sockets.subscribe({
           query: {
@@ -69,34 +43,30 @@ module.exports = () => {
     })
   }
 
+  App.sockets = createWrapper()
+
   App.listenToAndRun(session, 'change:logged_in', () => {
     const logged_in = session.logged_in
-    if (logged_in === undefined) return
-    if (logged_in === true) {
-      connect(sailsIO, (err, socket) => {
-        if (!App.sockets) { // create wrapper to subscribe and start listening to events
-          App.sockets = createWrapper({ io })
-        }
-
+    if (logged_in===undefined) return
+    if (logged_in===true) {
+      App.sockets.connect(err => {
         App.sockets.subscribe({
           query: {
             customer: session.customer.name,
             topics: defaultTopics
           }
         })
-
         App.listenTo(session.customer, 'change:id', updateSubscriptions)
-      }) // create socket and connect to server
+      })
     } else {
-      disconnect(sailsIO)
+      App.sockets.disconnect()
       App.stopListening(session.customer, 'change:id', updateSubscriptions)
     }
   })
 }
 
-const createWrapper = ({ io }) => {
+const createWrapper = () => {
   return new SocketsWrapper({
-    io,
     events: { // topics
       // socket events handlers
       'notification-crud': event => { // always subscribed
