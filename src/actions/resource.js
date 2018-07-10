@@ -5,7 +5,6 @@ import bootbox from 'bootbox'
 import assign from 'lodash/assign'
 import ResourceModels from 'models/resource'
 import XHR from 'lib/xhr'
-const config = require('config')
 
 const create = (data, next = function(){}) => {
   let resource = ResourceModels.Factory(data)
@@ -94,7 +93,7 @@ module.exports = {
 
 const changeAlerts = (id, value, next) => {
   const resource = App.state.resources.get(id)
-  const url = `${config.api_url}/resource/${id}/alerts`
+  const url = `${App.config.api_url}/resource/${id}/alerts`
   next || (next = function(){})
 
   if (typeof value === 'boolean') {

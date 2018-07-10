@@ -1,12 +1,14 @@
+import App from 'ampersand-app'
 import State from 'ampersand-state'
 import AppModel from 'lib/app-model'
 import AppCollection from 'lib/app-collection'
-const config = require('config')
 
 import { Model as Customer } from 'models/customer'
 import Integrations from './integrations'
 
-const urlRoot = `${config.api_url}/host`
+const urlRoot = function () {
+  return `${App.config.api_url}/host`
+}
 
 const Model = AppModel.extend({
   urlRoot: urlRoot,

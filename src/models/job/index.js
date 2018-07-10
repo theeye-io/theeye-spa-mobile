@@ -1,10 +1,12 @@
+import App from 'ampersand-app'
 import State from 'ampersand-state'
 import AppModel from 'lib/app-model'
 import LifecycleConstants from 'constants/lifecycle'
 import { Model as User } from 'models/user'
-const config = require('config')
 
-const urlRoot = `${config.api_url}/job`
+const urlRoot = function () {
+  return `${App.config.api_url}/job`
+}
 
 const BaseJob = AppModel.extend({
   urlRoot: urlRoot,

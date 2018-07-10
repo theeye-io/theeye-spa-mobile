@@ -1,8 +1,11 @@
+import App from 'ampersand-app'
 import AppCollection from 'lib/app-collection'
 const Schema = require('./schema')
-const config = require('config')
 
-const urlRoot = `${config.api_url}/file`
+const urlRoot = function () {
+  return `${App.config.api_url}/file`
+}
+
 const Model = Schema.extend({ urlRoot: urlRoot })
 
 const Collection = AppCollection.extend({

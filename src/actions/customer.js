@@ -2,7 +2,6 @@ import App from 'ampersand-app'
 import bootbox from 'bootbox'
 import { Model as Customer } from 'models/customer'
 import after from 'lodash/after'
-const config = require('config')
 import XHR from 'lib/xhr'
 
 module.exports = {
@@ -145,7 +144,7 @@ module.exports = {
   },
   getAgentCredentials() {
     XHR.send({
-      url: `${config.app_url}/customer/agent`,
+      url: `${App.config.app_url}/customer/agent`,
       method: 'get',
       done: (response,xhr) => {
         if (xhr.status !== 200) {

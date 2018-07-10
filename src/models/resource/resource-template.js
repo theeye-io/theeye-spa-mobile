@@ -1,10 +1,12 @@
+import App from 'ampersand-app'
 import AppCollection from 'lib/app-collection'
 import Schema from './resource-schema'
 import { Model as MonitorTemplate } from './monitor-template'
 //import { Model as HostGroup } from 'models/hostgroup'
 
-const config = require('config')
-const urlRoot = `${config.api_url}/resource-template`
+const urlRoot = function () {
+  return `${App.config.api_url}/resource-template`
+}
 
 const Model = Schema.extend({
 	props: {

@@ -4,7 +4,7 @@ import UserActions from 'actions/user'
 
 module.exports = () => {
   App.state.session.on('change:logged_in', () => {
-    if (App.state.session.logged_in && window.cordova) {
+    if (App.state.session.logged_in && window.cordova && window.cordova.platformId !== 'browser') {
       App.push = window.PushNotification.init({
         android: {
           senderID: credentials.notifications.gcm.sender_id,

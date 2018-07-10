@@ -3,8 +3,9 @@ import AppModel from 'lib/app-model'
 import AppCollection from 'lib/app-collection'
 import graphlib from 'graphlib'
 
-import config from 'config'
-const urlRoot = `${config.api_v3_url}/workflow`
+const urlRoot = function () {
+  return `${App.config.api_v3_url}/workflow`
+}
 
 const formattedTags = () => {
   return {

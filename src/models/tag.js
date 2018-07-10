@@ -1,10 +1,12 @@
+import App from 'ampersand-app'
 import AppModel from 'lib/app-model'
 import AppCollection from 'lib/app-collection'
-import config from 'config'
 
 import { Model as Customer } from 'models/customer'
 
-const urlRoot = `${config.api_url}/tag` // sails users
+const urlRoot = function () {
+  return `${App.config.api_url}/tag`
+}
 
 const Model = AppModel.extend({
   urlRoot: urlRoot,

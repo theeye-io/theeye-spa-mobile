@@ -6,7 +6,7 @@ module.exports = () => {
   let refreshInterval
 
   const isPublicRoute = (pathname) => {
-    return ['login','register','activate','sociallogin'].some(route => {
+    return ['login','register','activate','sociallogin','enterprise'].some(route => {
       let routeRegex = new RegExp(route)
       return routeRegex.test(pathname)
     })
