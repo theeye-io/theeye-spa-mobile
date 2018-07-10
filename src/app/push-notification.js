@@ -10,7 +10,8 @@ module.exports = () => {
           senderID: credentials.notifications.gcm.sender_id,
           sound: "true",
           vibrate: "true",
-          forceShow: "true"
+          forceShow: "true",
+          icon: "icon_push"
         },
         browser: {
           pushServiceURL: 'http://push.api.phonegap.com/v1/push'

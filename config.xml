@@ -44,6 +44,7 @@
         <splash density="port-xxhdpi" src="res/screen/android/drawable-port-xxhdpi-screen.png" />
         <splash density="port-xxxhdpi" src="res/screen/android/drawable-port-xxxhdpi-screen.png" />
         <resource-file src="google-services.json" target="google-services.json" />
+        <hook src="scripts/push-icon.js" type="after_prepare" />
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
