@@ -119,9 +119,9 @@
       "phonegap-plugin-push": {}
     },
     "platforms": [
-      "ios",
       "android",
-      "browser"
+      "browser",
+      "ios"
     ]
   },
   "scripts": {
