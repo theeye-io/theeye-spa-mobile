@@ -42,6 +42,7 @@ brew cask install fastlane
 cd platforms/ios # <-- IMPORTANT!
 
 fastlane init
+# when asked, choose Manual setup
 ```
 
 Once initialized you'll get a `fastlane` directory. Get `Fastfile` and `Matchfile` files and copy them inside the `fastlane` directory. Usually this will be `platforms/ios/fastlane`.
@@ -60,7 +61,7 @@ If any of those commands raise a warning, try (deleting expired certs)[https://s
 ### Xcode
 On the _General_ tab, locate the _Provisioning Profile_ dropdown and select `AdHoc` and `AppStore` on _Signing (Debug)_ and _Signing (Release)_ sections respectively.
 
-Go to _Info_ tab, to the _URL Types_, add:
+Go to _Info_ tab, to the _URL Types_ section and add:
 ```
 identifier: io.theeye.mobile
 URL schemes: io.theeye.mobile
