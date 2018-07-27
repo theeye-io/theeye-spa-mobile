@@ -4,7 +4,7 @@ import moment from 'moment'
 const iconByType = {
   scraper: 'fa-cloud',
   script: 'fa-code',
-  host: 'fa-server',
+  host: 'theeye-robot-solid',
   process: 'fa-cog',
   file: 'fa-file-o',
   dstat: 'fa-bar-chart',

@@ -99,8 +99,8 @@ const ExecTask = State.extend({
       if (reporting === false) {
         bootbox.confirm({
           message: `
-          <h2>At this moment the host that runs this task is not reporting.</h2>
-          <h2>Would you like to queue this task for running when the host is restored?</h2>
+          <h2>At this moment the bot that runs this task is not reporting.</h2>
+          <h2>Would you like to queue this task for running when the bot is restored?</h2>
           `,
           backdrop: true,
           callback: (confirmed) => {

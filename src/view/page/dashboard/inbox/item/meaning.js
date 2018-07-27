@@ -11,10 +11,10 @@ module.exports = {
   failure: 'Requires your attention',
   recovered: 'Came back to normal',
   'file:restored': 'File restored',
-  'host:stats:normal': 'Host stats back to normal',
-  'host:stats:cpu:high': 'Host CPU high',
-  'host:stats:mem:high': 'Host memory high',
-  'host:stats:disk:high': 'Host disk high',
-  'host:stats:cache:high': 'Host cache high',
+  'host:stats:normal': 'Bot stats back to normal',
+  'host:stats:cpu:high': 'Bot CPU high',
+  'host:stats:mem:high': 'Bot memory high',
+  'host:stats:disk:high': 'Bot disk high',
+  'host:stats:cache:high': 'Bot cache high',
   'webhook': 'Triggered'
 }
