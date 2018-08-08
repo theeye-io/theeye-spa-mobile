@@ -7,7 +7,7 @@ import Acls from 'lib/acls'
 import html2dom from 'lib/html2dom'
 import Backdrop from 'components/backdrop'
 
-import logo from './logo.png'
+import logo from './logo-bgh.png'
 const template = require('./nav.hbs')
 
 const CustomerItemList = View.extend({

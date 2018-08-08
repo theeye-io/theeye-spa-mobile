@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.theeye.mobile" version="1.0.33" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>theEye Mobile</name>
+<widget id="io.theeye.mobile.bgh" version="1.0.17" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>BGH</name>
     <description>
-        Mobile version for theEye. The orchestator and automation platform for all IT operations.
+      BGH
     </description>
     <author email="contact@theeye.io" href="https://theeye.io/">
         THEEYE INC.
@@ -94,7 +94,7 @@
         <splash height="2732" src="res/screen/ios/Default@2x~universal~anyany.png" width="2732" />
         <preference name="BackupWebStorage" value="local" />
         <edit-config file="theEye Mobile/*-Info.plist" mode="merge" target="NSCameraUsageDescription">
-            <string>TheEye allows you to take photos of your documents and attach them to a workflow</string>
+            <string>The App allows you to take photos of your documents and attach them to a workflow</string>
         </edit-config>
         <edit-config file="*-Info.plist" mode="merge" target="NSPhotoLibraryUsageDescription">
             <string>You can attach a photo or document to a workflow</string>
@@ -108,7 +108,7 @@
     <engine name="ios" spec="^4.5.4" />
     <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
     <plugin name="cordova-plugin-googleplus" spec="5.1.1">
-        <variable name="REVERSED_CLIENT_ID" value="com.googleusercontent.apps.1072547485365-paamcaljqmvn6s0nr0ota0553q1c4a5a" />
+      <variable name="REVERSED_CLIENT_ID" value="com.googleusercontent.apps.1072547485365-ual0684b0fodltmj48soq1jmtci4gosm" />
     </plugin>
     <plugin name="cordova-plugin-splashscreen" spec="^4.1.0" />
     <plugin name="cordova-fabric-plugin" spec="^1.1.10">

@@ -1,8 +1,8 @@
 {
-  "name": "theeye-mobile",
+  "name": "bgh",
   "private": true,
   "version": "0.1.0",
-  "description": "TheEye Mobile",
+  "description": "bgh",
   "keywords": [],
   "dependencies": {
     "@dagrejs/graphlib": "2.1.4",
@@ -101,7 +101,7 @@
     "plugins": {
       "cordova-plugin-whitelist": {},
       "cordova-plugin-googleplus": {
-        "REVERSED_CLIENT_ID": "com.googleusercontent.apps.1072547485365-paamcaljqmvn6s0nr0ota0553q1c4a5a"
+        "REVERSED_CLIENT_ID": "com.googleusercontent.apps.1072547485365-ual0684b0fodltmj48soq1jmtci4gosm"
       },
       "cordova-plugin-splashscreen": {},
       "cordova-fabric-plugin": {
