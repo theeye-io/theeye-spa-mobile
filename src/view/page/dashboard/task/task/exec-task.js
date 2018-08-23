@@ -6,6 +6,7 @@ import TaskConstants from 'constants/task'
 
 import DinamicForm from 'components/dinamic-form'
 import Modalizer from 'components/modalizer'
+import AnalyticsActions from 'actions/analytics'
 
 const BaseExec = State.extend({
   props: {

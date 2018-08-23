@@ -4,7 +4,7 @@ import App from 'ampersand-app'
 import config from 'config'
 import View from 'ampersand-view'
 import $ from 'jquery'
-import StatsPanelView from './stats-panel'
+// import StatsPanelView from './stats-panel'
 import TaskRowView from './task'
 import MonitorRowView from './monitor'
 import RunAllTasksButton from './task/run-all-button'
@@ -451,7 +451,7 @@ module.exports = View.extend({
 
     this.listenToAndRun(App.state.searchbox, 'change:search', search)
 
-    TaskActions.checkPedingApprovals()
+    JobActions.checkPendingApprovals()
   },
   // renderPlusButton () {
   //   this.plusButton = new PlusMenuButton()

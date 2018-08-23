@@ -168,7 +168,7 @@ module.exports = {
       execApprovalJob.execute(true)
     }
   },
-  checkPedingApprovals () {
+  checkPendingApprovals () {
     const userApprovalTasks = App.state.tasks.models.filter((task) => {
       let check = (
         task.type === TaskConstants.TYPE_APPROVAL &&

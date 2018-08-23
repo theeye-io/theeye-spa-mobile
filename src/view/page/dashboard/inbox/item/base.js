@@ -81,7 +81,8 @@ export default View.extend({
     this.customizeItem()
   },
   sanitizeState (state) {
-    return state.toLowerCase().replace(/ /g,"_")
+    if (!state) { return '' }
+    return state.toLowerCase().replace(/ /g, '_')
   },
   render () {
     this.renderWithTemplate(this)
