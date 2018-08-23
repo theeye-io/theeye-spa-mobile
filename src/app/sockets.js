@@ -4,19 +4,23 @@
 import App from 'ampersand-app'
 import SocketsWrapper from 'lib/sockets'
 import ResourceActions from 'actions/resource'
+// import HostStatsActions from 'actions/hoststats'
 import JobActions from 'actions/job'
 import NotificationActions from 'actions/notifications'
 import DashboardActions from 'actions/dashboard'
-import SessionActions from 'actions/session'
+// import HostActions from 'actions/host'
 import TaskActions from 'actions/task'
+import SessionActions from 'actions/session'
 const logger = require('lib/logger')('app:sockets')
 import OperationsConstants from 'constants/operations'
 
 const defaultTopics = [
-  // 'host-stats',
-  // 'host-processes',
+  //'host-stats',
+  //'host-processes',
   'monitor-state',
   'job-crud',
+  //'task-crud',
+  //'task-interrupted',
   // 'host-integrations-crud', // host integrations changes
   'host-registered'
 ]

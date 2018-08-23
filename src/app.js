@@ -91,9 +91,7 @@ App.extend({
 
 document.addEventListener('deviceready', function () {
   document.addEventListener('resume', function () {
-    if (!App.state.userInteractionInProgress) {
-      App.Router.reload()
-    }
+    App.Router.reload()
   }, false)
   document.addEventListener('backbutton', function (e) {
     e.preventDefault()

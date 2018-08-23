@@ -1,10 +1,10 @@
-'use strict';
+'use strict'
 
 import App from 'ampersand-app'
 import config from 'config'
 import View from 'ampersand-view'
 import $ from 'jquery'
-import PanelView from './panel'
+import StatsPanelView from './stats-panel'
 import TaskRowView from './task'
 import MonitorRowView from './monitor'
 import RunAllTasksButton from './task/run-all-button'
@@ -12,7 +12,6 @@ import JobActions from 'actions/job'
 import TaskActions from 'actions/task'
 import WorkflowActions from 'actions/workflow'
 import bootbox from 'bootbox'
-import LIFECYCLE from 'constants/lifecycle'
 
 const logger = require('lib/logger')('view:page:dashboard')
 const ItemsFolding = require('./panel-items-fold')
@@ -21,47 +20,52 @@ const searchRows = require('lib/filter-rows')
 import MonitorsOptions from './monitors-options'
 import MonitoringOboardingPanel from './monitoring-onboarding'
 import TasksOboardingPanel from './tasks-onboarding'
-import InboxView from './inbox'
+// import PlusMenuButton from './plus-menu-button'
+import acls from 'lib/acls'
 import NotificationActions from 'actions/notifications'
 import DashboardActions from 'actions/dashboard'
 import AnalyticsActions from 'actions/analytics'
+import InboxView from './inbox'
+
+// import onBoarding from './onboarding'
 
 var slideCount, slideWidth, sliderUlWidth
 
 const runAllTasks = (rows) => {
   // doble check here
-  if (rows.length>0) {
+  if (rows.length > 0) {
     const tasks = rows.map(row => row.model)
 
     const boxTitle = `With great power comes great responsibility`
     const boxMessage = `You are going to run various tasks.<br> This operation cannot be canceled`
 
-		bootbox.confirm({
-			title: boxTitle,
-			message: boxMessage,
+    bootbox.confirm({
+      title: boxTitle,
+      message: boxMessage,
       backdrop: true,
-			buttons: {
-				confirm: {
-					label: 'Run All',
-					className: 'btn-danger'
-				},
-				cancel: {
-					label: 'Maybe another time...',
-					className: 'btn-default'
-				}
-			},
-			callback (confirmed) {
-				if (confirmed===true) {
+      buttons: {
+        confirm: {
+          label: 'Run All',
+          className: 'btn-danger'
+        },
+        cancel: {
+          label: 'Maybe another time...',
+          className: 'btn-default'
+        }
+      },
+      callback (confirmed) {
+        if (confirmed === true) {
+
           tasks.forEach(task => {
             if (/Workflow/.test(task._type)) {
-              WorkflowActions.run(task)
+              WorkflowActions.triggerExecution(task)
             } else {
-              JobActions.createFromTask(task)
+              TaskActions.execute(task)
             }
           })
-				}
-			}
-		})
+        }
+      }
+    })
   }
 }
 
@@ -81,16 +85,16 @@ module.exports = View.extend({
     groupedResources: 'collection',
     monitors: 'collection',
     tasks: 'collection',
-    notifications: 'collection',
-    renderStats: ['boolean',false,false],
-    renderTasks: ['boolean',false,true],
-    waitTimeout: ['number',false,null],
-    upandrunningSign: ['boolean',false,() => {
+    renderStats: ['boolean', false, false],
+    renderTasks: ['boolean', false, true],
+    waitTimeout: ['number', false, null],
+    upandrunningSign: ['boolean', false, () => {
       let enabled = config.dashboard.upandrunningSign
       return typeof enabled === 'boolean' ? enabled : true
     }],
     unread: ['number', true, 0],
-    showBadge: ['boolean', false, false]
+    showBadge: ['boolean', false, false],
+    notifications: 'collection',
   },
   bindings: {
     unread: [
@@ -105,13 +109,13 @@ module.exports = View.extend({
     ]
   },
   events: {
-    'click [data-hook=up-and-running] i':'hideUpAndRunning',
-    'click [data-hook=show-monitors]':'setCurrentTab',
-    'click [data-hook=show-tasks]':'setCurrentTab',
-    'click [data-hook=show-notifications]':'setCurrentTab'
+    'click [data-hook=up-and-running] i': 'hideUpAndRunning',
+    'click [data-hook=show-monitors]': 'setCurrentTab',
+    'click [data-hook=show-tasks]': 'setCurrentTab',
+    'click [data-hook=show-notifications]': 'setCurrentTab'
   },
   initialize () {
-    View.prototype.initialize.apply(this,arguments)
+    View.prototype.initialize.apply(this, arguments)
     this.listenToAndRun(this.notifications, 'add sync reset remove', this.updateCounts)
   },
   hideUpAndRunning () {
@@ -120,42 +124,24 @@ module.exports = View.extend({
     this.upandrunningSign = false
     this.stopListening(this.monitors, 'sync change:state', this.setUpAndRunningSign)
   },
-  setSliderSizes () {
-    slideCount = $('#slider ul li.tab-content').length;
-    slideWidth = $(window).width();
-    sliderUlWidth = slideCount * slideWidth;
-
-    $('#slider ul.tab-contents').css({ width: sliderUlWidth });
-    $('#slider ul.tab-contents li.tab-content').css({ width: slideWidth });
-
-    if ($('.dashboard-tabs .dashboard-tab.monitors-tab').hasClass('active')) {
-      $('#slider ul.tab-contents').css({ left: 0 })
-    }
-    if ($('.dashboard-tabs .dashboard-tab.tasks-tab').hasClass('active')) {
-      $('#slider ul.tab-contents').css({ left: - slideWidth })
-    }
-    if ($('.dashboard-tabs .dashboard-tab.notifications-tab').hasClass('active')) {
-      $('#slider ul.tab-contents').css({ left: - (slideWidth*2) })
-    }
-  },
   render () {
     var self = this
 
     this.renderWithTemplate()
 
-    this.listenToAndRun(App.state.dashboard,'change:resourcesDataSynced',() => {
-      if (App.state.dashboard.resourcesDataSynced===true) {
+    this.listenToAndRun(App.state.dashboard, 'change:resourcesDataSynced', () => {
+      if (App.state.dashboard.resourcesDataSynced === true) {
         this.renderMonitorsPanel()
-        this.stopListening(App.state.dashboard,'change:resourcesDataSynced')
+        this.stopListening(App.state.dashboard, 'change:resourcesDataSynced')
         this.setSliderSizes()
       }
     })
 
     if (this.renderTasks === true) {
-      this.listenToAndRun(App.state.dashboard,'change:tasksDataSynced',() => {
-        if (App.state.dashboard.tasksDataSynced===true) {
+      this.listenToAndRun(App.state.dashboard, 'change:tasksDataSynced', () => {
+        if (App.state.dashboard.tasksDataSynced === true) {
           this.renderTasksPanel()
-          this.stopListening(App.state.dashboard,'change:tasksDataSynced')
+          this.stopListening(App.state.dashboard, 'change:tasksDataSynced')
           this.setSliderSizes()
         }
       })
@@ -164,6 +150,21 @@ module.exports = View.extend({
       this.queryByHook('tasks-panel').remove()
     }
 
+    // if (this.renderStats === true) {
+    //   this.renderSubview(
+    //     new StatsPanelView(),
+    //     this.queryByHook('.admin-container.dashboard')
+    //   )
+    // }
+
+    // this.onBoarding = new onBoarding()
+
+    // if (acls.hasAccessLevel('admin')) {
+    //   this.renderPlusButton()
+    // }
+
+    document.getElementsByClassName('navbar')[0].style.display = 'block'
+
     // notifications inbox
     this.inbox = new InboxView({collection: this.notifications})
     this.renderSubview(
@@ -171,50 +172,32 @@ module.exports = View.extend({
       this.queryByHook('notifications-container')
     )
 
-    $(window).resize(function() {
+    $(window).resize(function () {
       self.setSliderSizes()
     })
 
-    screen.orientation.onchange = function() {
+    screen.orientation.onchange = function () {
       self.setSliderSizes()
     }
 
-    this.listenToAndRun(App.state.dashboard,'change:currentTab',() => {
+    this.listenToAndRun(App.state.dashboard, 'change:currentTab', () => {
       this.setSliderSizes()
-      if(!App.state.dashboard.currentTab)
+      if (!App.state.dashboard.currentTab) {
         return
+      }
       AnalyticsActions.trackView(App.state.dashboard.currentTab)
       switch (App.state.dashboard.currentTab) {
         case 'monitors':
           this.showTab(App.state.dashboard.currentTab, 0)
-          break;
+          break
         case 'tasks':
-        this.showTab(App.state.dashboard.currentTab, -slideWidth)
-          break;
+          this.showTab(App.state.dashboard.currentTab, -slideWidth)
+          break
         case 'notifications':
-        this.showTab(App.state.dashboard.currentTab, -(slideWidth*2))
-          break;
+          this.showTab(App.state.dashboard.currentTab, -(slideWidth * 2))
+          break
       }
     })
-  },
-  setCurrentTab(event) {
-    var tabName = event.target.dataset.hook.substr(5)
-    DashboardActions.setCurrentTab(tabName)
-  },
-  showTab(tabName, newLeft) {
-    var el = this.query(`.dashboard-tabs .dashboard-tab.${tabName}-tab`)
-    if(el.classList.contains('active'))
-      return
-    this.queryAll('.dashboard-tabs .dashboard-tab').forEach(el => el.classList.remove('active'))
-    el.classList.add('active')
-
-    $(window).scrollTop(0);
-    $('#slider ul.tab-contents').animate({
-      left: newLeft
-    }, 400, function () {
-      if(tabName === 'notifications')
-        NotificationActions.markAllRead()
-    });
   },
   setUpAndRunningSign: function () {
     if (!this.upandrunningSign) {
@@ -239,7 +222,7 @@ module.exports = View.extend({
       this.$monitorsPanel.slideUp()
     }
   },
-  sortGroupedResouces: function() {
+  sortGroupedResouces: function () {
     if (!(this.groupedResources.length > 0)) return
 
     const failing = this.getFailingMonitors()
@@ -271,7 +254,7 @@ module.exports = View.extend({
       this.monitorsFolding.hideButton()
     }
   },
-  getFailingMonitors() {
+  getFailingMonitors () {
     return this.monitors.filter(monitor => {
       let group = this.groupedResources.find(monitor)
       if (!group) return false
@@ -284,8 +267,8 @@ module.exports = View.extend({
    *
    */
   renderMonitorsPanel () {
-    this.$upandrunning = $( this.queryByHook('up-and-running') )
-    this.$monitorsPanel = $( this.queryByHook('monitors-container') )
+    this.$upandrunning = $(this.queryByHook('up-and-running'))
+    this.$monitorsPanel = $(this.queryByHook('monitors-container'))
 
     this.renderSubview(
       new MonitorsOptions(),
@@ -297,7 +280,7 @@ module.exports = View.extend({
       MonitorRowView,
       this.queryByHook('monitors-container'),
       {
-        emptyView:MonitoringOboardingPanel
+        emptyView: MonitoringOboardingPanel
       }
     )
 
@@ -332,26 +315,33 @@ module.exports = View.extend({
       }
     })
 
-    this.listenToAndRun(App.state.dashboard.groupedResources,'add change sync reset',() => {
+    // this.listenToOnce(App.state.onboarding, 'first-host-registered', () => {
+    //   this.onBoarding.onboardingStart()
+    // })
+
+    this.listenToAndRun(App.state.dashboard.groupedResources, 'add change sync reset', () => {
       var monitorOptionsElem = this.queryByHook('monitor-options')
       if (App.state.dashboard.groupedResources.length > 0) {
-        if (monitorOptionsElem)
+        if (monitorOptionsElem) {
           monitorOptionsElem.style.visibility = ''
-        if(this.monitorsFolding) {
+        }
+        if (this.monitorsFolding) {
           this.monitorsFolding.showButton()
         }
       } else {
-        if (monitorOptionsElem)
+        if (monitorOptionsElem) {
           monitorOptionsElem.style.visibility = 'hidden'
-        if(this.monitorsFolding)
+        }
+        if (this.monitorsFolding) {
           this.monitorsFolding.hideButton()
+        }
       }
       this.sortGroupedResouces()
     })
 
-    this.listenToAndRun(App.state.tasks,'add sync reset',() => {
-      if(this.tasksFolding) {
-        if (App.state.tasks.length>0) {
+    this.listenToAndRun(App.state.tasks, 'add sync reset', () => {
+      if (this.tasksFolding) {
+        if (App.state.tasks.length > 0) {
           this.tasksFolding.showButton()
         } else {
           this.tasksFolding.hideButton()
@@ -360,6 +350,10 @@ module.exports = View.extend({
     })
 
     this.listenTo(this.monitors, 'sync change:state', this.setUpAndRunningSign)
+    this.listenTo(this.monitors, 'add', () => {
+      this.monitorsFolding.unfold()
+      App.state.dashboard.groupResources()
+    })
   },
   /**
    *
@@ -372,7 +366,7 @@ module.exports = View.extend({
       TaskRowView,
       this.queryByHook('tasks-container'),
       {
-        emptyView:TasksOboardingPanel
+        emptyView: TasksOboardingPanel
       }
     )
 
@@ -382,7 +376,7 @@ module.exports = View.extend({
     runAllButton.render()
     this.registerSubview(runAllButton)
 
-    this.listenTo(runAllButton,'runall',() => {
+    this.listenTo(runAllButton, 'runall', () => {
       const rows = taskRows.views.filter(row => {
         return row.model.canExecute && row.show === true
       })
@@ -412,6 +406,8 @@ module.exports = View.extend({
           onrow: (row, isHit) => {
             if (row.model.canExecute) {
               row.show = isHit
+            } else {
+              row.show = false
             }
           },
           onsearchend: () => {
@@ -432,10 +428,17 @@ module.exports = View.extend({
               .map(row => row.model)
               .find(task => {
                 if (/Task/.test(task._type)) {
-                  const lifecycle = task.lastjob.lifecycle
-                  return (LIFECYCLE.inProgress(lifecycle) || task.hasDinamicArguments)
+                  return !task.canBatchExecute
                 }
-                return false // <<<< workflow
+                if (/Workflow/.test(task._type)) {
+                  var WFNotExecutable = false
+                  task.tasks.models.forEach(function (wfTask) {
+                    if (!wfTask.canBatchExecute) {
+                      WFNotExecutable = true
+                    }
+                  })
+                  return WFNotExecutable
+                }
               })
 
             runAllButton.disabled = (nonExecutableTasks !== undefined)
@@ -446,9 +449,50 @@ module.exports = View.extend({
       }
     }
 
-    this.listenToAndRun(App.state.searchbox,'change:search',search)
+    this.listenToAndRun(App.state.searchbox, 'change:search', search)
 
     TaskActions.checkPedingApprovals()
+  },
+  // renderPlusButton () {
+  //   this.plusButton = new PlusMenuButton()
+  //   this.renderSubview(this.plusButton)
+  // },
+  setSliderSizes () {
+    slideCount = $('#slider ul li.tab-content').length
+    slideWidth = $(window).width()
+    sliderUlWidth = slideCount * slideWidth
+
+    $('#slider ul.tab-contents').css({ width: sliderUlWidth })
+    $('#slider ul.tab-contents li.tab-content').css({ width: slideWidth })
+
+    if ($('.dashboard-tabs .dashboard-tab.monitors-tab').hasClass('active')) {
+      $('#slider ul.tab-contents').css({ left: 0 })
+    }
+    if ($('.dashboard-tabs .dashboard-tab.tasks-tab').hasClass('active')) {
+      $('#slider ul.tab-contents').css({ left: -slideWidth })
+    }
+    if ($('.dashboard-tabs .dashboard-tab.notifications-tab').hasClass('active')) {
+      $('#slider ul.tab-contents').css({ left: -(slideWidth * 2) })
+    }
+  },
+  setCurrentTab (event) {
+    var tabName = event.target.dataset.hook.substr(5)
+    DashboardActions.setCurrentTab(tabName)
+  },
+  showTab (tabName, newLeft) {
+    var el = this.query(`.dashboard-tabs .dashboard-tab.${tabName}-tab`)
+    if (el.classList.contains('active')) {
+      return
+    }
+    this.queryAll('.dashboard-tabs .dashboard-tab').forEach(el => el.classList.remove('active'))
+    el.classList.add('active')
+
+    $(window).scrollTop(0)
+    $('#slider ul.tab-contents').animate({
+      left: newLeft
+    }, 400, function () {
+      if (tabName === 'notifications') { NotificationActions.markAllRead() }
+    })
   },
   updateCounts () {
     const reducer = (acc, cur) => acc + (cur.read ? 0 : 1)

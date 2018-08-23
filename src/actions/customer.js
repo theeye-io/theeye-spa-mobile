@@ -5,7 +5,7 @@ import after from 'lodash/after'
 import XHR from 'lib/xhr'
 
 module.exports = {
-  remove: function(id){
+  remove (id) {
     var customer = new Customer({ id: id })
     customer.destroy({
       success: function(){
@@ -28,8 +28,7 @@ module.exports = {
         )
       } else {
         App.state.loader.visible = false
-        bootbox.alert('That\'s it, they are gone. Congrats.',() => {
-        })
+        bootbox.alert('That\'s it, they are gone. Congrats.',() => { })
       }
     })
 
@@ -46,12 +45,12 @@ module.exports = {
       })
     })
   },
-  update: function(id,data, modal){
+  update (id, data, modal) {
     var customer = new Customer({ id: id })
 
     data.config = {}
     if (data.elasticsearch_enabled) {
-      if(!data.elasticsearch_url) {
+      if (!data.elasticsearch_url) {
         bootbox.alert('Please provide an elasticsearch url',function(){})
         return
       }
@@ -66,31 +65,38 @@ module.exports = {
       }
     }
 
-    data.config.kibana = data.kibana
+    if (data.kibana_enabled && !data.kibana_url) {
+      bootbox.alert('Please provide a kibana url')
+      return
+    }
+    data.config.kibana = {
+      enabled: data.kibana_enabled,
+      url: data.kibana_url
+    }
 
     delete data.elasticsearch_enabled
     delete data.elasticsearch_url
     delete data.kibana
 
     customer.set(data)
-    customer.save({},{
+    customer.save({}, {
       collection: App.state.customers,
-      success: function(){
-        bootbox.alert('Customer Updated',function(){ });
+      success: function () {
+        bootbox.alert('Customer Updated')
         App.state.customers.add(customer, {merge: true})
       },
-      error: function(err) {
-        bootbox.alert('Error updating customer',function(){ });
+      error: function (err) {
+        bootbox.alert('Error updating customer')
       }
     })
     modal.hide()
   },
-  create: function(data, modal) {
+  create (data, modal) {
     var customer = new Customer()
 
     data.config = {}
     if (data.elasticsearch_enabled) {
-      if(!data.elasticsearch_url) {
+      if (!data.elasticsearch_url) {
         bootbox.alert('Please provide an elasticsearch url',function(){})
         return
       }
@@ -105,44 +111,32 @@ module.exports = {
       }
     }
 
-    data.config.kibana = data.kibana
+    if (data.kibana_enabled && !data.kibana_url) {
+      bootbox.alert('Please provide a kibana url')
+      return
+    }
+    data.config.kibana = {
+      enabled: data.kibana_enabled,
+      url: data.kibana_url
+    }
 
     delete data.elasticsearch_enabled
     delete data.elasticsearch_url
     delete data.kibana
 
     customer.set(data)
-    customer.save({},{
-      success: function() {
-        bootbox.alert('Customer Created',function(){ });
+    customer.save({}, {
+      success: function () {
+        bootbox.alert('Customer Created')
         App.state.customers.add(customer)
       },
-      error: function(err) {
-        bootbox.alert('Error creating customer',function(){ });
-      }
-    });
-    modal.hide()
-  },
-  updateConfig: function(id, config){
-    App.state.loader.visible = true
-
-    var customer = new Customer({ id: id })
-
-    customer.set({config: config})
-    customer.save({},{
-      collection: App.state.customers,
-      success: function(){
-        App.state.loader.visible = false
-        bootbox.alert('Integrations updated.',function(){ });
-        App.state.session.customer.config = customer.config
-      },
-      error: function(err) {
-        App.state.loader.visible = false
-        bootbox.alert('Error updating integrations.',function(){ });
+      error: function (err) {
+        bootbox.alert('Error creating customer')
       }
     })
+    modal.hide()
   },
-  getAgentCredentials() {
+  getAgentCredentials () {
     XHR.send({
       url: `${App.config.app_url}/customer/agent`,
       method: 'get',
@@ -150,7 +144,7 @@ module.exports = {
         if (xhr.status !== 200) {
           bootbox.alert({
             title: 'Error',
-            message: 'Error fetching agent credentials, please try again later.'
+            message: 'Error fetching bot credentials, please try again later.'
           })
         } else {
           App.state.navbar.settingsMenu.agent = response.user
@@ -159,7 +153,7 @@ module.exports = {
       fail: (err,xhr) => {
         bootbox.alert({
           title: 'Error',
-          message: 'Error fetching agent credentials, please try again later.'
+          message: 'Error fetching bot credentials, please try again later.'
         })
       }
     })

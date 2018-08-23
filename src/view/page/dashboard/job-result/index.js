@@ -45,17 +45,20 @@ const ApprovalJobResult = View.extend({
   template: `<div class="result approval-result"></div>`
 })
 
+const DummyJobResult = View.extend({
+  props: {
+    result: 'state'
+  },
+  template: `<div class="result approval-result"></div>`
+})
+
 const ScriptJobResult = View.extend({
   props: {
     result: 'state'
   },
   template: `
-  <div class="result script-result">
-    <div data-toggle="collapse" data-target="#collapsed-content">
+    <div class="result script-result">
       <h2>Script execution log</h2>
-      <span class="caret"></span>
-    </div>
-    <div id="collapsed-content" class="collapse">
       <table class="table">
         <thead> </thead>
         <tbody>
@@ -88,11 +91,10 @@ const ScriptJobResult = View.extend({
         </tbody>
       </table>
     </div>
-  </div>
-`,
+  `,
   bindings: {
     'result.code': { hook:'code' },
-    'result.lastline': { hook:'lastline' },
+    'result.lastline': { hook: 'lastline' },
     html_log: {
       type:'innerHTML',
       hook:'log'
@@ -165,7 +167,18 @@ const ScraperJobResult = View.extend({
   bindings: {
     'result.status_code': { hook: 'status_code' },
     'result.message': { hook: 'message' },
-    'result.body': { hook: 'body' },
+    body: { hook: 'body' },
+  },
+  derived: {
+    body: {
+      deps: ['result.body'],
+      fn () {
+        let body = this.result.body
+        if (body === undefined) { return 'response body not available' }
+
+        return JSON.stringify(body)
+      }
+    }
   },
   initialize () {
     View.prototype.initialize.apply(this,arguments)
@@ -230,6 +243,8 @@ const JobView = View.extend({
       this.result = new ScraperJobResult(opts)
     } else if (type === 'ApprovalJob') {
       this.result = new ApprovalJobResult(opts)
+    } else if (type === 'DummyJob') {
+      this.result = new DummyJobResult(opts)
     } else {
       if (!type) {
         console.error('unrecognised job type %s', type)

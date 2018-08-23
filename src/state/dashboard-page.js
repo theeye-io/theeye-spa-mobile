@@ -10,28 +10,27 @@ import { Workflow } from 'models/workflow'
 import AmpersandState from 'ampersand-state'
 import ModelConstants from 'constants/models'
 
+const isWorkflow = (model) => {
+  return /Workflow/.test(model._type)
+}
+
 const GroupedTasksCollection = TasksCollection.extend({
-	//comparator (m1, m2) {
-	//  if (m1._type === m2._type) {
-	//    // sort same types by name
-	//    if (m1.name<m2.name) { return -1 }
-	//    if (m1.name>m2.name) { return  1 }
-	//    return 0
-	//  } else {
-	//    // first comes workflow
-	//    if (m1._type==='Workflow') return -1
-	//    if (m2._type==='Workflow') return  1
-	//  }
-	//},
-	comparator (m1, m2) {
-		if (m1.name.toLowerCase()<m2.name.toLowerCase()) { return -1 }
-		if (m1.name.toLowerCase()>m2.name.toLowerCase()) { return  1 }
-		return 0
-	},
+  comparator (m1, m2) {
+    let m1IsWf = isWorkflow(m1)
+    let m2IsWf = isWorkflow(m2)
+
+    if ( (m1IsWf && m2IsWf) || (!m1IsWf && !m2IsWf) ) {
+      if (m1.name.toLowerCase()<m2.name.toLowerCase()) { return -1 }
+      if (m1.name.toLowerCase()>m2.name.toLowerCase()) { return  1 }
+      return 0
+    }
+    else if (m1IsWf) { return -1 }
+    else if (m2IsWf) { return 1 }
+  },
   model (attrs, options={}) {
     const taskModel = TasksCollection.prototype.model
 
-    if (attrs._type = ModelConstants.TYPE_WORKFLOW) {
+    if (attrs._type == ModelConstants.TYPE_WORKFLOW) {
       return new Workflow(attrs, options)
     } else {
       return taskModel.apply(this, arguments)
@@ -103,13 +102,13 @@ const ucfirst = (string) => {
 
 const monitorPropertyValueDescriptionMap = (value) => {
   const descriptions = {
-    'scraper': 'Web Checks',
+    'scraper': 'Web Request',
     'script': 'Scripts',
     'file': 'Files',
     'process': 'Processes',
-    'host': 'Hosts',
-    'dstat': 'Hosts Stats',
-    'psaux': 'Hosts Processes',
+    'host': 'Bots',
+    'dstat': 'Bots Stats',
+    'psaux': 'Bots Processes',
   }
 
   return ( descriptions[value] || ucfirst(value) )

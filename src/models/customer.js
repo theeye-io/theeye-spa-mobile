@@ -1,17 +1,27 @@
 import App from 'ampersand-app'
 import AppModel from 'lib/app-model'
 import AppCollection from 'lib/app-collection'
-import assign from 'lodash/assign'
+import merge from 'lodash/merge'
+//import State from 'ampersand-state'
 
 const urlRoot = function () {
   return `${App.config.app_url}/customer`
 }
 
 const defaultConfig = {
-  kibana: null,
+  kibana: {
+    enabled: false,
+    url: ''
+  },
   elasticsearch: {
     enabled: false,
     url: ''
+  },
+  ngrok: {
+    enabled: false,
+    address: '',
+    authtoken: '',
+    protocol: ''
   }
 }
 
@@ -21,26 +31,37 @@ const Model = AppModel.extend({
     id: 'string',
     name: 'string',
     description: 'string',
-    emails: ['array', false, () => { return [] }],
-    config: ['object', false, () => { return assign({}, defaultConfig) }],
+    config: ['object', true, () => {
+      return Object.assign({}, defaultConfig)
+    }],
     creation_date: 'date',
-		last_update: 'date'
+    last_update: 'date'
   },
   derived: {
     formatted_tags: {
-      deps: ['name','description','emails'],
+      deps: ['name', 'description'],
       fn () {
-        const emails = this.emails || []
         return [
           'name=' + this.name,
-          'description=' + this.description,
-          'emails=' + emails.join(', ')
+          'description=' + this.description
         ]
       }
     }
   },
-  parse(attrs) {
-    attrs.config = assign({}, defaultConfig, attrs.config)
+  parse (attrs) {
+    // MUTATE kibana config schema
+    // special `if`: when Factory parses the value, config is empty
+    if (attrs.config) {
+      attrs.config.kibana = attrs.config.kibana || defaultConfig.kibana
+      if (typeof (attrs.config.kibana) === 'string') {
+        attrs.config.kibana = {
+          enabled: true,
+          url: attrs.config.kibana || ''
+        }
+      }
+    }
+
+    attrs.config = merge({}, defaultConfig, attrs.config)
     return attrs
   }
 })

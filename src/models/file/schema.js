@@ -17,10 +17,13 @@ module.exports = AppModel.extend({
     tags: { type: 'array', default: () => { return [] } },
     input_mode: { type: 'string', default: 'editor' },
     _type: { type: 'string', default: 'File' },
+    template_id: 'string',
+    source_model_id: 'string', // temporal , is used to create templates
     data: { type: 'string' }
 	},
   session: {
     is_script: { type: 'boolean', default: false },
+    linked_models: { type: 'array', default: () => { return [] } }
   },
   parse (args) {
     if (args.data) args.data = this.decodeData(args.data)
@@ -43,6 +46,12 @@ module.exports = AppModel.extend({
     }).join(''))
   },
   derived: {
+    hasTemplate: {
+      deps: ['template_id'],
+      fn () {
+        return Boolean(this.template_id) === true
+      }
+    },
     formatted_tags: {
       deps: ['name', 'filename', 'tags', 'extension', 'mimetype'],
       fn () {

@@ -3,20 +3,13 @@
 import App from 'ampersand-app'
 import XHR from 'lib/xhr'
 import bootbox from 'bootbox'
+import TaskConstants from 'constants/task'
+import LifecycleConstants from 'constants/lifecycle'
+import JobConstants from 'constants/job'
+import { ExecApprovalJob } from 'view/page/dashboard/task/task/collapse/job/exec-job'
+import { eachSeries, each } from 'async'
+import { Factory as JobFactory } from 'models/job'
 const logger = require('lib/logger')('actions:jobs')
-import LIFECYCLE from 'constants/lifecycle'
-
-const updateJob = (job, data) => {
-  // reset
-  job.clear()
-  job.result.clear()
-  job.user.clear()
-
-  // and update
-  job.set(data)
-  job.result.set(data.result)
-  job.user.set(data.user)
-}
 
 module.exports = {
   /**
@@ -26,36 +19,61 @@ module.exports = {
    *
    */
   applyStateUpdate (data) {
-    const task_id = data.task_id
-    const task = App.state.tasks.get(task_id)
+    let workflow
+    if (data._type==='WorkflowJob') {
+      workflow = App.state.workflows.get(data.workflow_id)
 
-    if (!task) {
-      logger.error('task not found')
-      logger.error(task)
-      return
+      if (!workflow) {
+        logger.error('workflow not found in state')
+        logger.error('%o', data)
+        return
+      }
+      // workflow job created
+      workflow.jobs.add(data, { merge: true })
+    } else {
+      const task = App.state.tasks.get(data.task_id)
+
+      if (!task) {
+        logger.error('task not found in state')
+        logger.error('%o', data)
+        return
+      }
+
+      const tjob = new JobFactory(data, {})
+
+      if (task.workflow_id) {
+        // get the workflow
+        workflow = App.state.workflows.get(task.workflow_id)
+        if (!workflow) { // error
+          logger.error('workflow not found in state')
+          logger.error('%o', data)
+          return
+        }
+
+        // get the job
+        let wjob = workflow.jobs.get(tjob.workflow_job_id)
+        if (!wjob) { } // async error?
+        wjob.jobs.add(tjob)
+      } else {
+        task.jobs.add(tjob)
+      }
+      this.handleApprovalTask(tjob, task)
     }
-
-    updateJob(task.lastjob, data)
   },
+  /**
+   *
+   *
+   *
+   */
   createFromTask (task, args) {
     logger.log('creating new job with task %o', task)
 
-    XHR.send({
-      method: 'post',
-      url: `${App.config.api_url}/job`,
-      jsonData: { task: task.id, task_arguments: args },
-      headers: {
-        Accept: 'application/json;charset=UTF-8'
-      },
-      done (data,xhr) {
-        logger.debug('job created. updating task')
-        task.lastjob.set(data)
-      },
-      fail (err,xhr) {
-        bootbox.alert('Job creation failed')
-        console.log(arguments)
-      }
-    })
+    if (!task.workflow_id) {
+      createSingleTaskJob(task, args)
+    } else {
+      let workflow = App.state.workflows.get(task.workflow_id)
+      createWorkflowJob(workflow, args)
+    }
   },
   cancel (job) {
     XHR.send({
@@ -66,9 +84,7 @@ module.exports = {
       },
       done (data,xhr) {
         logger.debug('job canceled')
-        job.clear()
-        job.result.clear()
-        job.set('lifecycle',LIFECYCLE.CANCELED)
+        job.set('lifecycle', LifecycleConstants.CANCELED)
       },
       fail (err,xhr) {
         bootbox.alert('something goes wrong')
@@ -77,13 +93,17 @@ module.exports = {
     })
   },
   approve (job, args) {
+    args = args || []
     XHR.send({
       method: 'put',
       url: `${App.config.api_v3_url}/job/${job.id}/approve`,
       jsonData: {
         result: {
           state: 'success',
-          data: args || []
+          data: {
+            args,
+            output: args.map(arg => arg.value)
+          }
         }
       },
       headers: {
@@ -93,7 +113,7 @@ module.exports = {
         logger.debug('job approved')
         //job.clear()
         //job.result.clear()
-        //job.set('lifecycle', LIFECYCLE.CANCELED)
+        //job.set('lifecycle', LifecycleConstants.CANCELED)
       },
       fail (err,xhr) {
         bootbox.alert('something goes wrong')
@@ -102,13 +122,17 @@ module.exports = {
     })
   },
   reject (job, args) {
+    args = args || []
     XHR.send({
       method: 'put',
       url: `${App.config.api_v3_url}/job/${job.id}/reject`,
       jsonData: {
         result: {
           state: 'failure',
-          data: args || []
+          data: {
+            args,
+            output: args.map(arg => arg.value)
+          }
         }
       },
       headers: {
@@ -118,12 +142,110 @@ module.exports = {
         logger.debug('job rejected')
         //job.clear()
         //job.result.clear()
-        //job.set('lifecycle',LIFECYCLE.CANCELED)
+        //job.set('lifecycle',LifecycleConstants.CANCELED)
       },
       fail (err,xhr) {
         bootbox.alert('something goes wrong')
         console.log(arguments)
       }
     })
+  },
+  /**
+   *
+   * @summary check if should show approval modal
+   * @param {Object} data job model properties
+   *
+   */
+  handleApprovalTask (job, task) {
+    var requestApproval = (
+      job._type === JobConstants.APPROVAL_TYPE &&
+      task.approver_id === App.state.session.user.id &&
+      job.lifecycle === LifecycleConstants.ONHOLD
+    )
+
+    if (requestApproval) {
+      var execApprovalJob = new ExecApprovalJob({model: job})
+      execApprovalJob.execute(true)
+    }
+  },
+  checkPedingApprovals () {
+    const userApprovalTasks = App.state.tasks.models.filter((task) => {
+      let check = (
+        task.type === TaskConstants.TYPE_APPROVAL &&
+        task.approver_id === App.state.session.user.id
+      )
+      return check
+    })
+
+    each(userApprovalTasks, function (task, done) {
+      task.fetchJobs({}, done)
+    }, function (err) {
+      if (err) { return }
+
+      let pendingApprovalJobs = []
+      userApprovalTasks.forEach(function (task) {
+        task.jobs.models.forEach(function (job) {
+          if (job.lifecycle === LifecycleConstants.ONHOLD) {
+            pendingApprovalJobs.push(job)
+          }
+        })
+      })
+
+      eachSeries(pendingApprovalJobs, function (job, done) {
+        var execApprovalJob = new ExecApprovalJob({model: job})
+        execApprovalJob.execute(true, done)
+      })
+    })
   }
+}
+
+const createWorkflowJob = (workflow, args) => {
+  logger.log('creating new job with workflow %o', workflow)
+
+  let body = {
+    task: workflow.start_task_id,
+    task_arguments: args
+  }
+
+  XHR.send({
+    method: 'post',
+    url: `${App.config.api_v3_url}/workflow/${workflow.id}/job`,
+    jsonData: body,
+    headers: {
+      Accept: 'application/json;charset=UTF-8'
+    },
+    done (job, xhr) {
+      logger.debug('job created. updating workflow')
+      //wait for socket update arrive and create there
+      //workflow.jobs.add(job, { merge: true })
+    },
+    fail (err,xhr) {
+      bootbox.alert('Job creation failed')
+      console.log(arguments)
+    }
+  })
+}
+
+const createSingleTaskJob = (task, args) => {
+  let body = {
+    task: task.id,
+    task_arguments: args
+  }
+
+  XHR.send({
+    method: 'post',
+    url: `${App.config.api_url}/job`,
+    jsonData: body,
+    headers: {
+      Accept: 'application/json;charset=UTF-8'
+    },
+    done (data,xhr) {
+      logger.debug('job created. updating task')
+      task.jobs.add(data, { merge: true })
+    },
+    fail (err,xhr) {
+      bootbox.alert('Job creation failed')
+      console.log(arguments)
+    }
+  })
 }
