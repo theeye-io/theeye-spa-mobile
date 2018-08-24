@@ -17,7 +17,6 @@ const pushNotification = require('app/push-notification')
 
 import 'assets/styles'
 
-window.App = App
 // Extends our main app singleton
 App.extend({
   config: Object.assign({}, config),
