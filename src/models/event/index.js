@@ -33,7 +33,10 @@ class EmitterFactory {
   }
 }
 
-const urlRoot = `${App.config.api_url}/event`
+const urlRoot = function () {
+  return `${App.config.api_url}/event`
+}
+
 const Model = AppModel.extend({
   urlRoot: urlRoot,
   props: {

@@ -100,11 +100,11 @@ module.exports = View.extend({
     unread: [
       {
         type: 'text',
-        hook: 'badge'
+        hook: 'notifications-badge'
       },
       {
         type: 'toggle',
-        hook: 'badge'
+        hook: 'notifications-badge'
       }
     ]
   },

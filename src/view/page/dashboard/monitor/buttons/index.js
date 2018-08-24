@@ -5,7 +5,7 @@ import JobOutput from './job-output'
 import SearchActions from 'actions/searchbox'
 import ResourceActions from 'actions/resource'
 import MonitorConstants from 'constants/monitor'
-import MonitorEditView from 'view/page/monitor/edit'
+// import MonitorEditView from 'view/page/monitor/edit'
 import HelpMessages from 'language/help'
 import AnalyticsActions from 'actions/analytics'
 
@@ -79,11 +79,11 @@ const Edit = View.extend({
   onClickEdit: function(event){
     event.stopPropagation();
     event.preventDefault();
-    if (this.model.type===MonitorConstants.TYPE_NESTED) {
-      let view = new MonitorEditView(this.model)
-    } else {
-      ResourceActions.edit(this.model.id)
-    }
+    // if (this.model.type===MonitorConstants.TYPE_NESTED) {
+    //   let view = new MonitorEditView(this.model)
+    // } else {
+    //   ResourceActions.edit(this.model.id)
+    // }
     return false;
   }
 })

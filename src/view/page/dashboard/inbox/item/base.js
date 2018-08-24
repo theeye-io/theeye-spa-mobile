@@ -11,13 +11,15 @@ const iconByType = {
   psaux: 'fa-cogs',
   nested: 'fa-bullseye',
   approval: 'fa-thumbs-o-up',
-  webhook: 'fa-exchange'
+  webhook: 'fa-exchange',
+  workflow: 'fa-sitemap'
 }
 
 const resourceType = {
   Resource: 'Resource',
   ScriptJob: 'Task',
-  Webhook: 'Webhook'
+  Webhook: 'Webhook',
+  WorkflowJob: 'Workflow'
 }
 
 export default View.extend({
@@ -92,6 +94,8 @@ export default View.extend({
     var iconClass = 'circle fa '
     if (modelType === 'Webhook') {
       iconClass += ` ${iconByType['webhook']} webhook-color`
+    } else if (modelType === 'Workflow') {
+      iconClass += ` ${iconByType['workflow']} workflow-color`
     } else if (modelSubType) {
       iconClass += ` ${iconByType[modelSubType]} ${modelSubType}-color`
     } else {

@@ -4,7 +4,7 @@ import XHR from 'lib/xhr'
 import bootbox from 'bootbox'
 import TaskModel from 'models/task'
 import TaskConstants from 'constants/task'
-import TaskRouter from 'router/task'
+// import TaskRouter from 'router/task'
 import assign from 'lodash/assign'
 import after from 'lodash/after'
 import WorkflowActions from 'actions/workflow'
@@ -158,11 +158,11 @@ module.exports = {
       bootbox.alert('Your license has expired! </br> Please contact your service provider to activate the product again.')
     }
   },
-  edit (id) {
-    // route edit file action
-    let router = new TaskRouter()
-    router.route('edit', { id })
-  }
+  // edit (id) {
+  //   // route edit file action
+  //   let router = new TaskRouter()
+  //   router.route('edit', { id })
+  // }
 }
 
 /**

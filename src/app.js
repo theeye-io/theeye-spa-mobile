@@ -12,10 +12,12 @@ require('app/events')
 const sockets = require('app/sockets')
 const session = require('app/session')
 const models = require('app/models')
+const actions = require('app/actions')
 const pushNotification = require('app/push-notification')
 
 import 'assets/styles'
 
+window.App = App
 // Extends our main app singleton
 App.extend({
   config: Object.assign({}, config),
@@ -24,10 +26,11 @@ App.extend({
   init () {
     this.bindDocumentEvents()
     this.initState(() => {
+      models()
+      actions()
       this.registerComponents()
       session()
       sockets()
-      models()
       pushNotification()
     })
   },

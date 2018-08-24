@@ -1,3 +1,4 @@
+import App from 'ampersand-app'
 import State from 'ampersand-state'
 import AppCollection from 'lib/app-collection'
 import moment from 'moment'

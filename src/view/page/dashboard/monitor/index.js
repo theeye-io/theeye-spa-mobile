@@ -6,7 +6,6 @@ import FilteredSubcollection from 'ampersand-filtered-subcollection'
 import MonitorActions from 'actions/monitor'
 const CollapseContentFactory = require('./collapse-content').Factory
 import MonitorConstants from 'constants/monitor'
-import assign from 'lodash/assign'
 
 //const genericTypes = ['scraper','script','host','process','file']
 const iconByType = {

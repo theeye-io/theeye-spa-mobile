@@ -1,4 +1,3 @@
-import View from 'ampersand-view'
 import BaseItem from './base'
 import StateConstants from 'constants/states'
 import LifecycleConstants from 'constants/lifecycle'
@@ -10,13 +9,12 @@ const stateToColorClass = (state) => (StateConstants.STATES.indexOf(state)!==-1)
 module.exports = BaseItem.extend({
   customizeItem () {
     // it is a task execution
-    const type = this.model.data.model._type
 
     let state = this.sanitizeState(this.model.data.model.state)
     let lifecycle = this.model.data.model.lifecycle
 
     let hostname = ''
-    if (/ApprovalJob/.test(type)===false) {
+    if (this.model.data.model.host) {
       hostname = this.model.data.model.host.hostname
     }
 

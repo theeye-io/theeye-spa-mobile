@@ -58,38 +58,43 @@ const ScriptJobResult = View.extend({
   },
   template: `
     <div class="result script-result">
-      <h2>Script execution log</h2>
-      <table class="table">
-        <thead> </thead>
-        <tbody>
-          <tr>
-            <td>Output Code</td>
-            <td><span data-hook="code"></span></td>
-          </tr>
-          <tr>
-            <td>Killed</td>
-            <td>
-              <span class="fa" data-hook="killed"></span>
-            </td>
-          </tr>
-          <tr>
-            <td>Last Line</td>
-            <td>
-              <div class="output">
-                <pre data-hook="lastline"></pre>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Log</td>
-            <td>
-              <div class="output">
-                <pre data-hook="log"></pre>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div data-toggle="collapse" data-target="#collapsed-content">
+        <h2>Script execution log</h2>
+        <span class="caret"></span>
+      </div>
+      <div id="collapsed-content" class="collapse">
+        <table class="table">
+          <thead> </thead>
+          <tbody>
+            <tr>
+              <td>Output Code</td>
+              <td><span data-hook="code"></span></td>
+            </tr>
+            <tr>
+              <td>Killed</td>
+              <td>
+                <span class="fa" data-hook="killed"></span>
+              </td>
+            </tr>
+            <tr>
+              <td>Last Line</td>
+              <td>
+                <div class="output">
+                  <pre data-hook="lastline"></pre>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Log</td>
+              <td>
+                <div class="output">
+                  <pre data-hook="log"></pre>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   `,
   bindings: {
