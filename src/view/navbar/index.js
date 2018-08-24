@@ -12,7 +12,7 @@ const template = require('./nav.hbs')
 
 const CustomerItemList = View.extend({
   props: {
-    active: ['boolean',false,false]
+    active: ['boolean', false, false]
   },
   template: `
     <li data-hook="active" class="eyemenu-client">
@@ -38,23 +38,22 @@ const CustomerItemList = View.extend({
   },
   onClickCustomer (event) {
     event.preventDefault()
-    //event.stopPropagation()
+    // event.stopPropagation()
     NavbarActions.toggleMenu()
-    SessionActions.changeCustomer( this.model.id )
+    SessionActions.changeCustomer(this.model.id)
   },
   initialize () {
-    View.prototype.initialize.apply(this,arguments)
+    View.prototype.initialize.apply(this, arguments)
 
-    this.listenToAndRun(App.state.session,'change:logged_id',() => {
+    this.listenToAndRun(App.state.session, 'change:logged_id', () => {
       if (!App.state.session.logged_in) return
 
-      this.listenToAndRun(App.state.session.customer,'change:id',() => {
+      this.listenToAndRun(App.state.session.customer, 'change:id', () => {
         const customer = App.state.session.customer
         if (!customer.id) return
-        if (this.model.id===customer.id) {
+        if (this.model.id === customer.id) {
           this.active = true
-        }
-        else if (this.active) this.active = false
+        } else if (this.active) this.active = false
       })
     })
   }
@@ -96,31 +95,37 @@ const UserProfile = View.extend({
 const Menu = View.extend({
   template: require('./menu.hbs'),
   props: {
-    menu_switch: ['boolean',false,false],
-    customers_switch: ['boolean',false,false]
+    menu_switch: ['boolean', false, false],
+    customers_switch: ['boolean', false, false]
   },
   bindings: {
     menu_switch: {
       hook: 'menu',
       type: 'booleanClass',
       yes: 'eyemenu-panel-show',
-      no: 'eyemenu-panel-hide',
+      no: 'eyemenu-panel-hide'
     },
     customers_switch: [{
       type: 'toggle',
       hook: 'customers-container'
-    },{
+    }, {
       type: 'toggle',
       hook: 'links-container',
       invert: true
-    },{
+    }, {
       selector: '[data-hook=customers-toggle] i.fa',
       type: 'booleanClass',
       yes: 'fa-angle-up',
-      no: 'fa-angle-down',
+      no: 'fa-angle-down'
     }]
   },
   events: {
+    // 'click a[data-hook=settings-menu]': function (event) {
+    //   event.preventDefault()
+    //   event.stopPropagation()
+    //   NavbarActions.toggleSettingsMenu()
+    //   return false
+    // },
     'click [data-hook=links-container] a': function (event) {
       NavbarActions.toggleMenu()
     },
@@ -147,17 +152,18 @@ const Menu = View.extend({
     }
   },
   initialize () {
-    this.menu_switch = App.state.navbar.menuSwitch
+    // this.menu_switch = App.state.navbar.menuSwitch
     this.listenTo(App.state.navbar,'change:menuSwitch',() => {
       this.menu_switch = App.state.navbar.menuSwitch
-      if(!this.menu_switch)
+      if (!this.menu_switch) {
         this.customers_switch = false
+      }
     })
   },
   render () {
     this.renderWithTemplate(this)
     this.renderProfile()
-    this.listenToAndRun(App.state.session.user,'change:credential',() => {
+    this.listenToAndRun(App.state.session.user, 'change:credential', () => {
       this.renderMenuLinks()
     })
     this.renderBackdrop()
@@ -175,6 +181,28 @@ const Menu = View.extend({
       backdrop.visible = this.menu_switch
     })
   },
+  // setChartsLink () {
+  //   if (!Acls.hasAccessLevel('user')) {
+  //     return
+  //   } else {
+  //     var container = this.query('[data-hook=links-container] span.charts-link')
+  //
+  //     const netbrainsConfig = App.state.session.customer.config.netbrains
+  //     while (container.firstChild) {
+  //       container.removeChild(container.firstChild)
+  //     }
+  //
+  //     // handle kibana config schema change
+  //     const { kibana } = App.state.session.customer.config
+  //     if (kibana && kibana.enabled && kibana.url) {
+  //       container.appendChild(html2dom(`<li><a href="/admin/charts/kibana" class="eyemenu-ico eyemenu-charts"> Dashboard </a></li>`))
+  //     }
+  //
+  //     if (netbrainsConfig && netbrainsConfig.enabled) {
+  //       container.appendChild(html2dom(`<li><a href="/admin/charts/netbrains" class="eyemenu-ico eyemenu-charts"> Netbrains </a></li>`))
+  //     }
+  //   }
+  // },
   renderMenuLinks () {
     // on window resize recalculate links container height
     const recalculateLinksHeight = (event) => {
@@ -233,13 +261,18 @@ const Menu = View.extend({
       recalculateCustomersHeight.call(self,event)
     },false)
     window.dispatchEvent(new Event('resize'))
-  }
+  },
+  // renderSettingsMenu () {
+  //   this.settings = new SettingsMenu()
+  //   this.registerSubview(this.settings)
+  // }
 })
 
 module.exports = View.extend({
   autoRender: true,
   props: {
-    licenseExpired: ['boolean', true, false]
+    licenseExpired: ['boolean', true, false],
+    visible: ['boolean', true, true]
   },
   bindings: {
     licenseExpired: [
@@ -252,8 +285,17 @@ module.exports = View.extend({
         type: 'toggle',
         selector: '.license-header'
       }
-    ]
+    ],
+    visible: { type: 'toggle' }
   },
+  // events: {
+  //   'click a[data-hook=theeye-logo]': function (event) {
+  //     if(App.state.session.logged_in)
+  //       App.Router.navigate('dashboard')
+  //     else
+  //       window.location.href = 'https://theeye.io'
+  //   }
+  // },
   template: () => {
     return template.call(this, { logo: logo })
   },
@@ -266,11 +308,17 @@ module.exports = View.extend({
     this.listenToAndRun(App.state.session, 'change:logged_in change:licenseExpired', () => {
       this.updateLicenseStatus(App.state.session)
     })
+    this.listenToAndRun(App.state.navbar, 'change:visible', () => {
+      this.updateNavbarVisibility(App.state.navbar)
+    })
   },
   updateLicenseStatus (state) {
     const {logged_in: loggedIn, licenseExpired} = state
 
     this.licenseExpired = (licenseExpired === true && Boolean(loggedIn))
+  },
+  updateNavbarVisibility (state) {
+    this.visible = state.visible
   },
   updateState (state) {
     const logged_in = state.logged_in
@@ -295,6 +343,13 @@ module.exports = View.extend({
       this.menu,
       this.queryByHook('menu-container')
     )
+
+    // // notifications inbox
+    // this.inbox = new InboxView()
+    // this.renderSubview(
+    //   this.inbox,
+    //   this.queryByHook('buttons-container')
+    // )
   },
   destroyLoggedInComponents () {
     if (this.searchbox) this.searchbox.remove()

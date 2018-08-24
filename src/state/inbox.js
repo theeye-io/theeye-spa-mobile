@@ -1,12 +1,11 @@
-//import App from 'ampersand-app' // CANNOT BE USED HERE. IT IS NOT PRESENT UNTIL APP COMPLETE INITIALIZATION
-import State from  'ampersand-state'
+import State from 'ampersand-state'
 import { Collection as Notifications } from 'models/notification'
 import FilteredSubcollection from 'lib/filtered-subcollection'
 
 export default State.extend({
   props: {
     appState: 'state',
-    isOpen: ['boolean',false,false]
+    isOpen: ['boolean', false, false]
   },
   collections: {
     filteredNotifications: Notifications
@@ -32,7 +31,7 @@ export default State.extend({
       comparator: sortOnCreatedAt,
       filters: buildFilterArray(this.appState)
     }, true)
-  },
+  }
 })
 
 const sortOnCreatedAt = (model) => -model.createdAt

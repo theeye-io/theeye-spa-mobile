@@ -5,10 +5,10 @@ import isURL from 'validator/lib/isURL'
 import isMongoId from 'validator/lib/isMongoId'
 import TaskConstants from 'constants/task'
 import LIFECYCLE from 'constants/lifecycle'
+import Schema from './schema'
 
 //import { Model as Host } from 'models/host'
 
-const Job = require('models/job')
 const Template = require('./template')
 
 const urlRoot = function () {
@@ -36,8 +36,7 @@ const Script = Template.Script.extend({
   props: {
     hostname: 'string',
     host_id: 'string',
-    template_id: 'string',
-    lastjob_id: 'string'
+    template_id: 'string'
   },
   derived: {
     formatted_tags: formattedTags(),
@@ -48,9 +47,9 @@ const Script = Template.Script.extend({
       }
     },
     canBatchExecute: {
-      deps: ['lastjob', 'hasDinamicArguments'],
+      deps: ['hasDinamicArguments'],
       fn () {
-        return !(LIFECYCLE.inProgress(this.lastjob.lifecycle) || this.hasDinamicArguments)
+        return !this.hasDinamicArguments
       }
     },
     hasTemplate: {
@@ -67,17 +66,15 @@ const Script = Template.Script.extend({
     }
   },
   children: {
-    lastjob: Job.ScriptJob,
-    template: Template.Script,
+    template: Template.Script
   },
   serialize () {
     var serial = Template.Script.prototype.serialize.apply(this,arguments)
     serial.template = this.template ? this.template.id : null
     serial.host = this.host_id
     serial.script = this.script_id
-    delete serial.lastjob
     return serial
-  }
+  },
 })
 
 const Scraper = Template.Scraper.extend({
@@ -85,8 +82,7 @@ const Scraper = Template.Scraper.extend({
   props: {
     hostname: 'string',
     host_id: 'string',
-    template_id: 'string',
-    lastjob_id: 'string'
+    template_id: 'string'
   },
   derived: {
     formatted_tags: formattedTags(),
@@ -111,28 +107,25 @@ const Scraper = Template.Scraper.extend({
     summary: {
       deps: ['hostname','name'],
       fn () {
-        return `[${this.hostname}] web check task ${this.name}`
+        return `[${this.hostname}] web request task ${this.name}`
       }
     }
   },
   children: {
-    lastjob: Job.ScraperJob,
     template: Template.Scraper,
   },
   serialize () {
     var serial = Template.Scraper.prototype.serialize.apply(this,arguments)
     serial.template = this.template ? this.template.id : null
     serial.host = this.host_id
-    delete serial.lastjob
     return serial
-  }
+  },
 })
 
 const Approval = Template.Approval.extend({
   urlRoot,
   props: {
-    template_id: 'string',
-    lastjob_id: 'string'
+    template_id: 'string'
   },
   derived: {
     formatted_tags: () => {
@@ -168,52 +161,134 @@ const Approval = Template.Approval.extend({
     }
   },
   children: {
-    lastjob: Job.ApprovalJob,
     template: Template.Approval,
   },
   serialize () {
     var serial = Template.Approval.prototype.serialize.apply(this,arguments)
     serial.template = this.template ? this.template.id : null
-    delete serial.lastjob
+    return serial
+  },
+})
+
+const Dummy = Template.Dummy.extend({
+  urlRoot,
+  props: {
+    template_id: 'string'
+  },
+  derived: {
+    formatted_tags: () => {
+      return {
+        deps: ['name','type','description','acl','tags'],
+        fn () {
+          return [
+            'name=' + this.name,
+            'type=' + this.type,
+            'description=' + this.description,
+            'acl=' + this.acl,
+          ].concat(this.tags)
+        }
+      }
+    },
+    canExecute: {
+      deps: [],
+      fn () {
+        return true
+      }
+    },
+    hasTemplate: {
+      deps: ['template_id'],
+      fn () {
+        return Boolean(this.template_id) === true
+      }
+    },
+    summary: {
+      deps: ['name'],
+      fn () {
+        return `dummy task ${this.name}`
+      }
+    }
+  },
+  children: {
+    template: Template.Dummy,
+  },
+  serialize () {
+    var serial = Template.Dummy.prototype.serialize.apply(this,arguments)
+    serial.template = this.template ? this.template.id : null
     return serial
   }
 })
 
-const Factory = function (attrs, options={}) {
+
+const TaskFactory = function (attrs, options={}) {
   if (attrs.isCollection) return
+  if (attrs.isState) { return attrs } // already constructed
 
-  if (attrs.type == TaskConstants.TYPE_SCRIPT) {
-    return new Script(attrs, options)
+  let model
+
+  if (attrs.id) {
+    model = App.state.tasks.get(attrs.id)
+    if (model) { return model }
   }
 
-  if (attrs.type == TaskConstants.TYPE_SCRAPER) {
-    return new Scraper(attrs, options)
+  const createModel = () => {
+    let type = attrs.type
+    let model
+    switch (type) {
+      case TaskConstants.TYPE_SCRIPT:
+        model = new Script(attrs, options)
+        break;
+      case TaskConstants.TYPE_SCRAPER:
+        model = new Scraper(attrs, options)
+        break;
+      case TaskConstants.TYPE_APPROVAL:
+        model = new Approval(attrs, options)
+        break;
+      case TaskConstants.TYPE_DUMMY:
+        model = new Dummy(attrs, options)
+        break;
+      default:
+        let err = new Error(`unrecognized type ${type}`)
+        throw err
+        break;
+    }
+    return model
   }
 
-  if (attrs.type == TaskConstants.TYPE_APPROVAL) {
-    return new Approval(attrs, options)
-  }
-
-  let err = new Error(`unrecognized type ${attrs.type}`)
-  throw err
+  model = createModel()
+  return model
 }
 
 const Collection = AppCollection.extend({
   comparator: 'name',
   url: urlRoot,
-  model: Factory,
+  model: TaskFactory,
   isModel (model) {
     let isModel = (
       model instanceof Scraper ||
       model instanceof Script ||
-      model instanceof Approval
+      model instanceof Approval ||
+      model instanceof Dummy
     )
     return isModel
   }
 })
 
+exports.Task = Schema.extend({
+  session: {
+    _all: 'object' // keep properties returned by the server as is
+  },
+  urlRoot,
+  mutate () {
+    return new TaskFactory(this._all)
+  },
+  parse (attrs) {
+    this._all = attrs
+    return attrs
+  }
+})
 exports.Scraper = Scraper
 exports.Script = Script
 exports.Approval = Approval
+exports.Dummy = Dummy
 exports.Collection = Collection
-exports.Factory = Factory
+exports.Factory = TaskFactory

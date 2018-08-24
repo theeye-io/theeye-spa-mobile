@@ -84,7 +84,6 @@ const Edit = View.extend({
     // } else {
     //   ResourceActions.edit(this.model.id)
     // }
-    ResourceActions.edit(this.model.id)
     return false;
   }
 })

@@ -14,7 +14,7 @@ const EmptyView = View.extend({
 module.exports = View.extend({
   autoRender: true,
   props: {
-    title: ['string',false,'The Eye']
+    title: ['string',false,'TheEye']
   },
   template: `
   	<div class="main-container">
@@ -23,7 +23,7 @@ module.exports = View.extend({
   	</div>
   `,
   initialize () {
-    this.title = 'The Eye'
+    this.title = 'TheEye'
     View.prototype.initialize.apply(this,arguments)
   },
   updateState (state) {
@@ -58,7 +58,7 @@ module.exports = View.extend({
     this.pageSwitcher = new ViewSwitcher({
       el: this.queryByHook('page-container'),
       show (view) {
-        document.title = view.pageTitle || 'Interactar'
+        document.title = view.pageTitle || 'TheEye'
         document.scrollTop = 0
       }
     })

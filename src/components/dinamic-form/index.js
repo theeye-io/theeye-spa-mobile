@@ -5,7 +5,7 @@ import SelectView from 'components/select2-view'
 import HelpIcon from 'components/help-icon'
 import Datepicker from 'components/input-view/datepicker'
 import OneLineMediaInputView from 'components/input-view/media/oneline'
-import { Model as MediaFileModel } from 'models/media-file'
+import MediaFileModel from './media-file'
 import isURL from 'validator/lib/isURL'
 
 module.exports = FormView.extend({
@@ -126,13 +126,16 @@ module.exports = FormView.extend({
   },
   focus () {
     const eles = this.queryAll('.form-control')
-    if (eles.length==0) return
+    if (eles.length==0) { return }
+    eles[0].autofocus = true
     eles[0].focus()
   },
   render () {
     FormView.prototype.render.apply(this, arguments)
     this.query('form').classList.add('form-horizontal')
     this.renderHelpIcons()
+
+    this.focus()
   },
   renderHelpIcons () {
     this.fieldsDefinitions.forEach(def => {

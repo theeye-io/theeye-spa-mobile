@@ -11,5 +11,8 @@ module.exports = {
   },
   toggleSettingsMenu () {
     App.state.navbar.settingsMenu.toggle('visible')
+  },
+  setVisibility (visibility) {
+    App.state.navbar.visible = visibility
   }
 }

@@ -6,7 +6,7 @@ module.exports = () => {
   let refreshInterval
 
   const isPublicRoute = (pathname) => {
-    return ['login','register','activate','sociallogin','enterprise'].some(route => {
+    return ['login','register','activate','sociallogin','passwordreset','enterprise'].some(route => {
       let routeRegex = new RegExp(route)
       return routeRegex.test(pathname)
     })
@@ -21,7 +21,9 @@ module.exports = () => {
     if (logged_in === undefined) return // wait until it is set
 
     if (!App.Router.history.started()) {
-      App.Router.history.start({ pushState: (document.origin!=='null') })
+      App.Router.history.start({
+        pushState: (window.origin!=='null')
+      })
     }
 
     let publicRoute = isPublicRoute(window.location.pathname)

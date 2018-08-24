@@ -4,12 +4,13 @@ import XHR from 'lib/xhr'
 import bootbox from 'bootbox'
 import TaskModel from 'models/task'
 import TaskConstants from 'constants/task'
-import LifecycleConstants from 'constants/lifecycle'
+// import TaskRouter from 'router/task'
 import assign from 'lodash/assign'
 import after from 'lodash/after'
-import {eachSeries} from 'async'
-import {ExecApprovalTask} from 'view/page/dashboard/task/task/exec-task.js'
+import WorkflowActions from 'actions/workflow'
+import FileSaver from 'file-saver'
 const emptyCallback = () => {}
+import { ExecTask, ExecApprovalTask } from 'view/page/dashboard/task/task/exec-task.js'
 
 const logger = require('lib/logger')('actions:tasks')
 
@@ -20,11 +21,15 @@ module.exports = {
   update (id, data) {
     let task = App.state.tasks.get(id)
     task.task_arguments.reset([])
+    task.output_parameters.reset([])
     task.set(data)
     //task.task_arguments.reset(data.task_arguments)
     task.save({},{
       success: () => {
-        bootbox.alert('Task Updated')
+        if (task.workflow_id) {
+          WorkflowActions.updateAcl(task.workflow_id)
+        }
+        App.state.alerts.success('Success', 'Tasks Updated')
         App.state.events.fetch()
       },
       error: () => {
@@ -49,38 +54,19 @@ module.exports = {
     })
     hosts.forEach(host => {
       let taskData = assign({},data,{ host_id: host })
-      this.create(taskData,done)
+      create(taskData,done)
     })
   },
-  /**
-   * @param {Object} data
-   * @param {Function} next
-   */
-  create (data, next) {
-    next || (next = emptyCallback)
-    const task = TaskModel.Factory(data)
-    XHR.send({
-      url: task.urlRoot,
-      method: 'POST',
-      jsonData: task.serialize(),
-      headers: {
-        Accept: 'application/json;charset=UTF-8'
-      },
-      done (response,xhr) {
-        task.set(response)
-        App.state.tasks.add(task,{ merge: true })
-        next(null,task)
-      },
-      error (response,xhr) {
-        next(new Error())
-      },
+  create (data) {
+    create(data, function () {
+      App.state.events.fetch()
     })
   },
   remove (id) {
     const task = App.state.tasks.get(id)
     task.destroy({
       success () {
-        bootbox.alert('Task Deleted')
+        App.state.alerts.success('Success', 'Tasks Removed.')
         App.state.tasks.remove( task )
         App.state.events.fetch()
       }
@@ -94,6 +80,8 @@ module.exports = {
         script.fetch()
       }
     }
+
+    task.fetchJobs(function () { return })
   },
   massiveDelete (tasks) {
     App.state.loader.visible = true
@@ -127,25 +115,77 @@ module.exports = {
       })
     })
   },
-  checkPedingApprovals () {
-    const pendingApprovalTasks = App.state.tasks.models.filter((task) => {
-      var isPending = (
-        task.type === TaskConstants.TYPE_APPROVAL &&
-        task.approver_id === App.state.session.user.id &&
-        task.lastjob &&
-        task.lastjob.lifecycle === LifecycleConstants.ONHOLD
-      )
-
-      return isPending
+  /**
+   *
+   * @summary export task recipe
+   * @param {String} id task id
+   *
+   */
+  exportRecipe (id) {
+    let task = App.state.tasks.get(id)
+    this.fetchRecipe(id, (err, recipe) => {
+      if (!err) {
+        var jsonContent = JSON.stringify(recipe)
+        var blob = new Blob([jsonContent], { type: 'application/json' })
+        let fname = task.name.replace(/ /g,'_')
+        FileSaver.saveAs(blob, `${fname}.json`)
+      }
     })
-
-    if (pendingApprovalTasks.length) {
-      App.state.dashboard.currentTab = 'tasks'
+  },
+  fetchRecipe (id, next) {
+    next || (next = emptyCallback)
+    XHR.send({
+      method: 'GET',
+      url: `${App.config.api_v3_url}/task/${id}/recipe`,
+      done: recipe => next(null, recipe),
+      fail (err, xhr) {
+        let msg = 'Error retrieving task recipe.'
+        bootbox.alert(msg)
+        return next(new Error(msg))
+      }
+    })
+  },
+  execute (task) {
+    var execTask
+    if (!App.state.session.licenseExpired) {
+      if (task.type === TaskConstants.TYPE_APPROVAL) {
+        execTask = new ExecApprovalTask({ model: task })
+      } else {
+        execTask = new ExecTask({ model: task })
+      }
+      execTask.execute()
+    } else {
+      bootbox.alert('Your license has expired! </br> Please contact your service provider to activate the product again.')
     }
+  },
+  // edit (id) {
+  //   // route edit file action
+  //   let router = new TaskRouter()
+  //   router.route('edit', { id })
+  // }
+}
 
-    eachSeries(pendingApprovalTasks, function (task, done) {
-      var execApprovalTask = new ExecApprovalTask({model: task})
-      execApprovalTask.execute(true, done)
-    })
-  }
+/**
+ * @param {Object} data
+ * @param {Function} next
+ */
+const create = function (data, next) {
+  next || (next = emptyCallback)
+  const task = TaskModel.Factory(data)
+  XHR.send({
+    url: task.urlRoot,
+    method: 'POST',
+    jsonData: task.serialize(),
+    headers: {
+      Accept: 'application/json;charset=UTF-8'
+    },
+    done (response, xhr) {
+      task.set(response)
+      App.state.tasks.add(task, { merge: true })
+      next(null, task)
+    },
+    error (response, xhr) {
+      next(new Error())
+    }
+  })
 }

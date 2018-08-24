@@ -24,29 +24,31 @@ module.exports = View.extend({
   //  }
   //},
   initialize () {
-    View.prototype.initialize.apply(this, arguments)
+    View.prototype.initialize.apply(this,arguments)
 
     this.groupBy = App.state.dashboard.monitorsGroupBy
   },
   events: {
-    'click button': 'showMoreOptions',
-    'click li[data-hook=group-by]': 'onClickGroupBy'
+    'click button':'showMoreOptions',
+    'click li[data-hook=group-by]':'onClickGroupBy'
   },
   showMoreOptions (event) {
-    $(this.el).toggleClass('open')
+    //event.preventDefault()
+    //event.stopPropagation()
+    //return false
   },
   onClickGroupBy (event) {
     const item = event.target
     const prop = item.dataset.prop
 
-    if (prop === this.groupBy.prop) return
+    if (prop===this.groupBy.prop) return
 
     DashboardActions.setMonitorsGroupByProperty(prop)
   },
   render () {
     this.renderWithTemplate(this)
 
-    this.listenToAndRun(this, 'change:groupBy', () => {
+    this.listenToAndRun(this,'change:groupBy',() => {
       const prop = this.groupBy.prop
       if (!prop) {
         return
@@ -57,10 +59,9 @@ module.exports = View.extend({
       }
     })
 
-    this.tooltip = $(this.query('button'))
-    this.tooltip.tooltip({
+    $( this.query('button') ).tooltip({
       placement: 'left',
-      trigger: 'click'
+      trigger: 'hover'
     })
   }
 })

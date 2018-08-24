@@ -1,7 +1,7 @@
+import assign from 'lodash/assign'
 import AmpersandState from 'ampersand-state'
 import Collection from 'ampersand-collection'
 import uriFragment from 'lib/uri-fragment'
-import assign from 'lodash/assign'
 import { Collection as Webhooks } from 'models/webhook'
 import { Collection as HostGroups } from 'models/hostgroup'
 import { Collection as Users } from 'models/user'
@@ -11,22 +11,26 @@ import { Collection as Hosts } from 'models/host'
 import { Collection as Schedules } from 'models/schedule'
 import { Collection as Resources } from 'models/resource'
 import { Collection as Tasks } from 'models/task'
+import { Collection as Jobs } from 'models/job'
 import { Collection as Tags } from 'models/tag'
 import { Collection as Scripts } from 'models/file/script'
 import { Collection as Files } from 'models/file'
 import { Collection as Events } from 'models/event'
 import { Workflows } from 'models/workflow'
-
-import Alerts from 'components/alerts'
+//import { EmitterCollection as Emitters } from 'models/event'
 import { Collection as Notifications } from 'models/notification'
+import Alerts from 'components/alerts'
 
-import HostGroupPageState from './hostgroup-page'
+import HostTemplateState from './host-template'
 import DashboardPageState from './dashboard-page'
-import WorkflowPageState from './workflow-page'
-import WorkflowVisualizerState from './workflow-visualizer'
 import SessionState from './session'
 import NavbarState from './navbar'
+// import HostStatsPageState from './hoststats-page'
 import InboxState from './inbox'
+// import OnboardingState from './onboarding'
+// import ExtendedTagsState from './extended-tags'
+import WorkflowPageState from './workflow-page'
+import WorkflowVisualizerState from './workflow-visualizer'
 import LocalSettings from './local-settings'
 
 const State = AmpersandState.extend({ extraProperties: 'allow' })
@@ -44,6 +48,7 @@ const looptimes = [
   { id: 15000, text: '0.25' },
   { id: 30000, text: '0.5' },
   { id: 60000, text: '1' },
+  { id: 90000, text: '1.5' },
   { id: 300000, text: '5' },
   { id: 900000, text: '15' },
   { id: 1800000, text: '30' },
@@ -82,12 +87,15 @@ const AppState = State.extend({
     alerts: ['state',false,() => { return new Alerts() }],
     currentPage: 'state',
     dashboard: ['state',false,() => { return new DashboardPageState() }],
-    hostGroupPage: ['state',false,() => { return new HostGroupPageState() }],
+    hostGroupPage: ['state',false,() => { return new HostTemplateState() }],
     login: ['state',false,() => { return new LoginState() }],
     notify: ['state',false,() => { return new NotifyState() }],
     register: ['state',false,() => { return new RegisterState() }],
     searchbox: ['state',false,() => { return new SearchBoxState() }],
-    userInteractionInProgress: ['boolean', false, false],
+    // editor: ['state',false,() => { return new EditorState() }],
+    // onboarding: ['state', false, () => new OnboardingState()],
+    // hoststatsPage: ['state', true, () => new HostStatsPageState()],
+    // extendedTags: ['state', false, () => new ExtendedTagsState()],
     workflowPage: ['state', false, () => new WorkflowPageState()],
     workflowVisualizer: ['state', false, () => new WorkflowVisualizerState()],
     enterprise: ['state',false,() => { return new EnterpriseState() }],
@@ -148,7 +156,7 @@ const AppState = State.extend({
     this.clear() // will reset all components state
 
     // call reset on every collections.
-    // do not REPLACE REFERENCES! this will only reset (empty) collections data
+    // do not REPLACE REFERENCES! this will only reset to empty collections data
     Object.keys(this).forEach(prop => {
       let val = this[prop]
       if (val && val.isCollection) val.reset()
@@ -179,14 +187,6 @@ const SearchBoxState = State.extend({
   }
 })
 
-const LoaderState = State.extend({
-  props: {
-    visible: ['boolean',false,false],
-    progress: ['number',false,0],
-    message: ['string',false,'']
-  }
-})
-
 const NotifyState = State.extend({
   props: {
     visible: ['boolean',false,false],
@@ -198,12 +198,6 @@ const NotifyState = State.extend({
 const LoginState = State.extend({
   props: {
     showRecoverForm: ['boolean',false,false]
-  }
-})
-
-const EnterpriseState = State.extend({
-  props: {
-    showEnterpriseForm: ['boolean',false,true]
   }
 })
 
@@ -224,7 +218,28 @@ const PasswordResetState = State.extend({
 
 const RegisterState = State.extend({
   props: {
-    result: ['boolean',false,false]
+    result: ['boolean',false,false],
+    message: ['string',false,'']
+  }
+})
+
+const EditorState = State.extend({
+  props: {
+    value: ['string',false,'']
+  }
+})
+
+const LoaderState = State.extend({
+  props: {
+    visible: ['boolean',false,false],
+    progress: ['number',false,0],
+    message: ['string',false,'']
+  }
+})
+
+const EnterpriseState = State.extend({
+  props: {
+    showEnterpriseForm: ['boolean',false,true]
   }
 })
 
@@ -237,6 +252,7 @@ const _initCollections = function () {
     resources: new Resources([]),
     schedules: new Schedules(),
     tasks: new Tasks([]),
+    jobs: new Jobs([]),
     tags: new Tags([]),
     scripts: new Scripts([]),
     files: new Files([]),
