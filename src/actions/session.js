@@ -5,6 +5,8 @@ import bootbox from 'bootbox'
 import reject from 'lodash/reject'
 import AnalyticsActions from './analytics'
 
+import { Model as Customer } from 'models/customer'
+
 module.exports = {
   changeCustomer (id) {
     const customer = App.state.session.user.customers.get(id)
@@ -82,7 +84,8 @@ module.exports = {
         logger.log('user profile data fetch success')
 
         logger.log('updating profile')
-        sessionState.customer.set(user.current_customer)
+        let customer = new Customer(user.current_customer,{ parse: true })
+        sessionState.customer.set( customer.serialize() )
         sessionState.user.set(user)
         const customers = user.theeye.profile.customers
         if (customers) {

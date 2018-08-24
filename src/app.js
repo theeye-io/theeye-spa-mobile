@@ -12,6 +12,7 @@ require('app/events')
 const sockets = require('app/sockets')
 const session = require('app/session')
 const models = require('app/models')
+const actions = require('app/actions')
 const pushNotification = require('app/push-notification')
 
 import 'assets/styles'
@@ -24,10 +25,11 @@ App.extend({
   init () {
     this.bindDocumentEvents()
     this.initState(() => {
+      models()
+      actions()
       this.registerComponents()
       session()
       sockets()
-      models()
       pushNotification()
     })
   },
@@ -91,9 +93,7 @@ App.extend({
 
 document.addEventListener('deviceready', function () {
   document.addEventListener('resume', function () {
-    if (!App.state.userInteractionInProgress) {
-      App.Router.reload()
-    }
+    App.Router.reload()
   }, false)
   document.addEventListener('backbutton', function (e) {
     e.preventDefault()

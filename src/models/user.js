@@ -25,22 +25,29 @@ const NotificationSettings = State.extend({
 const Model = AppModel.extend({
   props: {
     id: 'string',
+    name: 'string',
     username: 'string',
     credential: 'string',
     email: 'string',
     enabled: ['boolean', false, false],
     invitation_token: 'string',
     createdAt: 'date',
-    updatedAt: 'date'
+    updatedAt: 'date',
+    onboardingCompleted: ['boolean', false, false]
+    //notifications: ['object', true, () => {
+    //  return {
+    //  }
+    //}]
   },
   children: {
     notifications: NotificationSettings
   },
   derived: {
     formatted_tags: {
-      deps: ['username','email','credential','enabled'],
+      deps: ['name','username','email','credential','enabled'],
       fn () {
         return [
+          'name=' + this.name,
           'username=' + this.username,
           'email=' + this.email,
           'credential=' + this.credential,

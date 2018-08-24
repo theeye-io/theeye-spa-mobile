@@ -1,15 +1,15 @@
 import View from 'ampersand-view'
-import matchesSelector from 'matches-selector'
 import dom from 'ampersand-dom'
 import 'select2'
 import $ from 'jquery'
+//import matchesSelector from 'matches-selector'
 
-function getMatches (el, selector) {
-  if (selector === '') return [el]
-  var matches = []
-  if (matchesSelector(el, selector)) matches.push(el)
-  return matches.concat(Array.prototype.slice.call(el.querySelectorAll(selector)))
-}
+//function getMatches (el, selector) {
+//  if (selector === '') return [el]
+//  var matches = []
+//  if (matchesSelector(el, selector)) matches.push(el)
+//  return matches.concat(Array.prototype.slice.call(el.querySelectorAll(selector)))
+//}
 
 module.exports = View.extend({
   template: `
@@ -21,7 +21,8 @@ module.exports = View.extend({
           <p data-hook="message-text"></p>
         </div>
       </div>
-    </div>`,
+    </div>
+  `,
   bindings: {
     visible: {
       type: 'toggle'
@@ -88,7 +89,7 @@ module.exports = View.extend({
     requiredMessage: ['string', true, 'This field is required.'],
     validClass: ['string', true, 'input-valid'],
     invalidClass: ['string', true, 'input-invalid'],
-    validityClassSelector: ['string', true, 'select'],
+    //validityClassSelector: ['string', true, 'label, select'],
     tabindex: ['number', true, 0],
     allowCreateTags: ['boolean',false,false],
     allowClear: ['boolean',false,false],
@@ -270,17 +271,22 @@ module.exports = View.extend({
     //this.$select.trigger('change')
   },
   setValue (items) {
-    if (!items) {
-      this.$select.val(null)
-    } else {
-      var data
+    var data = []
+    if (items) {
       if (items.isCollection) {
-        // items are treated as models
-        data = items.map(model => model.get(this.idAttribute))
+        if (items.length>0) {
+          // items are treated as models
+          items.forEach(model => {
+            let val = model.get(this.idAttribute)
+            if (!val) {
+              return console.warn(`${model} properties are invalid`)
+            }
+            data.push(val)
+          })
+        }
       } else if (Array.isArray(items)) {
         // items are treated as plain objects
         if (items.length>0) {
-          data = []
           items.forEach(item => {
             if (!item) { return }
 
@@ -289,17 +295,17 @@ module.exports = View.extend({
             } else if (item.hasOwnProperty(this.idAttribute)) {
               data.push(item[this.idAttribute])
             } else {
-              console.warn(`${item} object properties invalid`)
+              console.warn(`${item} object properties are invalid`)
             }
           })
-        } else data = []
+        }
       } else {
-        // items is a single item
+        // set single item
         data = items
       }
-
-      this.$select.val(data)
     }
+
+    this.$select.val(data)
     this.$select.trigger('change')
     return
   },
@@ -310,9 +316,16 @@ module.exports = View.extend({
   },
   validityClassChanged: function (view, newClass) {
     var oldClass = view.previousAttributes().validityClass
-    getMatches(this.el, this.validityClassSelector).forEach(function (match) {
-      dom.switchClass(match, oldClass, newClass)
-    })
+
+    let msg = this.queryByHook('message-text')
+    dom.switchClass(msg, oldClass, newClass)
+
+    let label = this.queryByHook('label')
+    dom.switchClass(label, oldClass, newClass)
+
+    //getMatches(this.el, this.validityClassSelector).forEach(function (match) {
+    //  dom.switchClass(match, oldClass, newClass)
+    //})
   },
   reportToParent: function () {
     if (this.parent) this.parent.update(this)

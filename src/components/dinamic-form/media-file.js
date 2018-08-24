@@ -1,6 +1,6 @@
 import AppModel from 'lib/app-model'
 
-const Model = AppModel.extend({
+export default AppModel.extend({
   props: {
     id: 'string',
     name: 'string',
@@ -9,5 +9,3 @@ const Model = AppModel.extend({
     dataUrl: 'string',
 	}
 })
-
-exports.Model = Model

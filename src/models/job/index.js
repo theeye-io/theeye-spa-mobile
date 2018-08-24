@@ -1,8 +1,11 @@
 import App from 'ampersand-app'
 import State from 'ampersand-state'
+import AppCollection from 'lib/app-collection'
 import AppModel from 'lib/app-model'
 import LifecycleConstants from 'constants/lifecycle'
+import JobConstants from 'constants/job'
 import { Model as User } from 'models/user'
+import FIELD from 'constants/field'
 
 const urlRoot = function () {
   return `${App.config.api_url}/job`
@@ -31,16 +34,45 @@ const BaseJob = AppModel.extend({
     last_update: 'date',
     event: 'any',
     event_id: 'string',
-    _type: 'string'
+    _type: 'string',
+    task: 'object',
+    task_arguments_values: 'array',
+    workflow_id: 'string',
+    workflow_job_id: 'string'
   },
   children: {
-    user: User
+    user: User,
   },
   derived: {
     inProgress: {
       deps: ['lifecycle'],
       fn () {
         return LifecycleConstants.inProgress(this.lifecycle)
+      }
+    },
+    taskModel: {
+      deps: ['task'],
+      fn () {
+        if (!this.task) { return {} }
+        return new App.Models.Task.Factory(this.task, {})
+      }
+    },
+    hasDinamicOutputs: {
+      deps: ['task'],
+      fn () {
+        if (!this.task) return false
+        let hasDinamicOutputs = Boolean(
+          this.task.output_parameters.find(arg => {
+            return arg.type && (
+              arg.type === FIELD.TYPE_INPUT ||
+              arg.type === FIELD.TYPE_SELECT ||
+              arg.type === FIELD.TYPE_DATE ||
+              arg.type === FIELD.TYPE_FILE ||
+              arg.type === FIELD.TYPE_REMOTE_OPTIONS
+            )
+          })
+        )
+        return hasDinamicOutputs
       }
     }
   }
@@ -102,6 +134,8 @@ const ScraperJobResult = State.extend({
 
 const ApprovalJobResult = State.extend({ })
 
+const DummyJobResult = State.extend({ })
+
 const NgrokIntegrationResult = State.extend({
   props: {
     url:  ['string',false,''],
@@ -112,25 +146,31 @@ const NgrokIntegrationResult = State.extend({
   }
 })
 
-exports.ScriptJob = BaseJob.extend({
+const ScriptJob = BaseJob.extend({
   children: {
     result: ScriptJobResult
   }
 })
 
-exports.ScraperJob = BaseJob.extend({
+const ScraperJob = BaseJob.extend({
   children: {
     result: ScraperJobResult
   }
 })
 
-exports.ApprovalJob = BaseJob.extend({
+const ApprovalJob = BaseJob.extend({
   children: {
     result: ApprovalJobResult
   }
 })
 
-exports.NgrokIntegrationJob = BaseJob.extend({
+const DummyJob = BaseJob.extend({
+  children: {
+    result: DummyJobResult
+  }
+})
+
+const NgrokIntegrationJob = BaseJob.extend({
   props: {
     address: 'string',
     protocol: 'string',
@@ -141,3 +181,91 @@ exports.NgrokIntegrationJob = BaseJob.extend({
     result: NgrokIntegrationResult
   }
 })
+
+const JobFactory = function (attrs, options={}) {
+  if (attrs.isCollection) { return }
+  if (attrs.isState) { return attrs } // already constructed
+
+  let model
+
+  if (attrs.id) {
+    model = App.state.jobs.get(attrs.id)
+    if (model) {
+      // reset
+      //model.clear()
+      //model.result.clear()
+
+      // and update
+      model.set(attrs)
+      if (model.result) {
+        model.result.set(attrs.result)
+      }
+      if (attrs.user) {
+        model.user.set(attrs.user)
+      }
+      return model
+    }
+  }
+
+  const createModel = () => {
+    let type = attrs._type
+    let model
+    switch (type) {
+      case JobConstants.SCRIPT_TYPE:
+        model = new ScriptJob(attrs, options)
+        break;
+      case JobConstants.SCRAPER_TYPE:
+        model = new ScraperJob(attrs, options)
+        break;
+      case JobConstants.APPROVAL_TYPE:
+        model = new ApprovalJob(attrs, options)
+        break;
+      case JobConstants.DUMMY_TYPE:
+        model = new DummyJob(attrs, options)
+        break;
+      case JobConstants.WORKFLOW_TYPE:
+        model = new WorkflowJob(attrs, options)
+        break;
+      default:
+        let err = new Error(`unrecognized type ${type}`)
+        throw err
+        break;
+    }
+    return model
+  }
+
+  model = createModel()
+  App.state.jobs.add(model, {merge:true})
+  return model
+}
+
+const Collection = AppCollection.extend({
+  comparator: 'creation_date',
+  url: urlRoot,
+  model: JobFactory,
+  isModel (model) {
+    let isModel = (
+      model instanceof ScraperJob ||
+      model instanceof ScriptJob ||
+      model instanceof ApprovalJob ||
+      model instanceof DummyJob
+    )
+    return isModel
+  }
+})
+
+const WorkflowJob = BaseJob.extend({
+  collections: {
+    jobs: Collection
+  }
+})
+
+exports.Approval = ApprovalJob
+exports.Script = ScriptJob
+exports.Scraper = ScraperJob
+exports.Dummy = DummyJob
+exports.Workflow = WorkflowJob
+exports.NgrokIntegration = NgrokIntegrationJob
+
+exports.Factory = JobFactory
+exports.Collection = Collection

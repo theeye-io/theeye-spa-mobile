@@ -4,6 +4,9 @@ import XHR from 'lib/xhr'
 import graphlib from 'graphlib'
 import { Workflow } from 'models/workflow'
 import JobActions from 'actions/job'
+import union from 'lodash/union'
+import uniq from 'lodash/uniq'
+import difference from 'lodash/difference'
 const logger = require('lib/logger')('actions:workflow')
 
 module.exports = {
@@ -33,8 +36,9 @@ module.exports = {
       success: () => {
         const workflow = App.state.workflows.get(id)
         workflow.set(tmp.serialize())
-        workflow.populated = false // reset to repopulate
+        workflow.alreadyPopulated = false // reset to repopulate
         this.populate(workflow)
+        this.updateAcl(id)
       },
       error: (err) => {
         logger.error(err)
@@ -48,6 +52,7 @@ module.exports = {
       success: () => {
         App.state.workflows.add(workflow)
         this.populate(workflow)
+        this.updateAcl(workflow.id)
       },
       error: (err) => {
         logger.error(err)
@@ -66,8 +71,8 @@ module.exports = {
     })
   },
   populate (workflow) {
-    if (workflow.populated) return
-    if (workflow.tasks.models.length!==0) return
+    if (workflow.alreadyPopulated) { return }
+    if (workflow.tasks.models.length!==0) { return }
 
     let nodes = workflow.graph.nodes()
     var tasks = []
@@ -87,14 +92,34 @@ module.exports = {
       }
     })
 
-    workflow.populated = true
+    workflow.alreadyPopulated = true
+    workflow.fetchJobs()
   },
   triggerExecution (workflow) {
     this.populate(workflow)
-    workflow.start_task.trigger('execution')
+    App.actions.task.execute(workflow.start_task)
   },
   run (workflow) {
     JobActions.createFromTask(workflow.start_task)
+  },
+  updateAcl (id) {
+    let workflow = App.state.workflows.get(id)
+    let acl, allAcls = []
+    allAcls.push(workflow.acl)
+    workflow.tasks.forEach(task => allAcls.push(task.acl))
+    acl = union.apply(union, allAcls)
+
+    if (difference(acl, workflow.acl).length>0) {
+      workflow.acl = acl
+      workflow.save({}, {
+        success: () => {
+        },
+        error: (err) => {
+          logger.error(err)
+          bootbox.alert('Something went wrong. Please refresh')
+        }
+      })
+    }
   }
 }
 

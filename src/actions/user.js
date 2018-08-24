@@ -1,6 +1,6 @@
 import bootbox from 'bootbox'
 import App from 'ampersand-app'
-import XHR from 'lib/xhr'
+import $ from 'jquery'
 const xhr = $.ajax
 
 module.exports = {
@@ -11,6 +11,7 @@ module.exports = {
     body.sendInvitation = !data.enabled
     body.email = data.email
     body.username = data.username
+    body.name = data.name
     if (data.enabled) { // create enable, need password
       body.password = data.password
       body.confirmPassword = data.confirmPassword
@@ -53,6 +54,7 @@ module.exports = {
     var body = {}
     body.email = data.email
     body.username = data.username
+    body.name = data.name
     body.credential = data.credential
     body.customers = data.customers.map(id => {
       return App.state.customers.get(id).name
@@ -70,7 +72,7 @@ module.exports = {
     req.done(function(){
       App.state.loader.visible = false
       bootbox.alert({
-        title: 'User created',
+        title: 'User updated',
         message: `You have successfully updated ${body.username}`,
         callback: () => {
           App.Router.reload()
@@ -96,11 +98,12 @@ module.exports = {
     })
 
     req.done((data, textStatus, jqXHR) => {
+      App.state.loader.visible = false
       bootbox.alert({
         title: 'User Removed',
         message: `user has been removed.`,
         callback: () => {
-          window.location.reload()
+          App.Router.reload()
         }
       })
     })
@@ -111,27 +114,6 @@ module.exports = {
         title: 'User Remove error',
         message: errorMessage
       })
-    })
-  },
-  registerDeviceToken (id, data) {
-    XHR.send({
-      url: `${App.config.app_url}/user/${id}/registerdevicetoken`,
-      method: 'post',
-      jsonData: data,
-      timeout: 5000,
-      withCredentials: true,
-      headers: {
-        Accept: 'application/json;charset=UTF-8'
-      },
-      done: (response,xhr) => {
-        if (!xhr.status == 200) {
-          console.log('Error registering user for notifications service.')
-        }
-      },
-      fail: (err,xhr) => {
-        console.log(err)
-        console.log('Error registering user for notifications service.')
-      }
     })
   }
 }

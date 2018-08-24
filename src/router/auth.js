@@ -4,6 +4,7 @@ import LoginPageView from 'view/page/login'
 import RegisterPageView from 'view/page/register'
 import ActivatePageView from 'view/page/activate'
 import ActivateOwnerPageView from 'view/page/activate-owner'
+// import PasswordResetView from 'view/page/password-reset'
 import EnterprisePageView from 'view/page/enterprise'
 import Cookies from 'js-cookie'
 import App from 'ampersand-app'
@@ -64,12 +65,45 @@ class Auth extends Route {
     }
     let access_token = query.access_token
     if (!access_token) return App.navigate('login')
-
-    //Add validation
-    App.state.session.set({
-      access_token: access_token
-    })
+    App.state.session.access_token = access_token
   }
+
+  socialConnectRoute() {
+    const query = search.get()
+    App.navigate('dashboard')
+    App.state.navbar.settingsMenu.visible = true
+    if(query.error){
+      bootbox.alert(query.error,function(){ })
+      return false
+    }
+    bootbox.alert(query.message,function(){ })
+    return false
+  }
+
+  // passwordResetRoute () {
+  //   const query = search.get()
+  //   let token = query.token
+  //   if (!token) {
+  //     return App.navigate('login')
+  //   }
+  //
+  //   XHR.send({
+  //     url: '/verifypasswordresettoken?token='+encodeURIComponent(token),
+  //     method: 'get',
+  //     done (response,xhr) {
+  //       var resetToken = response.resetToken
+  //       App.state.passwordReset.token = resetToken
+  //
+  //       var page = new PasswordResetView()
+  //       App.state.set('currentPage', page)
+  //     },
+  //     fail (err,xhr) {
+  //       App.navigate('login')
+  //       bootbox.alert('Password reset link expired.',function(){ })
+  //       return false
+  //     }
+  //   })
+  // }
 
   enterpriseRoute () {
     return new EnterprisePageView()
