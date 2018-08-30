@@ -43,6 +43,7 @@
     "cordova-plugin-buildinfo": "^2.0.1",
     "cordova-plugin-camera": "^4.0.3",
     "cordova-plugin-device": "^1.1.7",
+    "cordova-plugin-file": "^6.0.1",
     "cordova-plugin-google-analytics": "^1.8.3",
     "cordova-plugin-googleplus": "5.1.1",
     "cordova-plugin-inappbrowser": "^2.0.2",
@@ -80,6 +81,7 @@
     "localforage": "1.5.0",
     "lodash": "4.15.0",
     "matches-selector": "^1.0.0",
+    "mime-types": "^2.1.20",
     "moment": "~2.14.1",
     "moment-timezone": "^0.5.14",
     "nodemailer-smtp-transport": "~2.4.2",
@@ -117,7 +119,8 @@
       "cordova-plugin-inappbrowser": {},
       "cordova-plugin-mixpanel": {},
       "cordova-plugin-camera": {},
-      "phonegap-plugin-push": {}
+      "phonegap-plugin-push": {},
+      "cordova-plugin-file": {}
     },
     "platforms": [
       "android",
