@@ -5,6 +5,8 @@ import Modalizer from 'components/modalizer'
 import {BaseExec} from '../../exec-task.js'
 import FIELD from 'constants/field'
 import moment from 'moment'
+import fileDownloader from 'lib/file-downloader'
+import $ from 'jquery'
 
 const buildMessage = function (model) {
   let params = model.task.task_arguments
@@ -26,7 +28,7 @@ const buildMessage = function (model) {
         line += moment(values[index]).format('D-MMM-YY, HH:mm:ss')
         break
       case FIELD.TYPE_FILE:
-        line += `<a href='${values[index]}' download='file${index + 1}'>Download</a>`
+        line += `<a class='file-download' href='${values[index]}' download='file${index + 1}'>Download</a>`
         break
       case FIELD.TYPE_SELECT:
         break
@@ -159,6 +161,11 @@ const ExecApprovalJob = BaseExec.extend({
       message: message,
       backdrop: true,
       buttons: buttons
+    })
+
+    $('.file-download').click(function () {
+      let data = $(this)[0].href
+      fileDownloader.initDownload(data)
     })
   },
   updateApprovalRequest (done) {
