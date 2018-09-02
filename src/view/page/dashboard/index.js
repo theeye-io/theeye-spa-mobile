@@ -301,7 +301,7 @@ module.exports = View.extend({
             row.show = Boolean(hit)
           },
           onsearchend: () => {
-            this.monitorRows.views.forEach(row => row.show = true)
+            this.monitorRows.views.forEach(row => (row.show = true))
           }
         })
       }
@@ -410,7 +410,7 @@ module.exports = View.extend({
             }
           },
           onsearchend: () => {
-            taskRows.views.forEach(row => row.show = true)
+            taskRows.views.forEach(row => (row.show = true))
           }
         })
 
