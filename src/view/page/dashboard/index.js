@@ -13,7 +13,7 @@ import TaskActions from 'actions/task'
 import WorkflowActions from 'actions/workflow'
 import bootbox from 'bootbox'
 
-const logger = require('lib/logger')('view:page:dashboard')
+// const logger = require('lib/logger')('view:page:dashboard')
 const ItemsFolding = require('./panel-items-fold')
 const searchRows = require('lib/filter-rows')
 
@@ -21,8 +21,8 @@ import MonitorsOptions from './monitors-options'
 import MonitoringOboardingPanel from './monitoring-onboarding'
 import TasksOboardingPanel from './tasks-onboarding'
 // import PlusMenuButton from './plus-menu-button'
-import acls from 'lib/acls'
-import NotificationActions from 'actions/notifications'
+// import acls from 'lib/acls'
+// import NotificationActions from 'actions/notifications'
 import DashboardActions from 'actions/dashboard'
 import AnalyticsActions from 'actions/analytics'
 import InboxView from './inbox'
@@ -55,7 +55,6 @@ const runAllTasks = (rows) => {
       },
       callback (confirmed) {
         if (confirmed === true) {
-
           tasks.forEach(task => {
             if (/Workflow/.test(task._type)) {
               WorkflowActions.triggerExecution(task)
@@ -94,7 +93,7 @@ module.exports = View.extend({
     }],
     unread: ['number', true, 0],
     showBadge: ['boolean', false, false],
-    notifications: 'collection',
+    notifications: 'collection'
   },
   bindings: {
     unread: [

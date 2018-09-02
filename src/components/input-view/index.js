@@ -22,8 +22,8 @@ module.exports = InputView.extend({
     </div>
   `,
   props: {
-    visible: ['boolean',false,true ],
-    styles: ['string',false,'form-group']
+    visible: [ 'boolean', false, true ],
+    styles: [ 'string', false, 'form-group' ]
   },
   bindings: assign({}, InputView.prototype.bindings, {
     visible: {
