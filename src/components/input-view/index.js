@@ -14,7 +14,7 @@ module.exports = InputView.extend({
     <div>
       <label class="col-sm-3 control-label" data-hook="label"></label>
       <div data-hook="input-container" class="col-sm-9">
-        <input class="form-control form-input">
+        <input autocapitalize="off" autocorrect="off" class="form-control form-input">
         <div data-hook="message-container" class="message message-below message-error">
           <p data-hook="message-text"></p>
         </div>
