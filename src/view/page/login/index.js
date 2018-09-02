@@ -10,6 +10,7 @@ const LoginForm = FormView.extend({
       new InputView({
         placeholder: 'User or email',
         name: 'identifier',
+        type: 'email',
         required: true,
         invalidClass: 'text-danger',
         validityClassSelector: '.control-label',
