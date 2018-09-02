@@ -175,7 +175,7 @@ module.exports = View.extend({
       self.setSliderSizes()
     })
 
-    screen.orientation.onchange = function () {
+    window.screen.orientation.onchange = function () {
       self.setSliderSizes()
     }
 
