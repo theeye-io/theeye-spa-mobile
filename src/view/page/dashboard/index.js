@@ -496,11 +496,13 @@ module.exports = View.extend({
     el.classList.add('active')
 
     $(window).scrollTop(0)
-    $('#slider ul.tab-contents').animate({
-      left: newLeft
-    }, 400, function () {
-      if (tabName === 'notifications') { NotificationActions.markAllRead() }
-    })
+
+    this.ulTabContents.style.left = `${newLeft}px`
+    // $('#slider ul.tab-contents').animate({
+    //   left: newLeft
+    // }, 400, function () {
+    //   if (tabName === 'notifications') { NotificationActions.markAllRead() }
+    // })
   },
   updateCounts () {
     const reducer = (acc, cur) => acc + (cur.read ? 0 : 1)
