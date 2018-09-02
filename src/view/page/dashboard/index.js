@@ -128,6 +128,10 @@ module.exports = View.extend({
 
     this.renderWithTemplate()
 
+    // keep a reference to the tabs element so we don't query
+    // the dom everytime (on this.showTab and this.setSliderSizes)
+    this.ulTabContents = this.query('#slider ul.tab-contents')
+
     this.listenToAndRun(App.state.dashboard, 'change:resourcesDataSynced', () => {
       if (App.state.dashboard.resourcesDataSynced === true) {
         this.renderMonitorsPanel()
@@ -461,17 +465,22 @@ module.exports = View.extend({
     slideWidth = $(window).width()
     sliderUlWidth = slideCount * slideWidth
 
-    $('#slider ul.tab-contents').css({ width: sliderUlWidth })
-    $('#slider ul.tab-contents li.tab-content').css({ width: slideWidth })
+    this.ulTabContents.style.width = `${sliderUlWidth}px`
+    // $('#slider ul.tab-contents').css({ width: sliderUlWidth })
+    this.ulTabContents.querySelectorAll('li.tab-content').forEach(el => (el.style.width = `${slideWidth}px`))
+    // $('#slider ul.tab-contents li.tab-content').css({ width: slideWidth })
 
     if ($('.dashboard-tabs .dashboard-tab.monitors-tab').hasClass('active')) {
-      $('#slider ul.tab-contents').css({ left: 0 })
+      this.ulTabContents.style.left = `0px`
+      // $('#slider ul.tab-contents').css({ left: 0 })
     }
     if ($('.dashboard-tabs .dashboard-tab.tasks-tab').hasClass('active')) {
-      $('#slider ul.tab-contents').css({ left: -slideWidth })
+      this.ulTabContents.style.left = `${-slideWidth}px`
+      // $('#slider ul.tab-contents').css({ left: -slideWidth })
     }
     if ($('.dashboard-tabs .dashboard-tab.notifications-tab').hasClass('active')) {
-      $('#slider ul.tab-contents').css({ left: -(slideWidth * 2) })
+      this.ulTabContents.style.left = `${-slideWidth * 2}px`
+      // $('#slider ul.tab-contents').css({ left: -(slideWidth * 2) })
     }
   },
   setCurrentTab (event) {
