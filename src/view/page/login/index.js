@@ -2,15 +2,15 @@ import View from 'ampersand-view'
 import FormView from 'ampersand-form-view'
 import InputView from 'ampersand-input-view'
 import AuthActions from 'actions/auth'
-import App from 'ampersand-app'
 
 const LoginForm = FormView.extend({
   autoRender: true,
-  initialize() {
+  initialize () {
     this.fields = [
       new InputView({
         placeholder: 'User or email',
         name: 'identifier',
+        type: 'email',
         required: true,
         invalidClass: 'text-danger',
         validityClassSelector: '.control-label',
@@ -48,7 +48,7 @@ module.exports = View.extend({
       }
     }
   },
-  render() {
+  render () {
     this.renderWithTemplate(this)
 
     this.loginForm = new LoginForm({})
