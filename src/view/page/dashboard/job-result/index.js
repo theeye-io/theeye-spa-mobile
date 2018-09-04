@@ -29,12 +29,6 @@ module.exports = Modalizer.extend({
       this.bodyView.remove()
       delete this.bodyView
     })
-
-    //this.listenTo(this.job,'change:result',() => {
-    //  if (!this.job.result) return
-    //  this.bodyView.json = this.job.result
-    //  this.bodyView.render()
-    //})
   }
 })
 
@@ -116,9 +110,11 @@ const ScriptJobResult = View.extend({
     html_log: {
       deps: ['result.log'],
       fn () {
-        if (!this.result||!this.result.log) return ''
+        if (!this.result||!this.result.log) { return '' }
+        let text = this.result.log
+        //let node = document.createTextNode(this.result.log)
         let converter = new ansi2html()
-        return converter.toHtml(this.result.log)
+        return converter.toHtml(escapeHtml(text))
       }
     },
     html_lastline: {
@@ -179,8 +175,9 @@ const ScraperJobResult = View.extend({
       deps: ['result.body'],
       fn () {
         let body = this.result.body
-        if (body === undefined) { return 'response body not available' }
-
+        if (body === undefined) {
+          return 'response body not available'
+        }
         return JSON.stringify(body)
       }
     }
@@ -259,3 +256,24 @@ const JobView = View.extend({
     this.renderSubview(this.result, this.queryByHook('output-container'))
   }
 })
+
+function stripHtml (html) {
+  if (DOMParser) {
+    var doc = new DOMParser().parseFromString(html, 'text/html')
+    return doc.body.textContent || ""
+  } else {
+    return escapeHtml(html)
+  }
+}
+
+function escapeHtml (html) {
+  var map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+
+  return html.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
