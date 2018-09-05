@@ -122,7 +122,9 @@
       "cordova-plugin-buildinfo": {},
       "cordova-plugin-inappbrowser": {},
       "cordova-plugin-mixpanel": {},
-      "cordova-plugin-camera": {},
+      "cordova-plugin-camera": {
+        "CAMERA_USAGE_DESCRIPTION": "You can attach a photo or document to a workflow"
+      },
       "phonegap-plugin-push": {},
       "cordova-plugin-file": {},
       "cordova-open": {}
