@@ -1,5 +1,6 @@
 import mime from 'mime-types'
 import bootbox from 'bootbox'
+import fileOpener from 'lib/file-opener'
 
 const b64toBlob = function (b64Data, contentType, sliceSize) {
   contentType = contentType || ''
@@ -31,31 +32,25 @@ const saveFile = function (filename, content, contentType) {
   var DataBlob = b64toBlob(content, contentType)
 
   var storageLocation = ''
-  switch (device.platform) {
+  switch (window.device.platform) {
     case 'Android':
       storageLocation = 'file:///storage/emulated/0/'
       break
     case 'iOS':
-      storageLocation = cordova.file.documentsDirectory
+      storageLocation = window.cordova.file.documentsDirectory
       break
   }
 
-  console.log('Starting to write the file.')
   window.resolveLocalFileSystemURL(storageLocation, function (fileSystem) {
-    console.log('Access to the file system directory granted succesfully.')
     fileSystem.getDirectory('Download', {create: true, exclusive: false}, function (downloadsDirectory) {
-      console.log('Access to the downloads directory granted succesfully.')
       downloadsDirectory.getFile(filename, {create: true}, function (file) {
-        console.log('File created succesfully.')
         file.createWriter(function (fileWriter) {
           fileWriter.onwriteend = function () {
-            console.log('File saved succesfully.')
-            bootbox.alert('File saved to downloads folder (' + storageLocation + 'Download)')
+            fileOpener.open(filename)
           }
-          console.log('Writing content to file.')
           fileWriter.write(DataBlob)
         }, function () {
-          console.log('Unable to save file to path ' + storageLocation + 'Download')
+          bootbox.alert('Error downloading file.')
         })
       })
     })
