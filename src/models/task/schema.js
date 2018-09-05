@@ -44,7 +44,8 @@ const Schema = AppModel.extend({
   session: {
     hasDinamicArguments: 'boolean',
     hasDinamicOutputs: 'boolean',
-    alreadyFetched: ['boolean', false, false]
+    alreadyFetched: ['boolean', false, false],
+    inProgressJobs: 'number'
   },
   collections: {
     //triggers: Events,
@@ -61,6 +62,19 @@ const Schema = AppModel.extend({
     this.listenToAndRun(this.schedules, 'reset sync remove add', () => {
       this.hasSchedules = this.schedules.length > 0
     })
+
+    this.listenToAndRun(
+      this.jobs,
+      'add change sync reset remove',
+      function () {
+        let inProgressJobs = this.jobs.filter(job => job.inProgress)
+        if (inProgressJobs.length > 0) {
+          this.inProgressJobs = inProgressJobs.length
+        } else {
+          this.inProgressJobs = 0
+        }
+      }
+    )
 
     this.listenToAndRun(this.task_arguments, 'add remove change reset sync', () => {
       this.hasDinamicArguments = Boolean(
@@ -109,6 +123,8 @@ const Schema = AppModel.extend({
           } else return eve // this is the id string
         })
     }
+
+    delete serial.jobs
 
     return serial
   },

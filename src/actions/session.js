@@ -2,8 +2,11 @@ import App from 'ampersand-app'
 import XHR from 'lib/xhr'
 const logger = require('lib/logger')('actions:session')
 import bootbox from 'bootbox'
+import assign from 'lodash/assign'
 import reject from 'lodash/reject'
 import AnalyticsActions from './analytics'
+
+import jwtDecode from 'jwt-decode'
 
 import { Model as Customer } from 'models/customer'
 
@@ -18,14 +21,11 @@ module.exports = {
     XHR.send({
       method: 'post',
       url: `${App.config.app_url}/session/customer/${customer.name}`,
-      withCredentials: true,
-      timeout: 5000,
       headers: {
         Accept: 'application/json;charset=UTF-8'
       },
       done: (data,xhr) => {
         App.state.loader.visible = false
-        // replace current customer
         App.customerChange(customer)
       },
       fail: (err,xhr) => {
@@ -53,33 +53,41 @@ module.exports = {
       })
     }
   },
+  verifyAccessToken (token, done) {
+    const isValidFormat = Boolean(token)
+    if (!isValidFormat) { // empty or not set
+      return done( new Error('invalid token format') )
+    }
+
+    let decoded = jwtDecode(token)
+    let date = new Date()
+
+    if ((decoded.exp * 1000) <= date.getTime()) {
+      return done( new Error('session expired') )
+    }
+
+    return done()
+  },
   refreshAccessToken () {
     logger.debug('obtaining new acccess token..')
 
     XHR.send({
       method: 'post',
       url: `${App.config.app_url}/session/refresh`,
-      withCredentials: true,
-      timeout: 5000,
       headers: {
         Accept: 'application/json;charset=UTF-8'
       },
-      done: (data,xhr) => {
+      done: (data, xhr) => {
         App.state.session.access_token = data.access_token
-        //App.state.session.set({
-        //  access_token: data.access_token
-        //},{ silent: true })
-      },
-      fail: (err,xhr) => {
       }
     })
   },
-  fetchProfile () {
+  fetchProfile (next) {
+    next||(next=function(){})
     const sessionState = App.state.session
     XHR.send({
       method: 'get',
       url: `${App.config.app_url}/session/profile`,
-      withCredentials: true,
       done: (user) => {
         logger.log('user profile data fetch success')
 
@@ -94,11 +102,13 @@ module.exports = {
         }
         AnalyticsActions.setMixpanelUser(user)
         sessionState.logged_in = true
+        next()
       },
-      fail: (err) => {
+      fail: (err,xhr) => {
         logger.log('user data fetch failure')
-        sessionState.logged_in = false
         sessionState.access_token = null
+        sessionState.logged_in = false
+        next(err)
       }
     })
   },
@@ -171,6 +181,31 @@ module.exports = {
 
     this.updateSettings({ desktopExcludes: newSettings }, () => {
       App.state.session.user.trigger('change:notifications')
+    })
+  },
+  updateCustomerIntegrations (data) {
+    var id = App.state.session.customer.id
+    App.state.loader.visible = true
+    XHR.send({
+      url: `${App.config.app_url}/customer/${id}/config`,
+      method: 'put',
+      jsonData: data,
+      headers: {
+        Accept: 'application/json;charset=UTF-8'
+      },
+      done (response, xhr) {
+        App.state.loader.visible = false
+        if (xhr.status == 200) {
+          bootbox.alert('Integrations updated.')
+          App.state.session.customer.config = response
+        } else {
+          bootbox.alert('Error updating integrations.')
+        }
+      },
+      fail (err, xhr) {
+        App.state.loader.visible = false
+        bootbox.alert('Error updating integrations.')
+      }
     })
   }
 }

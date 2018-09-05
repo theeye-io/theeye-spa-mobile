@@ -7,6 +7,7 @@ import ResourceActions from 'actions/resource'
 import MonitorConstants from 'constants/monitor'
 // import MonitorEditView from 'view/page/monitor/edit'
 import HelpMessages from 'language/help'
+import $ from 'jquery'
 import AnalyticsActions from 'actions/analytics'
 
 const Mute = View.extend({
@@ -56,6 +57,7 @@ const Mute = View.extend({
   onClickButton: function(event){
     event.stopPropagation();
     event.preventDefault();
+    $('.dropdown.open .dropdown-toggle').dropdown('toggle')
 
     if (this.is_muted) {
       ResourceActions.unmute(this.model.id)
@@ -79,6 +81,7 @@ const Edit = View.extend({
   onClickEdit: function(event){
     event.stopPropagation();
     event.preventDefault();
+    $('.dropdown.open .dropdown-toggle').dropdown('toggle')
     // if (this.model.type===MonitorConstants.TYPE_NESTED) {
     //   let view = new MonitorEditView(this.model)
     // } else {
@@ -100,6 +103,8 @@ const Workflow = View.extend({
   onClickWorkflow: function(event){
     event.stopPropagation();
     event.preventDefault();
+    $('.dropdown.open .dropdown-toggle').dropdown('toggle')
+
     ResourceActions.workflow(this.model.monitor.id)
     return false;
   },
@@ -117,6 +122,8 @@ const Search = View.extend({
   onClickSearch: function(event){
     event.stopPropagation();
     event.preventDefault();
+    $('.dropdown.open .dropdown-toggle').dropdown('toggle')
+
     SearchActions.search(this.model.name)
     return false;
   },
@@ -134,6 +141,7 @@ const LastEvent = View.extend({
   onClickLastEvent (event) {
     event.preventDefault();
     event.stopPropagation();
+    $('.dropdown.open .dropdown-toggle').dropdown('toggle')
 
     AnalyticsActions.trackView('executionOutputMonitor')
     AnalyticsActions.trackMixpanelEvent('Check monitor output', {output: this.model.last_event || 'it is empty'})
@@ -162,6 +170,8 @@ const HostStats = View.extend({
   onClickStats (event) {
     event.stopPropagation();
     event.preventDefault();
+    $('.dropdown.open .dropdown-toggle').dropdown('toggle')
+
     // esto no es un action, deberia ser un navigate nomas
     // HostActions.stats(this.model.host_id)
     App.navigate('/admin/hoststats/' + this.model.host_id)

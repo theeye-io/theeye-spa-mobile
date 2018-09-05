@@ -4,8 +4,10 @@ import SearchActions from 'actions/searchbox'
 import ExecTaskButton from '../task-exec-button'
 // import EditTaskButton from 'view/page/task/buttons/edit'
 // import CopyTaskButton from 'view/page/task/buttons/copy'
+// import DeleteTaskButton from 'view/page/task/buttons/delete'
 import CollapsibleRow from 'view/page/dashboard/task/collapsible-row'
 import acls from 'lib/acls'
+import $ from 'jquery'
 
 module.exports = CollapsibleRow.extend({
   onClickToggleCollapse (event) {
@@ -57,6 +59,8 @@ const TaskButtonsView = View.extend({
   onClickSearch (event) {
     event.preventDefault()
     event.stopPropagation()
+    $('.dropdown.open .dropdown-toggle').dropdown('toggle')
+
     SearchActions.search(this.model.name)
     return false
   },
@@ -69,6 +73,9 @@ const TaskButtonsView = View.extend({
     //
     //   var copyButton = new CopyTaskButton({ model: this.model })
     //   this.renderSubview(copyButton, this.queryByHook('copy-button'))
+    //
+    //   var deleteButton = new DeleteTaskButton({ model: this.model })
+    //   this.renderSubview(deleteButton, this.queryByHook('delete-button'))
     // }
   }
 })
