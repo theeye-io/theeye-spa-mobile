@@ -13,7 +13,7 @@ import TaskActions from 'actions/task'
 import WorkflowActions from 'actions/workflow'
 import bootbox from 'bootbox'
 
-const logger = require('lib/logger')('view:page:dashboard')
+// const logger = require('lib/logger')('view:page:dashboard')
 const ItemsFolding = require('./panel-items-fold')
 const searchRows = require('lib/filter-rows')
 
@@ -21,8 +21,8 @@ import MonitorsOptions from './monitors-options'
 import MonitoringOboardingPanel from './monitoring-onboarding'
 import TasksOboardingPanel from './tasks-onboarding'
 // import PlusMenuButton from './plus-menu-button'
-import acls from 'lib/acls'
-import NotificationActions from 'actions/notifications'
+// import acls from 'lib/acls'
+// import NotificationActions from 'actions/notifications'
 import DashboardActions from 'actions/dashboard'
 import AnalyticsActions from 'actions/analytics'
 import InboxView from './inbox'
@@ -55,7 +55,6 @@ const runAllTasks = (rows) => {
       },
       callback (confirmed) {
         if (confirmed === true) {
-
           tasks.forEach(task => {
             if (/Workflow/.test(task._type)) {
               WorkflowActions.triggerExecution(task)
@@ -94,7 +93,7 @@ module.exports = View.extend({
     }],
     unread: ['number', true, 0],
     showBadge: ['boolean', false, false],
-    notifications: 'collection',
+    notifications: 'collection'
   },
   bindings: {
     unread: [
@@ -128,6 +127,10 @@ module.exports = View.extend({
     var self = this
 
     this.renderWithTemplate()
+
+    // keep a reference to the tabs element so we don't query
+    // the dom everytime (on this.showTab and this.setSliderSizes)
+    this.ulTabContents = this.query('#slider ul.tab-contents')
 
     this.listenToAndRun(App.state.dashboard, 'change:resourcesDataSynced', () => {
       if (App.state.dashboard.resourcesDataSynced === true) {
@@ -176,7 +179,7 @@ module.exports = View.extend({
       self.setSliderSizes()
     })
 
-    screen.orientation.onchange = function () {
+    window.screen.orientation.onchange = function () {
       self.setSliderSizes()
     }
 
@@ -302,7 +305,7 @@ module.exports = View.extend({
             row.show = Boolean(hit)
           },
           onsearchend: () => {
-            this.monitorRows.views.forEach(row => row.show = true)
+            this.monitorRows.views.forEach(row => (row.show = true))
           }
         })
       }
@@ -411,7 +414,7 @@ module.exports = View.extend({
             }
           },
           onsearchend: () => {
-            taskRows.views.forEach(row => row.show = true)
+            taskRows.views.forEach(row => (row.show = true))
           }
         })
 
@@ -462,17 +465,22 @@ module.exports = View.extend({
     slideWidth = $(window).width()
     sliderUlWidth = slideCount * slideWidth
 
-    $('#slider ul.tab-contents').css({ width: sliderUlWidth })
-    $('#slider ul.tab-contents li.tab-content').css({ width: slideWidth })
+    this.ulTabContents.style.width = `${sliderUlWidth}px`
+    // $('#slider ul.tab-contents').css({ width: sliderUlWidth })
+    this.ulTabContents.querySelectorAll('li.tab-content').forEach(el => (el.style.width = `${slideWidth}px`))
+    // $('#slider ul.tab-contents li.tab-content').css({ width: slideWidth })
 
     if ($('.dashboard-tabs .dashboard-tab.monitors-tab').hasClass('active')) {
-      $('#slider ul.tab-contents').css({ left: 0 })
+      this.ulTabContents.style.left = `0px`
+      // $('#slider ul.tab-contents').css({ left: 0 })
     }
     if ($('.dashboard-tabs .dashboard-tab.tasks-tab').hasClass('active')) {
-      $('#slider ul.tab-contents').css({ left: -slideWidth })
+      this.ulTabContents.style.left = `${-slideWidth}px`
+      // $('#slider ul.tab-contents').css({ left: -slideWidth })
     }
     if ($('.dashboard-tabs .dashboard-tab.notifications-tab').hasClass('active')) {
-      $('#slider ul.tab-contents').css({ left: -(slideWidth * 2) })
+      this.ulTabContents.style.left = `${-slideWidth * 2}px`
+      // $('#slider ul.tab-contents').css({ left: -(slideWidth * 2) })
     }
   },
   setCurrentTab (event) {
@@ -488,11 +496,13 @@ module.exports = View.extend({
     el.classList.add('active')
 
     $(window).scrollTop(0)
-    $('#slider ul.tab-contents').animate({
-      left: newLeft
-    }, 400, function () {
-      if (tabName === 'notifications') { NotificationActions.markAllRead() }
-    })
+
+    this.ulTabContents.style.left = `${newLeft}px`
+    // $('#slider ul.tab-contents').animate({
+    //   left: newLeft
+    // }, 400, function () {
+    //   if (tabName === 'notifications') { NotificationActions.markAllRead() }
+    // })
   },
   updateCounts () {
     const reducer = (acc, cur) => acc + (cur.read ? 0 : 1)

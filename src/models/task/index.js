@@ -98,6 +98,12 @@ const Scraper = Template.Scraper.extend({
         return isurl && isMongoId(this.host_id || '')
       }
     },
+    canBatchExecute: {
+      deps: ['hasDinamicArguments'],
+      fn () {
+        return !this.hasDinamicArguments
+      }
+    },
     hasTemplate: {
       deps: ['template_id'],
       fn () {
@@ -147,6 +153,12 @@ const Approval = Template.Approval.extend({
         return true
       }
     },
+    canBatchExecute: {
+      deps: ['hasDinamicArguments'],
+      fn () {
+        return !this.hasDinamicArguments
+      }
+    },
     hasTemplate: {
       deps: ['template_id'],
       fn () {
@@ -193,6 +205,12 @@ const Dummy = Template.Dummy.extend({
       deps: [],
       fn () {
         return true
+      }
+    },
+    canBatchExecute: {
+      deps: ['hasDinamicArguments'],
+      fn () {
+        return !this.hasDinamicArguments
       }
     },
     hasTemplate: {

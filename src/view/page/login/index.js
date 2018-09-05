@@ -2,19 +2,22 @@ import View from 'ampersand-view'
 import FormView from 'ampersand-form-view'
 import InputView from 'ampersand-input-view'
 import AuthActions from 'actions/auth'
-import App from 'ampersand-app'
 
 const LoginForm = FormView.extend({
   autoRender: true,
-  initialize() {
+  initialize () {
+    let prevLogin = {}
+    if (window.localStorage.prevLogin) { prevLogin = JSON.parse(window.localStorage.prevLogin) }
     this.fields = [
       new InputView({
         placeholder: 'User or email',
         name: 'identifier',
+        type: 'email',
         required: true,
         invalidClass: 'text-danger',
         validityClassSelector: '.control-label',
-        autofocus: true
+        autofocus: true,
+        value: prevLogin.identifier || ''
       }),
       new InputView({
         type: 'password',
@@ -22,7 +25,8 @@ const LoginForm = FormView.extend({
         name: 'password',
         required: true,
         invalidClass: 'text-danger',
-        validityClassSelector: '.control-label'
+        validityClassSelector: '.control-label',
+        value: prevLogin.password || ''
       })
     ]
     FormView.prototype.initialize.apply(this, arguments)
@@ -48,7 +52,7 @@ module.exports = View.extend({
       }
     }
   },
-  render() {
+  render () {
     this.renderWithTemplate(this)
 
     this.loginForm = new LoginForm({})

@@ -6,6 +6,7 @@ import WorkflowActions from 'actions/workflow'
 import CollapsibleRow from '../collapsible-row'
 import ExecButton from '../exec-button'
 import TaskJobRow from '../task/collapse/job'
+import JobExecButton from '../task/collapse/job/job-exec-button'
 import moment from 'moment'
 
 import './styles.less'
@@ -73,6 +74,8 @@ const WorkflowJobRowView = CollapsibleRow.extend({
                 <span class="panel-item name">
                   <span data-hook="name" title=""></span>
                 </span>
+                <div data-hook="job-status-container" class="panel-item icons">
+                </div>
               </div>
             </span>
           </h4>
@@ -101,17 +104,11 @@ const WorkflowJobRowView = CollapsibleRow.extend({
         let text = [
           uname,
           ' ran on ',
-          mdate.format('D-MMM-YY, HH:mm:ss')
+          mdate.format('D-MMM-YY, HH:mm:ss'),
         ].join('')
         return text
       }
     },
-    // hostname: {
-    //   fn: () => ''
-    // },
-    // type: {
-    //   fn: () => 'workflow'
-    // },
     //type_icon: {
     //},
     header_type_icon: {
@@ -133,6 +130,12 @@ const WorkflowJobRowView = CollapsibleRow.extend({
       //{
       //  reverse: true
       //}
+    )
+  },
+  renderButtons () {
+    this.renderSubview(
+      new WorkflowJobStatus({ model: this.model }),
+      this.queryByHook('job-status-container')
     )
   }
 })
@@ -167,4 +170,12 @@ const WorkflowButtonsView = View.extend({
     //   this.renderSubview(button, this.queryByHook('edit-button'))
     // }
   }
+})
+
+const WorkflowJobStatus = JobExecButton.extend({
+  template: `
+    <div class="job-status-icon">
+      <i data-hook="job_lifecycle"></i>
+    </div>
+  `
 })

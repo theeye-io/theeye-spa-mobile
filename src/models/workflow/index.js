@@ -93,7 +93,8 @@ export const Workflow = AppModel.extend({
     }
   },
   session: {
-    alreadyPopulated: ['boolean', false, false]
+    alreadyPopulated: ['boolean', false, false],
+    inProgressJobs: 'number'
   },
   derived: {
     type: {
@@ -130,6 +131,22 @@ export const Workflow = AppModel.extend({
         return App.state.tasks.get(this.current_task_id)
       }
     }
+  },
+  initialize () {
+    AppModel.prototype.initialize.apply(this,arguments)
+
+    this.listenToAndRun(
+      this.jobs,
+      'add change sync reset remove',
+      function () {
+        let inProgressJobs = this.jobs.filter(job => job.inProgress)
+        if (inProgressJobs.length > 0) {
+          this.inProgressJobs = inProgressJobs.length
+        } else {
+          this.inProgressJobs = 0
+        }
+      }
+    )
   },
   serialize () {
     let attrs = AppModel.prototype.serialize.apply(this,arguments)
