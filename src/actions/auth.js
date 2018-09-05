@@ -7,6 +7,10 @@ import credentials from 'config/credentials'
 import AnalyticsActions from './analytics'
 const xhr = $.ajax
 
+const persistOnStorage = function (data) {
+  window.localStorage.setItem('prevLogin', JSON.stringify(data))
+}
+
 module.exports = {
   login (data) {
     App.state.loader.visible = true
@@ -19,7 +23,8 @@ module.exports = {
       headers: {
         Accept: 'application/json;charset=UTF-8'
       },
-      done: (response,xhr) => {
+      done: (response, xhr) => {
+        persistOnStorage(data)
         App.state.loader.visible = false
         if (xhr.status == 200){
           AnalyticsActions.trackEvent('Auth', 'Login')
