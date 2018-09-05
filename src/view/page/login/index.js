@@ -6,6 +6,8 @@ import AuthActions from 'actions/auth'
 const LoginForm = FormView.extend({
   autoRender: true,
   initialize () {
+    let prevLogin = {}
+    if (window.localStorage.prevLogin) { prevLogin = JSON.parse(window.localStorage.prevLogin) }
     this.fields = [
       new InputView({
         placeholder: 'User or email',
@@ -14,7 +16,8 @@ const LoginForm = FormView.extend({
         required: true,
         invalidClass: 'text-danger',
         validityClassSelector: '.control-label',
-        autofocus: true
+        autofocus: true,
+        value: prevLogin.identifier || ''
       }),
       new InputView({
         type: 'password',
@@ -22,7 +25,8 @@ const LoginForm = FormView.extend({
         name: 'password',
         required: true,
         invalidClass: 'text-danger',
-        validityClassSelector: '.control-label'
+        validityClassSelector: '.control-label',
+        value: prevLogin.password || ''
       })
     ]
     FormView.prototype.initialize.apply(this, arguments)
