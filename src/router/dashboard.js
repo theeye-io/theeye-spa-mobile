@@ -4,8 +4,7 @@ import PageView from 'view/page/dashboard'
 import App from 'ampersand-app'
 import search from 'lib/query-params'
 import Route from 'lib/router-route'
-import after from 'lodash/after'
-import WorkflowActions from 'actions/workflow'
+import DashboardActions from 'actions/dashboard'
 
 const logger = require('lib/logger')('router:dashboard')
 
@@ -20,8 +19,6 @@ class Dashboard extends Route {
 module.exports = Dashboard
 
 const prepareData = (options) => {
-  const { fetchTasks } = options
-
   App.state.loader.visible = false
 
   App.state.dashboard.resourcesDataSynced = false
@@ -36,49 +33,7 @@ const prepareData = (options) => {
     App.state.dashboard.tasksDataSynced = true
   })
 
-  var resourcesToFetch = 6
-  if (fetchTasks) resourcesToFetch += 2
-  var done = after(resourcesToFetch, () => {
-    App.state.loader.visible = false
-  })
-
-  const step = () => {
-    // App.state.loader.step()
-    done()
-  }
-
-  if (fetchTasks) {
-    const nextStep = () => {
-      step()
-      App.state.tasks.fetch({
-        success: () => {
-          App.state.dashboard.groupTasks()
-          App.state.workflows.forEach(workflow => {
-            WorkflowActions.populate(workflow)
-          })
-          step()
-        },
-        error: step,
-        reset: true
-      })
-    }
-    App.state.workflows.fetch({ success: nextStep, error: nextStep })
-  }
-
-  App.state.events.fetch({ success: step, error: step })
-  // App.state.scripts.fetch({ success: step, error: step })
-  App.state.files.fetch({ success: step, error: step })
-  App.state.hosts.fetch({ success: step, error: step })
-  App.state.tags.fetch({ success: step, error: step })
-  App.state.members.fetch({ success: step, error: step })
-  App.state.resources.fetch({
-    success: () => {
-      App.state.dashboard.groupResources()
-      step()
-    },
-    error: step,
-    reset: true
-  })
+  DashboardActions.fetchData(options)
 }
 
 const index = (query) => {
@@ -86,7 +41,7 @@ const index = (query) => {
   const tasksEnabled = Boolean(query.tasks !== 'hide')
   const statsEnabled = Boolean(query.stats === 'show')
 
-  prepareData({ fetchTasks: tasksEnabled })
+  prepareData({ fetchTasks: tasksEnabled, fetchNotifications: false })
 
   return renderPageView({
     renderTasks: tasksEnabled,
