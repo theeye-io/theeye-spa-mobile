@@ -98,6 +98,7 @@ const AppState = State.extend({
     // extendedTags: ['state', false, () => new ExtendedTagsState()],
     workflowPage: ['state', false, () => new WorkflowPageState()],
     workflowVisualizer: ['state', false, () => new WorkflowVisualizerState()],
+    approval: ['state', false, () => new ApprovalState()],
     enterprise: ['state',false,() => { return new EnterpriseState() }],
   },
   initialize () {
@@ -226,6 +227,13 @@ const RegisterState = State.extend({
 const EditorState = State.extend({
   props: {
     value: ['string',false,'']
+  }
+})
+
+const ApprovalState = State.extend({
+  props: {
+    underExecution: ['boolean', false, false],
+    newArrived: ['boolean', false, false]
   }
 })
 

@@ -7,6 +7,7 @@ import Router from 'router'
 import Loader from 'components/loader'
 import RootContainer from 'view/root-container'
 import AnalyticsActions from 'actions/analytics'
+import DashboardActions from 'actions/dashboard'
 
 require('app/events')
 const sockets = require('app/sockets')
@@ -93,7 +94,7 @@ App.extend({
 
 document.addEventListener('deviceready', function () {
   document.addEventListener('resume', function () {
-    App.Router.reload()
+    DashboardActions.fetchData({ fetchTasks: true, fetchNotifications: true })
   }, false)
   document.addEventListener('backbutton', function (e) {
     e.preventDefault()

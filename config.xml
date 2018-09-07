@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.theeye.mobile.bgh" version="1.1.11" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="io.theeye.mobile.bgh" version="1.1.12" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>BGH</name>
     <description>
       BGH
@@ -122,7 +122,9 @@
     <plugin name="cordova-plugin-buildinfo" spec="^2.0.1" />
     <plugin name="cordova-plugin-inappbrowser" spec="^2.0.2" />
     <plugin name="cordova-plugin-mixpanel" spec="^4.4.1" />
-    <plugin name="cordova-plugin-camera" spec="^4.0.3" />
+    <plugin name="cordova-plugin-camera" spec="^4.0.3">
+        <variable name="CAMERA_USAGE_DESCRIPTION" value="You can attach a photo or document to a workflow" />
+    </plugin>
     <plugin name="phonegap-plugin-push" spec="^2.2.3" />
     <plugin name="cordova-plugin-file" spec="^6.0.1" />
     <plugin name="cordova-open" spec="^1.0.12" />
