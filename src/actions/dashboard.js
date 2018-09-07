@@ -2,6 +2,7 @@ import search from 'lib/query-params'
 import App from 'ampersand-app'
 import after from 'lodash/after'
 import WorkflowActions from 'actions/workflow'
+import ApprovalActions from 'actions/approval'
 
 module.exports = {
   setMonitorsGroupByProperty (prop) {
@@ -49,6 +50,8 @@ module.exports = {
             App.state.workflows.forEach(workflow => {
               WorkflowActions.populate(workflow)
             })
+
+            ApprovalActions.check()
             step()
           },
           error: step,
