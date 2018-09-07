@@ -22,8 +22,8 @@ const BaseExec = State.extend({
           }
           break
         case 'file':
-          arg.value = arg.value.dataUrl
           arg.renderValue = arg.value.name
+          arg.value = arg.value.dataUrl
           break
         default:
           arg.renderValue = arg.value
