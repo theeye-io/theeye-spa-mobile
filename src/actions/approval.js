@@ -10,7 +10,9 @@ import { eachSeries, each } from 'async'
 module.exports = {
   check (job) {
     if (App.state.approval.underExecution === true) {
-      App.state.approval.newArrived = true
+      if (job) {
+        App.state.approval.newArrived = true
+      }
     } else {
       this.checkPendingApprovals(job)
     }
