@@ -77,6 +77,7 @@ module.exports = {
     }
   },
   cancel (job) {
+    job.set('lifecycle', LifecycleConstants.CANCELED)
     XHR.send({
       method: 'put',
       url: `${App.config.api_url}/job/${job.id}/cancel`,
@@ -85,7 +86,6 @@ module.exports = {
       },
       done (data,xhr) {
         logger.debug('job canceled')
-        job.set('lifecycle', LifecycleConstants.CANCELED)
       },
       fail (err,xhr) {
         bootbox.alert('something goes wrong')
@@ -95,6 +95,7 @@ module.exports = {
   },
   approve (job, args) {
     args = args || []
+    job.set('lifecycle', LifecycleConstants.FINISHED)
     XHR.send({
       method: 'put',
       url: `${App.config.api_v3_url}/job/${job.id}/approve`,
@@ -124,6 +125,7 @@ module.exports = {
   },
   reject (job, args) {
     args = args || []
+    job.set('lifecycle', LifecycleConstants.FINISHED)
     XHR.send({
       method: 'put',
       url: `${App.config.api_v3_url}/job/${job.id}/reject`,
