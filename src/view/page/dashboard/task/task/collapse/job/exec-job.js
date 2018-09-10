@@ -152,6 +152,7 @@ const ExecApprovalJob = BaseExec.extend({
         label: 'Skip',
         className: 'btn btn-default',
         callback: () => {
+          App.actions.approval.skip(this.model)
           if (done) done()
         }
       }
