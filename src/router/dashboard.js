@@ -19,7 +19,7 @@ class Dashboard extends Route {
 module.exports = Dashboard
 
 const prepareData = (options) => {
-  App.state.loader.visible = false
+  const { fetchTasks } = options
 
   App.state.dashboard.resourcesDataSynced = false
   App.state.dashboard.groupedResources.once('reset', () => {
@@ -27,11 +27,13 @@ const prepareData = (options) => {
     App.state.dashboard.resourcesDataSynced = true
   })
 
-  App.state.dashboard.tasksDataSynced = false
-  App.state.tasks.once('sync', () => {
-    logger.log('tasks synced')
-    App.state.dashboard.tasksDataSynced = true
-  })
+  if (fetchTasks) {
+    App.state.dashboard.tasksDataSynced = false
+    App.state.tasks.once('sync',() => {
+      logger.log('tasks synced')
+      App.state.dashboard.tasksDataSynced = true
+    })
+  }
 
   DashboardActions.fetchData(options)
 }
