@@ -1,0 +1,280 @@
+/* header */
+/**
+ * navbar-brand has a special case:
+ * width < 768 && user.logged_in === false:
+ *   body is assigned a .login class,
+ *   logo should be small & centered
+ * width < 768 && user.logged_in === true:
+ *   logo should be small & to the left
+ * width > 768 && user.logged_in === false:
+ *   body is assigned a .login class,
+ *   logo should be big & centered, overlaping the main area
+ * width > 768 && user.logged_in === true:
+ *   logo should be big & to the left
+ */
+.navbar-brand {
+  display: inline-block;
+  position: relative;
+  left: 0;
+  height: auto;
+  padding: 0px 5px;
+  border: none;
+  margin: 11px 0;
+  & > img {
+    margin-left: 0;
+    height: 32px;
+  }
+}
+.login {
+  .navbar-brand {
+    display: block;
+    position: absolute;
+    left: 50%;
+    height: auto;
+    padding: 0px 0px;
+    border: none;
+    margin: 11px 0;
+    & > img {
+      margin-left: -50%;
+      height: 32px;
+    }
+  }
+}
+@media (min-width: 768px) {
+  .navbar-brand {
+    padding: 0 5px;
+    position: relative;
+    left: 0;
+    & > img {
+      margin-left: 0;
+      height: 52px;
+    }
+  }
+
+  .login {
+    .navbar-brand {
+      display: block;
+      position: absolute;
+      left: 50%;
+      height: auto;
+      padding: 0px 0px;
+      border: none;
+      margin: 11px 0;
+      & > img {
+        margin-left: -50%;
+        height: 52px;
+      }
+    }
+  }
+}
+.navbar {
+  margin-bottom:0px;
+}
+.navbar-collapse {padding:0;}
+
+.navbar-header .user-profile { color:#80a1b8; position:absolute; right:5px; top:5px; float:right; }
+
+.navbar-right .dropdown li {
+  font-size:14px;float:none
+}
+.navbar-right .dropdown button {
+  border:none; background:none; padding:0; width:100%; text-align:left;
+}
+.navbar-right .dropdown .dropdown-menu {
+  /*position:relative;*/
+  float:none;
+}
+@media (min-width: 979px) {
+  nav.navbar ul.navbar-right div.dropdown > ul.dropdown-menu {
+    top: 38px;
+  }
+
+  nav.navbar ul.navbar-right div.dropdown:hover > ul.dropdown-menu {
+    display: block;
+  }
+}
+
+
+/* header styles */
+.navbar-eyemenu {
+  background:#fff;
+  border-bottom:3px solid #d88e47;
+
+  a {
+    color:#38688a;text-shadow:0 1px 0 rgba(255,255,255,0.8);
+  }
+  input::-webkit-input-placeholder {color: #005580}
+  input::-moz-placeholder {color: #005580}
+  input:-ms-input-placeholder {color: #005580}
+  input:-moz-placeholder {color: #005580}
+
+  .navbar-header {
+    width: 100%;
+  }
+  .eyemenu-panel-launcher {cursor:pointer;color:#003166;font-size:24px;}
+  .eyemenu-panel-innerlauncher {
+    height: 54px;
+    background: #192435;
+    width: 100%;
+    top: 0px;
+    position: relative;
+    left: 0;
+    color: #344158;
+    margin: 0;
+    padding-top: 10px;
+    padding-left: 15px;
+    padding-bottom: 10px;
+  }
+  .eyemenu-panel-innerlauncher i { color: #fff; padding-left:8px; }
+  .eyemenu-search-panel-desktop input {padding:6px 48px;color:#005580;border:none;font-size:21px;width:85%;outline:none!important;margin-top:14px;background:#f8f8f8}
+  .eyemenu-search-panel-desktop .fa-search {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    font-size: 24px;
+    padding: 11px 15px 11px 0;
+    color: #005580;
+  }
+  .eyemenu-search-panel-desktop .fa-times-circle {
+    position: absolute;
+    right: 14%;
+    top: 12px;
+    font-size: 24px;
+    padding: 11px 15px 11px 0;
+    color: #00558080;
+    cursor: pointer;
+  }
+  .eyemenu-search-panel-desktop .fa-times-circle:hover {
+    color: #005580;
+  }
+
+  .eyemenu-search-panel-clear {position:absolute;right:0;top:0;font-size:24px;color:#ccc;padding:11px 15px;cursor:pointer;color:#005580;display:none}
+
+  .navbar-collapse,
+  .navbar-form {
+    border-color:#144e77;
+  }
+
+  .navbar-toggle {
+    .icon-bar {
+      background-color:#144e77;
+    }
+    &:focus,
+    &:hover {
+      background-color: #144e77;
+      .icon-bar {
+        background-color: #fff;
+      }
+    }
+  }
+
+  .header-tools {
+    display: inline-block;
+    min-height: 0;
+  }
+  .navbar-right {
+    margin: 0;
+    padding: 0;
+    margin: 0 0 0 0;
+    float: right;
+    position: relative;
+
+    li {
+      float: left;
+      border-bottom: none;
+      font-size: 14px;
+      margin: 0;
+      padding: 0;
+      list-style-type: none;
+      border-bottom: 1px solid #ccc;
+      a {
+        display: block;
+        font-weight: 700;
+        color: #144e77;
+        padding: 8px 12px;
+        height: 42px;
+        &:hover {
+          background: #144e77;
+          color: #fff;
+          background: #d88e47;
+          color: #fff;
+          text-shadow: none;
+          -webkit-transition: background-color 250ms linear;
+          -moz-transition: background-color 250ms linear;
+          -o-transition: background-color 250ms linear;
+          -ms-transition: background-color 250ms linear;
+          transition: background-color 250ms linear;
+        }
+      }
+    }
+  }
+
+
+  @media (min-width: 768px) {
+    .eyemenu-panel-launcher {padding:19px 15px; padding-left:29px;}
+    .hidden-sm {display:none!important}
+    .eyemenu-search-panel-clear {right:15%;top:12px}
+    .navbar-right {
+      margin: 2px 0 0 0;
+      li { font-size: 18px; }
+    }
+  }
+
+  /* responsiveness */
+  @media (max-width: 767px) {
+  	.eyemenu-panel-launcher {margin:10px; padding-right:15px;padding-left:8px;}
+  	.eyemenu-panel-launcher.eyemenu-panel-innerlauncher {margin:0;}
+
+  	.eyemenu-search-panel-mobile {position:fixed;top:0;left:0;right:0;background:#fff;height:52px;}
+  	.eyemenu-search-panel-mobile input {
+      padding: 14px 12px;
+      color: #005580;
+      border: none;
+      font-size: 18px;
+      outline: none!important;
+      margin-left: 36px;
+      width: 90%;
+    }
+  	.eyemenu-search-panel-mobile .fa-arrow-left {
+      position: absolute;
+      left: 0;
+      top: 0;
+      font-size: 24px;
+      color: #ccc;
+      padding: 15px;
+      cursor: pointer;
+      color: #005580;
+    }
+    .eyemenu-search-panel-mobile .fa-times-circle {
+      position: absolute;
+      right: 1%;
+      top: 3px;
+      font-size: 24px;
+      padding: 12px 15px 14px 0;
+      color: #00558080;
+      cursor: pointer;
+    }
+    .eyemenu-search-panel-mobile .fa-times-circle:hover {
+      color: #005580;
+    }
+    .eyemenu-search-icon.hidden-sm {
+      position: absolute;
+      top: 0;
+      right: 0;
+      font-size: 24px;
+      color: #ccc;
+      padding: 10px 15px;
+      cursor: pointer;
+      color: #005982;
+    }
+    .navbar-right li a {height:36px;padding:2px 5px;}
+    .navbar-brand {
+      padding: 0px 0px;
+    }
+
+  }
+  
+}
+
+
+

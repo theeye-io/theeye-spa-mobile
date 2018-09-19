@@ -71,25 +71,6 @@ button {outline:none}
 .fleft {float:left}
 .fright {float:right}
 .big-icon{ font-size: 10em }
-/* header */
-/*.navbar {max-height:100px;}*/
-.navbar {margin-bottom:0px;}
-.navbar-header {width:100%;}
-.navbar-inverse a {color:#38688a;text-shadow:0 1px 0 rgba(255,255,255,0.8)}
-.navbar-inverse .navbar-toggle .icon-bar {background-color:#144e77}
-.navbar-inverse .navbar-toggle:hover .icon-bar {background-color:#fff}
-.navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form, .navbar-inverse .navbar-toggle {border-color:#144e77;}
-.navbar-inverse .navbar-toggle:focus, .navbar-inverse .navbar-toggle:hover {background-color:#144e77}
-.navbar-collapse {padding:0;}
-.navbar-inverse {background:#eee;border-bottom:3px solid #d88e47}
-.navbar-brand>img {height:32px;}
-.navbar-brand {position: absolute;left: 50%;margin-left: -46px !important;display: block;height:auto;padding:0px 15px;border-right:1px solid #7c98ac;margin: 10px 0}
-.login .navbar-brand {border:none}
-.navbar-right, .navbar-right li {margin:0;padding:0}
-.navbar-right li {list-style-type:none;border-bottom:1px solid #ccc}
-.navbar-right li a {display:block;font-weight:700;color:#144e77;padding:8px 12px;height:42px;}
-.navbar-right li a:hover {background:#144e77;color:#fff}
-
 
 .navData {
   margin:10px 0;
@@ -239,16 +220,6 @@ h3.light { color: #EEE}
  * ultimos cambios marcelo
  ***/
 
-.navbar-right .dropdown li {
-  font-size:14px;float:none
-}
-.navbar-right .dropdown button {
-  border:none; background:none; padding:0; width:100%; text-align:left;
-}
-.navbar-right .dropdown .dropdown-menu {
-  /*position:relative;*/
-  float:none;
-}
 
 /**
  *
@@ -347,20 +318,6 @@ h3.light { color: #EEE}
 ol.list-group.scripts,
 ol.list-group.tasks { color:#34495E }
 
-
-.navbar-right { margin:16px 0 0 0; float: right; }
-.navbar-right li { float:left; border-bottom:none; font-size:14px; }
-.navbar-right li a:hover {
-  background:#d88e47;
-  color:#fff;
-  text-shadow:none;
-  -webkit-transition: background-color 250ms linear;
-  -moz-transition: background-color 250ms linear;
-  -o-transition: background-color 250ms linear;
-  -ms-transition: background-color 250ms linear;
-  transition: background-color 250ms linear;
-}
-
 @media (min-width: 768px) {
   .mainStatus {font-size:40px;width:60%;padding:60px 0}
   .switch{margin:0 auto}
@@ -371,9 +328,6 @@ ol.list-group.tasks { color:#34495E }
     line-height: 52px;
   }
   .navData .user span {font-size:18px}
-  .navbar-brand>img {height:52px}
-  .navbar-right { margin:31px 0 0 0; float: right; }
-  .navbar-right li { font-size: 18px; }
   /* searchbox searcher */
   div.js-searchable-box.affix {
     z-index: 1000;
@@ -484,17 +438,6 @@ input[type=checkbox].form-control {
 .blurry-text { color: transparent; text-shadow: 0 0 5px rgba(0,0,0,0.5); }
 .cursor-pointer { cursor: pointer; }
 
-
-@media (min-width: 979px) {
-  nav.navbar ul.navbar-right div.dropdown > ul.dropdown-menu {
-    top: 38px;
-  }
-
-  nav.navbar ul.navbar-right div.dropdown:hover > ul.dropdown-menu {
-    display: block;
-  }
-}
-
 .main-container {
   /*position:absolute; width: 100%;*/
   padding-top: 76px;
@@ -504,8 +447,6 @@ input[type=checkbox].form-control {
 
 @media (max-width:767px) {
   .main-container { padding-top:55px; }
-  .navbar-right li a {height:36px;padding:2px 5px;}
-  .navbar-brand {padding:0px 5px;}
 }
 
 #workflow {
@@ -523,8 +464,6 @@ input[type=checkbox].form-control {
   margin: 3px 5px;
   transition: transform .25s ease-in-out;
 }
-
-.navbar-header .user-profile { color:#80a1b8; position:absolute; right:5px; top:5px; float:right; }
 
 .advanced-section-title,
 .scraper-section-title { text-align:center; margin-bottom:15px; }
