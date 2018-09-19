@@ -267,8 +267,13 @@ module.exports = View.extend({
   props: {
     licenseExpired: ['boolean', true, false],
     visible: ['boolean', true, true],
+    loggedIn: ['boolean', true, false]
   },
   bindings: {
+    loggedIn: {
+      type: 'toggle',
+      selector: '.header-tools'
+    },
     licenseExpired: [
       {
         type: 'toggle',
@@ -308,16 +313,15 @@ module.exports = View.extend({
   },
   updateLicenseStatus (state) {
     const {logged_in: loggedIn, licenseExpired} = state
-
     this.licenseExpired = (licenseExpired === true && Boolean(loggedIn))
   },
   updateNavbarVisibility (state) {
     this.visible = state.visible
   },
   updateState (state) {
-    const logged_in = state.logged_in
-    if (logged_in === undefined) return
-    if (logged_in === true) {
+    if (state.logged_in === undefined) return
+    this.loggedIn = state.logged_in
+    if (this.loggedIn === true) {
       this.renderLoggedInComponents()
     } else {
       this.destroyLoggedInComponents()
