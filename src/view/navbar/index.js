@@ -341,10 +341,12 @@ module.exports = View.extend({
       this.menu,
       this.queryByHook('menu-container')
     )
+    document.body.classList.remove('login')
   },
   destroyLoggedInComponents () {
     if (this.searchbox) this.searchbox.remove()
     if (this.menu) this.menu.remove()
     if (this.inbox) this.inbox.remove()
+    document.body.classList.add('login')
   }
 })
