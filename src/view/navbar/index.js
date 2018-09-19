@@ -5,6 +5,7 @@ import SessionActions from 'actions/session'
 import NavbarActions from 'actions/navbar'
 import Backdrop from 'components/backdrop'
 
+import './style.less'
 import logo from './logo.png'
 const template = require('./nav.hbs')
 
