@@ -3,8 +3,6 @@ import View from 'ampersand-view'
 import Searchbox from './searchbox'
 import SessionActions from 'actions/session'
 import NavbarActions from 'actions/navbar'
-import Acls from 'lib/acls'
-import html2dom from 'lib/html2dom'
 import Backdrop from 'components/backdrop'
 
 import logo from './logo.png'
@@ -153,7 +151,7 @@ const Menu = View.extend({
   },
   initialize () {
     // this.menu_switch = App.state.navbar.menuSwitch
-    this.listenTo(App.state.navbar,'change:menuSwitch',() => {
+    this.listenTo(App.state.navbar, 'change:menuSwitch', () => {
       this.menu_switch = App.state.navbar.menuSwitch
       if (!this.menu_switch) {
         this.customers_switch = false
@@ -174,10 +172,10 @@ const Menu = View.extend({
       opacity: 0.7,
       color: '#000'
     })
-    this.listenTo(backdrop,'click',() => {
+    this.listenTo(backdrop, 'click', () => {
       NavbarActions.toggleMenu()
     })
-    this.on('change:menu_switch',() => {
+    this.on('change:menu_switch', () => {
       backdrop.visible = this.menu_switch
     })
   },
@@ -208,20 +206,19 @@ const Menu = View.extend({
     const recalculateLinksHeight = (event) => {
       const links = this.queryByHook('links-container')
       let height = window.innerHeight - 178
-      if (window.innerWidth>768) {
+      if (window.innerWidth > 768) {
         height -= 75
       }
-      links.style.height = String(height) + "px"
+      links.style.height = String(height) + 'px'
     }
 
     const self = this
-    window.addEventListener('resize',function(event){
-      recalculateLinksHeight.call(self,event)
-    },false)
-    window.dispatchEvent(new Event('resize'))
+    window.addEventListener('resize', function (event) {
+      recalculateLinksHeight.call(self, event)
+    }, false)
+    window.dispatchEvent(new window.Event('resize'))
   },
   renderProfile () {
-
     // in sync with the session
     const customer = new CurrentCustomerItem({
       el: this.queryByHook('session-customer'),
@@ -250,29 +247,25 @@ const Menu = View.extend({
     const recalculateCustomersHeight = (event) => {
       const customers = this.queryByHook('customers-container')
       let height = window.innerHeight - 178
-      if (window.innerWidth>768) {
+      if (window.innerWidth > 768) {
         height -= 75
       }
 
-      customers.style.height = String(height) + "px"
+      customers.style.height = String(height) + 'px'
     }
     const self = this
-    window.addEventListener('resize',function(event){
-      recalculateCustomersHeight.call(self,event)
-    },false)
-    window.dispatchEvent(new Event('resize'))
-  },
-  // renderSettingsMenu () {
-  //   this.settings = new SettingsMenu()
-  //   this.registerSubview(this.settings)
-  // }
+    window.addEventListener('resize', function (event) {
+      recalculateCustomersHeight.call(self, event)
+    }, false)
+    window.dispatchEvent(new window.Event('resize'))
+  }
 })
 
 module.exports = View.extend({
   autoRender: true,
   props: {
     licenseExpired: ['boolean', true, false],
-    visible: ['boolean', true, true]
+    visible: ['boolean', true, true],
   },
   bindings: {
     licenseExpired: [
@@ -343,13 +336,6 @@ module.exports = View.extend({
       this.menu,
       this.queryByHook('menu-container')
     )
-
-    // // notifications inbox
-    // this.inbox = new InboxView()
-    // this.renderSubview(
-    //   this.inbox,
-    //   this.queryByHook('buttons-container')
-    // )
   },
   destroyLoggedInComponents () {
     if (this.searchbox) this.searchbox.remove()
