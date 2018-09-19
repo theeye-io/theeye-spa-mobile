@@ -10,7 +10,7 @@
   color:#fff;
   z-index:999;
   display:block;
-  transition: 0.5s;
+  transition: 0.3s;
   overflow-x: hidden;
 }
 .eyemenu-panel a {text-shadow:none;color:#fff}
