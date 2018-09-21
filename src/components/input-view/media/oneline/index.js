@@ -70,8 +70,8 @@ module.exports = MediaInputView.extend({
       sourceType: Camera.PictureSourceType.CAMERA,
       allowEdit: false,
       encodingType: Camera.EncodingType.JPEG,
-      targetWidth: 300,
-      targetHeight: 300,
+      targetWidth: 1040,
+      targetHeight: 1040,
       saveToPhotoAlbum: false
     }
 
