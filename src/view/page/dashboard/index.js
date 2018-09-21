@@ -7,6 +7,7 @@ import $ from 'jquery'
 // import StatsPanelView from './stats-panel'
 import TaskRowView from './task'
 import MonitorRowView from './monitor'
+import IndicatorRowView from './indicator'
 import RunAllTasksButton from './task/run-all-button'
 import TaskActions from 'actions/task'
 import WorkflowActions from 'actions/workflow'
@@ -67,6 +68,10 @@ const runAllTasks = (rows) => {
   }
 }
 
+const EmptyIndicatorsView = View.extend({
+  template: `<div>No Indicators</div>`
+})
+
 /**
  *
  * @author Facugon
@@ -81,6 +86,7 @@ module.exports = View.extend({
   template: require('./page.hbs'),
   props: {
     groupedResources: 'collection',
+    indicators: 'collection',
     monitors: 'collection',
     tasks: 'collection',
     renderStats: ['boolean', false, false],
@@ -108,6 +114,7 @@ module.exports = View.extend({
   },
   events: {
     'click [data-hook=up-and-running] i': 'hideUpAndRunning',
+    'click [data-hook=show-indicators]': 'setCurrentTab',
     'click [data-hook=show-monitors]': 'setCurrentTab',
     'click [data-hook=show-tasks]': 'setCurrentTab',
     'click [data-hook=show-notifications]': 'setCurrentTab'
@@ -130,6 +137,14 @@ module.exports = View.extend({
     // keep a reference to the tabs element so we don't query
     // the dom everytime (on this.showTab and this.setSliderSizes)
     this.ulTabContents = this.query('#slider ul.tab-contents')
+
+    this.listenToAndRun(App.state.dashboard, 'change:indicatorsDataSynced', () => {
+      if (App.state.dashboard.indicatorsDataSynced === true) {
+        this.renderIndicatorsPanel()
+        this.stopListening(App.state.dashboard, 'change:indicatorsDataSynced')
+        this.setSliderSizes()
+      }
+    })
 
     this.listenToAndRun(App.state.dashboard, 'change:resourcesDataSynced', () => {
       if (App.state.dashboard.resourcesDataSynced === true) {
@@ -187,16 +202,23 @@ module.exports = View.extend({
       if (!App.state.dashboard.currentTab) {
         return
       }
+
       AnalyticsActions.trackView(App.state.dashboard.currentTab)
+
+      let hasIndicators = (this.indicators.length) ? 1 : 0
+
       switch (App.state.dashboard.currentTab) {
-        case 'monitors':
+        case 'indicators':
           this.showTab(App.state.dashboard.currentTab, 0)
           break
+        case 'monitors':
+          this.showTab(App.state.dashboard.currentTab, -1 * (slideWidth * hasIndicators))
+          break
         case 'tasks':
-          this.showTab(App.state.dashboard.currentTab, -slideWidth)
+          this.showTab(App.state.dashboard.currentTab, -1 * (slideWidth * (hasIndicators + 1)))
           break
         case 'notifications':
-          this.showTab(App.state.dashboard.currentTab, -(slideWidth * 2))
+          this.showTab(App.state.dashboard.currentTab, -1 * (slideWidth * (hasIndicators + 2)))
           break
       }
     })
@@ -262,6 +284,33 @@ module.exports = View.extend({
       if (!group) return false
       return monitor.hasError()
     })
+  },
+  renderIndicatorsPanel () {
+    let indicatorsTab = this.queryByHook('indicators-tab')
+    let indicatorsTabButton = this.queryByHook('show-indicators')
+
+    this.listenToAndRun(this.indicators, 'add remove', () => {
+      if (this.indicators.length===0) {
+        indicatorsTab.style.display = 'none'
+        indicatorsTabButton.style.display = 'none'
+      } else {
+        indicatorsTab.style.display = 'block'
+        indicatorsTabButton.style.display = 'block'
+      }
+    })
+
+    this.indicatorsRows = this.renderCollection(
+      this.indicators,
+      IndicatorRowView,
+      this.queryByHook('indicators-container'),
+      {
+        emptyView: EmptyIndicatorsView
+      }
+    )
+
+    const search = () => { }
+
+    this.listenToAndRun(App.state.searchbox, 'change:search', search)
   },
   /**
    *
@@ -463,22 +512,25 @@ module.exports = View.extend({
     sliderUlWidth = slideCount * slideWidth
 
     this.ulTabContents.style.width = `${sliderUlWidth}px`
-    // $('#slider ul.tab-contents').css({ width: sliderUlWidth })
-    this.ulTabContents.querySelectorAll('li.tab-content').forEach(el => (el.style.width = `${slideWidth}px`))
-    // $('#slider ul.tab-contents li.tab-content').css({ width: slideWidth })
 
+    this.ulTabContents.querySelectorAll('li.tab-content').forEach(el => (el.style.width = `${slideWidth}px`))
+
+    let newLeft = 0
+    let hasIndicators = (this.indicators.length) ? 1 : 0
+    if ($('.dashboard-tabs .dashboard-tab.indicators-tab').hasClass('active')) {
+      newLeft = 0
+    }
     if ($('.dashboard-tabs .dashboard-tab.monitors-tab').hasClass('active')) {
-      this.ulTabContents.style.left = `0px`
-      // $('#slider ul.tab-contents').css({ left: 0 })
+      newLeft = -1 * (slideWidth * hasIndicators)
     }
     if ($('.dashboard-tabs .dashboard-tab.tasks-tab').hasClass('active')) {
-      this.ulTabContents.style.left = `${-slideWidth}px`
-      // $('#slider ul.tab-contents').css({ left: -slideWidth })
+      newLeft = -1 * (slideWidth * (hasIndicators + 1))
     }
     if ($('.dashboard-tabs .dashboard-tab.notifications-tab').hasClass('active')) {
-      this.ulTabContents.style.left = `${-slideWidth * 2}px`
-      // $('#slider ul.tab-contents').css({ left: -(slideWidth * 2) })
+      newLeft = -1 * (slideWidth * (hasIndicators + 2))
     }
+
+    this.ulTabContents.style.left = `${newLeft}px`
   },
   setCurrentTab (event) {
     var tabName = event.target.dataset.hook.substr(5)
@@ -495,11 +547,6 @@ module.exports = View.extend({
     $(window).scrollTop(0)
 
     this.ulTabContents.style.left = `${newLeft}px`
-    // $('#slider ul.tab-contents').animate({
-    //   left: newLeft
-    // }, 400, function () {
-    //   if (tabName === 'notifications') { NotificationActions.markAllRead() }
-    // })
   },
   updateCounts () {
     const reducer = (acc, cur) => acc + (cur.read ? 0 : 1)
