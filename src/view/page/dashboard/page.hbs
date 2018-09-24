@@ -1,6 +1,23 @@
 <div class="admin-container dashboard">
   <div id="slider">
     <ul class="tab-contents">
+
+      <!-- INDICATORS -->
+      <li class="tab-content" data-hook="indicators-tab">
+        <div data-hook="indicators-panel">
+          <section class="col-md-12 indicators-panel events-panel">
+            <h3>Indicators</h3>
+            <div>
+              <div class="panel-group" id="indicators-accordion" role="tablist" aria-multiselectable="true">
+                <section data-hook="indicators-container"> </section>
+                <section data-hook="indicators-fold-container"> </section>
+              </div>
+            </div>
+          </section>
+        </div>
+      </li>
+      <!-- /INDICATORS -->
+
       <!-- MONITORS -->
       <li class="tab-content">
         <div data-hook="monitors-panel" class="monitors admin-panel">
@@ -68,6 +85,9 @@
   </div>
   <!-- TAB BUTTONS -->
   <div class="dashboard-tabs">
+    <div data-hook="show-indicators" class="dashboard-tab indicators-tab" style="display:none">
+      <i class="fa fa-lightbulb-o"></i>
+    </div>
     <div data-hook="show-monitors" class="dashboard-tab monitors-tab">
       <i class="fa fa-television"></i>
     </div>

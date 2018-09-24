@@ -21,6 +21,12 @@ module.exports = Dashboard
 const prepareData = (options) => {
   const { fetchTasks } = options
 
+  App.state.dashboard.indicatorsDataSynced = false
+  App.state.indicators.once('sync', () => {
+    logger.log('indicators synced')
+    App.state.dashboard.indicatorsDataSynced = true
+  })
+
   App.state.dashboard.resourcesDataSynced = false
   App.state.dashboard.groupedResources.once('reset', () => {
     logger.log('resources synced and grouped resources prepared')
@@ -60,6 +66,7 @@ const index = (query) => {
 const renderPageView = (options) => {
   return new PageView({
     groupedResources: App.state.dashboard.groupedResources,
+    indicators: App.state.indicators,
     monitors: App.state.resources,
     tasks: App.state.dashboard.groupedTasks,
     renderTasks: options.renderTasks,

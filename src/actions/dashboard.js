@@ -29,7 +29,7 @@ module.exports = {
   fetchData (options) {
     const { fetchTasks, fetchNotifications } = options
 
-    var resourcesToFetch = 6
+    var resourcesToFetch = 7
     if (fetchTasks) resourcesToFetch += 2
     if (fetchNotifications) resourcesToFetch += 1
     var done = after(resourcesToFetch, () => {
@@ -71,6 +71,7 @@ module.exports = {
     App.state.hosts.fetch({ success: step, error: step })
     App.state.tags.fetch({ success: step, error: step })
     App.state.members.fetch({ success: step, error: step })
+    App.state.indicators.fetch({ success: step, error: step })
     App.state.resources.fetch({
       success: () => {
         App.state.dashboard.groupResources()

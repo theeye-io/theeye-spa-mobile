@@ -30,7 +30,7 @@ const BaseJob = AppModel.extend({
     state: 'string',
     lifecycle: 'string',
     //result: ['state',false,null],
-    creation_date: 'date',
+    creation_date: ['date', false, () => { return new Date() }],
     last_update: 'date',
     event: 'any',
     event_id: 'string',
@@ -190,7 +190,7 @@ const NgrokIntegrationJob = BaseJob.extend({
 })
 
 const JobFactory = function (attrs, options={}) {
-  if (attrs.isCollection) { return }
+  if (attrs.isCollection) { return attrs }
   if (attrs.isState) { return attrs } // already constructed
 
   let model
@@ -242,7 +242,9 @@ const JobFactory = function (attrs, options={}) {
   }
 
   model = createModel()
-  App.state.jobs.add(model, {merge:true})
+  if (options.collection !== App.state.jobs) {
+    App.state.jobs.add(model, {merge:true})
+  }
   return model
 }
 

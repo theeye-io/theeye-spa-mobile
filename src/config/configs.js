@@ -3,6 +3,7 @@
 import assign from 'lodash/assign'
 
 const defaultConfigs = {
+  landing_page_url: 'https://theeye.io',
   env: 'default',
   app_url: 'http://localhost:6080',
   socket_url: 'http://localhost:6080',
@@ -10,7 +11,7 @@ const defaultConfigs = {
   api_v3_url: 'http://localhost:6080/apiv3',
   supervisor_api_url: 'http://localhost:60080',
   files: {
-    max_upload_size: 2048
+    max_upload_size: 750
   },
   session: {
     refresh_interval: 1000 * 60 * 30
