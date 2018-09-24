@@ -3,10 +3,9 @@ import View from 'ampersand-view'
 import Searchbox from './searchbox'
 import SessionActions from 'actions/session'
 import NavbarActions from 'actions/navbar'
-import Acls from 'lib/acls'
-import html2dom from 'lib/html2dom'
 import Backdrop from 'components/backdrop'
 
+import './style.less'
 import logo from './logo-bgh.png'
 const template = require('./nav.hbs')
 
@@ -153,7 +152,7 @@ const Menu = View.extend({
   },
   initialize () {
     // this.menu_switch = App.state.navbar.menuSwitch
-    this.listenTo(App.state.navbar,'change:menuSwitch',() => {
+    this.listenTo(App.state.navbar, 'change:menuSwitch', () => {
       this.menu_switch = App.state.navbar.menuSwitch
       if (!this.menu_switch) {
         this.customers_switch = false
@@ -174,10 +173,10 @@ const Menu = View.extend({
       opacity: 0.7,
       color: '#000'
     })
-    this.listenTo(backdrop,'click',() => {
+    this.listenTo(backdrop, 'click', () => {
       NavbarActions.toggleMenu()
     })
-    this.on('change:menu_switch',() => {
+    this.on('change:menu_switch', () => {
       backdrop.visible = this.menu_switch
     })
   },
@@ -208,20 +207,19 @@ const Menu = View.extend({
     const recalculateLinksHeight = (event) => {
       const links = this.queryByHook('links-container')
       let height = window.innerHeight - 178
-      if (window.innerWidth>768) {
+      if (window.innerWidth > 768) {
         height -= 75
       }
-      links.style.height = String(height) + "px"
+      links.style.height = String(height) + 'px'
     }
 
     const self = this
-    window.addEventListener('resize',function(event){
-      recalculateLinksHeight.call(self,event)
-    },false)
-    window.dispatchEvent(new Event('resize'))
+    window.addEventListener('resize', function (event) {
+      recalculateLinksHeight.call(self, event)
+    }, false)
+    window.dispatchEvent(new window.Event('resize'))
   },
   renderProfile () {
-
     // in sync with the session
     const customer = new CurrentCustomerItem({
       el: this.queryByHook('session-customer'),
@@ -250,31 +248,32 @@ const Menu = View.extend({
     const recalculateCustomersHeight = (event) => {
       const customers = this.queryByHook('customers-container')
       let height = window.innerHeight - 178
-      if (window.innerWidth>768) {
+      if (window.innerWidth > 768) {
         height -= 75
       }
 
-      customers.style.height = String(height) + "px"
+      customers.style.height = String(height) + 'px'
     }
     const self = this
-    window.addEventListener('resize',function(event){
-      recalculateCustomersHeight.call(self,event)
-    },false)
-    window.dispatchEvent(new Event('resize'))
-  },
-  // renderSettingsMenu () {
-  //   this.settings = new SettingsMenu()
-  //   this.registerSubview(this.settings)
-  // }
+    window.addEventListener('resize', function (event) {
+      recalculateCustomersHeight.call(self, event)
+    }, false)
+    window.dispatchEvent(new window.Event('resize'))
+  }
 })
 
 module.exports = View.extend({
   autoRender: true,
   props: {
     licenseExpired: ['boolean', true, false],
-    visible: ['boolean', true, true]
+    visible: ['boolean', true, true],
+    loggedIn: ['boolean', true, false]
   },
   bindings: {
+    loggedIn: {
+      type: 'toggle',
+      selector: '.header-tools'
+    },
     licenseExpired: [
       {
         type: 'toggle',
@@ -314,16 +313,15 @@ module.exports = View.extend({
   },
   updateLicenseStatus (state) {
     const {logged_in: loggedIn, licenseExpired} = state
-
     this.licenseExpired = (licenseExpired === true && Boolean(loggedIn))
   },
   updateNavbarVisibility (state) {
     this.visible = state.visible
   },
   updateState (state) {
-    const logged_in = state.logged_in
-    if (logged_in === undefined) return
-    if (logged_in === true) {
+    if (state.logged_in === undefined) return
+    this.loggedIn = state.logged_in
+    if (this.loggedIn === true) {
       this.renderLoggedInComponents()
     } else {
       this.destroyLoggedInComponents()
@@ -343,17 +341,12 @@ module.exports = View.extend({
       this.menu,
       this.queryByHook('menu-container')
     )
-
-    // // notifications inbox
-    // this.inbox = new InboxView()
-    // this.renderSubview(
-    //   this.inbox,
-    //   this.queryByHook('buttons-container')
-    // )
+    document.body.classList.remove('login')
   },
   destroyLoggedInComponents () {
     if (this.searchbox) this.searchbox.remove()
     if (this.menu) this.menu.remove()
     if (this.inbox) this.inbox.remove()
+    document.body.classList.add('login')
   }
 })
