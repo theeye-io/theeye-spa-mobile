@@ -7,6 +7,7 @@ import CollapsibleRow from '../collapsible-row'
 import ExecButton from '../exec-button'
 import TaskJobRow from '../task/collapse/job'
 import JobExecButton from '../task/collapse/job/job-exec-button'
+import ViewWorkflowButton from 'view/page/workflow/view-button'
 import EmptyJobView from '../empty-job-view.js'
 import moment from 'moment'
 
@@ -168,13 +169,20 @@ const ExecWorkflowButton = ExecButton.extend({
 })
 
 const WorkflowButtonsView = View.extend({
-  template: `<div><span data-hook="edit-button"></span></div>`,
+  template: `
+    <div>
+      <span data-hook="view-button"></span>
+      <span data-hook="edit-button"></span>
+    </div>`,
   render () {
     this.renderWithTemplate(this)
 
+    let viewButton = new ViewWorkflowButton({ model: this.model })
+    this.renderSubview(viewButton, this.queryByHook('view-button'))
+
     // if (Acls.hasAccessLevel('admin')) {
-    //   var button = new EditWorkflowButton({ model: this.model })
-    //   this.renderSubview(button, this.queryByHook('edit-button'))
+    //   let editButton = new EditWorkflowButton({ model: this.model })
+    //   this.renderSubview(editButton, this.queryByHook('edit-button'))
     // }
   }
 })
