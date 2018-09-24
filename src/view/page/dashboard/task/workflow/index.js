@@ -2,12 +2,13 @@ import App from 'ampersand-app'
 import Acls from 'lib/acls'
 import View from 'ampersand-view'
 // import EditWorkflowButton from 'view/page/workflow/edit-button'
+import ViewWorkflowButton from 'view/page/workflow/view-button'
 import WorkflowActions from 'actions/workflow'
 import CollapsibleRow from '../collapsible-row'
 import ExecButton from '../exec-button'
 import TaskJobRow from '../task/collapse/job'
 import JobExecButton from '../task/collapse/job/job-exec-button'
-import ViewWorkflowButton from 'view/page/workflow/view-button'
+import DeleteJobsButton from 'view/page/dashboard/task/delete-jobs-button'
 import EmptyJobView from '../empty-job-view.js'
 import moment from 'moment'
 
@@ -58,6 +59,19 @@ module.exports = CollapsibleRow.extend({
         new ExecWorkflowButton({ model: this.model }),
         this.queryByHook('execute-button-container')
       )
+    }
+
+    if (Acls.hasAccessLevel('admin')) {
+      var deleteJobsButton = new DeleteJobsButton({ model: this.model })
+      this.renderSubview(deleteJobsButton, this.queryByHook('delete-jobs-button'))
+
+      this.listenToAndRun(this.model.jobs, 'add sync reset remove', () => {
+        if (this.model.jobs.length) {
+          deleteJobsButton.disabled = false
+        } else {
+          deleteJobsButton.disabled = true
+        }
+      })
     }
   }
 })
@@ -124,7 +138,7 @@ const WorkflowJobRowView = CollapsibleRow.extend({
       fn () {
         let icon = 'fa fa-chevron-right rotate'
         if (!this.collapsed) {
-          icon += ' rotate-down'
+          icon += ' rotate-90'
         }
         return icon
       }
