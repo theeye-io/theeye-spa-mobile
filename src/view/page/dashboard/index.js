@@ -137,6 +137,7 @@ module.exports = View.extend({
     // keep a reference to the tabs element so we don't query
     // the dom everytime (on this.showTab and this.setSliderSizes)
     this.ulTabContents = this.query('#slider ul.tab-contents')
+    this.tabsButtons = this.queryAll('.dashboard-tab')
 
     this.listenToAndRun(App.state.dashboard, 'change:indicatorsDataSynced', () => {
       if (App.state.dashboard.indicatorsDataSynced === true) {
@@ -289,14 +290,19 @@ module.exports = View.extend({
     let indicatorsTab = this.queryByHook('indicators-tab')
     let indicatorsTabButton = this.queryByHook('show-indicators')
 
+    if (this.indicators.length > 0) {
+      App.state.dashboard.currentTab = 'indicators'
+    }
+
     this.listenToAndRun(this.indicators, 'add remove', () => {
-      if (this.indicators.length===0) {
-        indicatorsTab.style.display = 'none'
-        indicatorsTabButton.style.display = 'none'
-      } else {
+      if (this.indicators.length > 0) {
         indicatorsTab.style.display = 'block'
         indicatorsTabButton.style.display = 'block'
+      } else {
+        indicatorsTab.style.display = 'none'
+        indicatorsTabButton.style.display = 'none'
       }
+      this.setSliderSizes()
     })
 
     this.indicatorsRows = this.renderCollection(
@@ -507,7 +513,9 @@ module.exports = View.extend({
   //   this.renderSubview(this.plusButton)
   // },
   setSliderSizes () {
-    slideCount = $('#slider ul li.tab-content').length
+    let hasIndicators = (this.indicators.length) ? 1 : 0
+
+    slideCount = $('#slider ul li.tab-content').length + hasIndicators - 1
     slideWidth = $(window).width()
     sliderUlWidth = slideCount * slideWidth
 
@@ -515,8 +523,11 @@ module.exports = View.extend({
 
     this.ulTabContents.querySelectorAll('li.tab-content').forEach(el => (el.style.width = `${slideWidth}px`))
 
+    this.tabsButtons.forEach(function (tab) {
+      tab.style.width = (100 / (slideCount)).toString() + '%'
+    })
+
     let newLeft = 0
-    let hasIndicators = (this.indicators.length) ? 1 : 0
     if ($('.dashboard-tabs .dashboard-tab.indicators-tab').hasClass('active')) {
       newLeft = 0
     }
