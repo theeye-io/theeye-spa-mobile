@@ -50,6 +50,7 @@ module.exports = View.extend({
           class="panel-collapse collapse"
           aria-labelledby="unbinded"
           role="tabpanel">
+          <h3 data-hook="collapse-title" class="collapse-title"></h3>
           <div class="panel-body" data-hook="collapse-container-body"> </div>
         </div>
         <!-- } END Collapsed Container -->
@@ -58,7 +59,8 @@ module.exports = View.extend({
   `,
   props: {
     collapsed: ['boolean', false, true],
-    show: ['boolean', false, true]
+    show: ['boolean',false,true],
+    collapse_title: ['string', false, false]
   },
   derived: {
     row_text: {
@@ -156,7 +158,17 @@ module.exports = View.extend({
     },
     type: { hook: 'type' },
     description: { hook: 'description' },
-    hostname: { hook: 'hostname' }
+    hostname: { hook: 'hostname' },
+    collapse_title: [
+      {
+        type: 'text',
+        hook: 'collapse-title'
+      },
+      {
+        type: 'toggle',
+        hook: 'collapse-title'
+      }
+    ]
   },
   events: {
     'click .collapsed[data-hook=collapse-toggle]': 'onClickToggleCollapse'
