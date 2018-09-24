@@ -192,7 +192,7 @@ function Node (value) {
   }
 
   this.getImgUrl = function () {
-    return '/images/' + (this.getFeatureType()) + '.png'
+    return window.cordova.file.applicationDirectory + 'www/images/' + (this.getFeatureType()) + '.png'
   }
 
   this.getResourceUrl = function () {
