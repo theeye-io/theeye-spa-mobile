@@ -161,6 +161,7 @@ const ExecApprovalJob = BaseExec.extend({
     bootbox.dialog({
       message: message,
       backdrop: true,
+      closeButton: (App.state.session.user.credential==='root'),
       buttons: buttons
     })
 
@@ -175,6 +176,7 @@ const ExecApprovalJob = BaseExec.extend({
     bootbox.dialog({
       message: message,
       backdrop: true,
+      closeButton: (App.state.session.user.credential==='root'),
       buttons: {
         cancel: {
           label: 'Cancel request',

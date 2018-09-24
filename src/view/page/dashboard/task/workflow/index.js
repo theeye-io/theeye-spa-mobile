@@ -2,11 +2,14 @@ import App from 'ampersand-app'
 import Acls from 'lib/acls'
 import View from 'ampersand-view'
 // import EditWorkflowButton from 'view/page/workflow/edit-button'
+import ViewWorkflowButton from 'view/page/workflow/view-button'
 import WorkflowActions from 'actions/workflow'
 import CollapsibleRow from '../collapsible-row'
 import ExecButton from '../exec-button'
 import TaskJobRow from '../task/collapse/job'
 import JobExecButton from '../task/collapse/job/job-exec-button'
+import DeleteJobsButton from 'view/page/dashboard/task/delete-jobs-button'
+import EmptyJobView from '../empty-job-view.js'
 import moment from 'moment'
 
 import './styles.less'
@@ -26,6 +29,11 @@ module.exports = CollapsibleRow.extend({
       fn: () => 'circle fa fa-sitemap workflow-color'
     }
   },
+  initialize () {
+    CollapsibleRow.prototype.initialize.apply(this, arguments)
+
+    this.collapse_title = 'Execution history'
+  },
   onClickToggleCollapse (event) {
     WorkflowActions.populate(this.model)
   },
@@ -35,7 +43,8 @@ module.exports = CollapsibleRow.extend({
       WorkflowJobRowView,
       this.queryByHook('collapse-container-body'),
       {
-        reverse: true
+        reverse: true,
+        emptyView: EmptyJobView
       }
     )
   },
@@ -50,6 +59,19 @@ module.exports = CollapsibleRow.extend({
         new ExecWorkflowButton({ model: this.model }),
         this.queryByHook('execute-button-container')
       )
+    }
+
+    if (Acls.hasAccessLevel('admin')) {
+      var deleteJobsButton = new DeleteJobsButton({ model: this.model })
+      this.renderSubview(deleteJobsButton, this.queryByHook('delete-jobs-button'))
+
+      this.listenToAndRun(this.model.jobs, 'add sync reset remove', () => {
+        if (this.model.jobs.length) {
+          deleteJobsButton.disabled = false
+        } else {
+          deleteJobsButton.disabled = true
+        }
+      })
     }
   }
 })
@@ -116,7 +138,7 @@ const WorkflowJobRowView = CollapsibleRow.extend({
       fn () {
         let icon = 'fa fa-chevron-right rotate'
         if (!this.collapsed) {
-          icon += ' rotate-down'
+          icon += ' rotate-90'
         }
         return icon
       }
@@ -161,13 +183,20 @@ const ExecWorkflowButton = ExecButton.extend({
 })
 
 const WorkflowButtonsView = View.extend({
-  template: `<div><span data-hook="edit-button"></span></div>`,
+  template: `
+    <div>
+      <span data-hook="view-button"></span>
+      <span data-hook="edit-button"></span>
+    </div>`,
   render () {
     this.renderWithTemplate(this)
 
+    let viewButton = new ViewWorkflowButton({ model: this.model })
+    this.renderSubview(viewButton, this.queryByHook('view-button'))
+
     // if (Acls.hasAccessLevel('admin')) {
-    //   var button = new EditWorkflowButton({ model: this.model })
-    //   this.renderSubview(button, this.queryByHook('edit-button'))
+    //   let editButton = new EditWorkflowButton({ model: this.model })
+    //   this.renderSubview(editButton, this.queryByHook('edit-button'))
     // }
   }
 })
