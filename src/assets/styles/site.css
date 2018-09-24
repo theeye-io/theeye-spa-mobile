@@ -658,6 +658,8 @@ div.js-searchable-box button.clean.active {color:#fff;background:#34495E;}
 
 .dashboard .events-panel .panel-default .panel-title-content { padding-left:0; }
 .dashboard .events-panel h3 { height: 40px; line-height: 28px;/* h3 inherits a top/bottom padding of 6 */ }
+.dashboard .events-panel h3.collapse-title {font-weight: 500;font-size: 16px;text-align: unset;padding-left: 25px;padding-top: 15px;}
+.dashboard .events-panel .empty-job-list {padding-left:10px;}
 .dashboard .events-panel .panel-item.icons .btn-icon-image {
   float:right;
   display: inline-block;
@@ -860,8 +862,8 @@ a.flowchart-icon {
 }
 
 @media (min-width: 768px) {
-	.admin-container .panel-heading .panel-item.name { width:70%;padding-right:5px; }
-  .admin-container.dashboard .panel-heading .panel-item.name { width:50%; }
+  .admin-container .panel-heading .panel-item.name { width:75%; padding-right:5px; }
+  /* .admin-container.dashboard .panel-heading .panel-item.name { width:50%; } */
 }
 /**
  *
