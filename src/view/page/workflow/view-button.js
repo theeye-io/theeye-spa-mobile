@@ -5,7 +5,7 @@ import $ from 'jquery'
 
 module.exports = PanelButton.extend({
   initialize (options) {
-    this.title = 'View workflow'
+    this.title = ''
     this.iconClass = 'fa fa-sitemap dropdown-icon'
     this.className = 'btn btn-primary'
   },
