@@ -19,12 +19,12 @@ module.exports = View.extend({
     	</button>
     	<ul class="dropdown-menu dropdown-menu-right">
         <div>
-          <li><button data-hook="group-by" data-prop="hostname" class="btn btn-primary">Bot</button></li>
-          <li><button data-hook="group-by" data-prop="failure_severity" class="btn btn-primary">Severity</button></li>
-          <li><button data-hook="group-by" data-prop="type" class="btn btn-primary">Type</button></li>
-          <li><button data-hook="group-by" data-prop="name" class="btn btn-primary">Name</button></li>
+          <li><button data-hook="group-by" data-prop="hostname" class="btn btn-primary btn-wide">Bot</button></li>
+          <li><button data-hook="group-by" data-prop="failure_severity" class="btn btn-primary btn-wide">Severity</button></li>
+          <li><button data-hook="group-by" data-prop="type" class="btn btn-primary btn-wide">Type</button></li>
+          <li><button data-hook="group-by" data-prop="name" class="btn btn-primary btn-wide">Name</button></li>
   <li role="separator" class="divider"></li>
-          <li><button data-hook="group-by" data-prop class="btn btn-primary">Ungroup</button></li>
+          <li><button data-hook="group-by" data-prop class="btn btn-primary btn-wide">Ungroup</button></li>
         </div>
       </ul>
     </div>
