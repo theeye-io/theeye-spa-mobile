@@ -306,6 +306,13 @@ h3.light { color: #EEE}
   background-color:#304269;
   text-align:center;
 }
+
+.admin-container .panel-heading .panel-item.icons ul.dropdown-menu .dropdown-icon {
+  padding-right: 5px;
+}
+
+.admin-container .panel-item.icons ul.dropdown-menu li .btn-wide { text-align: left; padding: 5px 10px; width: 155px; height: 34px; border-radius: unset;}
+
 .admin-container .panel-heading .panel-item .visible-badge {padding-right:5px;}
 .admin-container .panel-default.selectedItem>.panel-heading{ color: #F39B0F; }
 /*.admin-container .panel-heading .panel-item.icons .trigger-task {top:-5px;}*/
