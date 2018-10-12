@@ -17,7 +17,7 @@ const iconByType = {
 
 const resourceType = {
   Resource: 'Resource',
-  ScriptJob: 'Task',
+  ScriptJob: 'ScriptTask',
   Webhook: 'Webhook',
   WorkflowJob: 'Workflow'
 }
