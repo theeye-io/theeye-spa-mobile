@@ -88,7 +88,7 @@ module.exports = {
     }
 
     task.fetchJobs(function () { return })
-    // App.actions.scheduler.fetch(task)
+    App.actions.scheduler.fetch(task)
   },
   massiveDelete (tasks) {
     App.state.loader.visible = true
