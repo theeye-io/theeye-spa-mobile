@@ -96,7 +96,7 @@ const Model = AppModel.extend({
           case EmitterConstants.TASK_SCRIPT:
           case EmitterConstants.TASK_SCRAPER:
           case EmitterConstants.TASK_DUMMY:
-            displayable = Boolean(eventName === EventConstants.SUCCESS)
+            displayable = true
             break
           case EmitterConstants.TASK_APPROVAL:
           case EmitterConstants.WEBHOOK:
@@ -114,7 +114,11 @@ const Model = AppModel.extend({
 const taskEventSummary = (emitter, eventName) => {
   let hostname, summary
 
-  if (emitter.host) {
+  if (
+    emitter.host &&
+    typeof emitter.host === 'object' &&
+    emitter.host.hasOwnProperty('hostname')
+  ) {
     hostname = emitter.host.hostname.toLowerCase()
   }
 

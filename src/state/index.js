@@ -14,7 +14,6 @@ import { Collection as Resources } from 'models/resource'
 import { Collection as Tasks } from 'models/task'
 import { Collection as Jobs } from 'models/job'
 import { Collection as Tags } from 'models/tag'
-import { Collection as Scripts } from 'models/file/script'
 import { Collection as Files } from 'models/file'
 import { Collection as Events } from 'models/event'
 import { Workflows } from 'models/workflow'
@@ -22,7 +21,7 @@ import { Workflows } from 'models/workflow'
 import { Collection as Notifications } from 'models/notification'
 import Alerts from 'components/alerts'
 
-import HostTemplateState from './host-template'
+import TemplatePageState from './template-page'
 import DashboardPageState from './dashboard-page'
 import SessionState from './session'
 import NavbarState from './navbar'
@@ -88,7 +87,7 @@ const AppState = State.extend({
     alerts: ['state',false,() => { return new Alerts() }],
     currentPage: 'state',
     dashboard: ['state',false,() => { return new DashboardPageState() }],
-    hostGroupPage: ['state',false,() => { return new HostTemplateState() }],
+    hostGroupPage: ['state',false,() => { return new TemplatePageState() }],
     login: ['state',false,() => { return new LoginState() }],
     notify: ['state',false,() => { return new NotifyState() }],
     register: ['state',false,() => { return new RegisterState() }],
@@ -100,7 +99,8 @@ const AppState = State.extend({
     workflowPage: ['state', false, () => new WorkflowPageState()],
     workflowVisualizer: ['state', false, () => new WorkflowVisualizerState()],
     approval: ['state', false, () => new ApprovalState()],
-    enterprise: ['state',false,() => { return new EnterpriseState() }],
+    taskForm: ['state', false, () => new TaskFormState()],
+    enterprise: ['state', false, () => { return new EnterpriseState() }],
   },
   initialize () {
     State.prototype.initialize.apply(this,arguments)
@@ -238,6 +238,12 @@ const ApprovalState = State.extend({
   }
 })
 
+const TaskFormState = State.extend({
+  props: {
+    file: 'object'
+  }
+})
+
 const LoaderState = State.extend({
   props: {
     visible: ['boolean',false,false],
@@ -263,7 +269,6 @@ const _initCollections = function () {
     tasks: new Tasks([]),
     jobs: new Jobs([]),
     tags: new Tags([]),
-    scripts: new Scripts([]),
     files: new Files([]),
     users: new Users([]),
     webhooks: new Webhooks([]),
