@@ -10,7 +10,6 @@ const urlRoot = function () {
   return `${App.config.api_v3_url}/indicator`
 }
 
-
 const BaseSchema = AppModel.extend({
   idAttribute: 'id',
   props: {
@@ -93,6 +92,13 @@ const ProgressIndicator = Indicator.extend({
   }
 })
 
+const CounterIndicator = Indicator.extend({
+  props: {
+    value: ['number', false, 0],
+    type: ['string', false, 'counter']
+  }
+})
+
 const TextIndicator = Indicator.extend({
   props: {
     value: ['string', false, ''],
@@ -126,6 +132,9 @@ function IndicatorFactory (attrs, options={}) {
         break
       case IndicatorConstants.INDICATOR_TYPE:
         model = new Indicator(attrs, options)
+        break
+      case IndicatorConstants.COUNTER_TYPE:
+        model = new CounterIndicator(attrs, options)
         break
       default:
         let err = new Error(`unrecognized type ${type}`)
@@ -165,6 +174,7 @@ const Collection = AppCollection.extend({
     let isModel = (
       model instanceof TextIndicator ||
       model instanceof ProgressIndicator ||
+      model instanceof CounterIndicator ||
       model instanceof Indicator
     )
     return isModel
@@ -172,6 +182,7 @@ const Collection = AppCollection.extend({
 })
 
 exports.Indicator = Indicator
+exports.Counter = CounterIndicator
 exports.Progress = ProgressIndicator
 exports.Text = TextIndicator
 exports.Factory = IndicatorFactory

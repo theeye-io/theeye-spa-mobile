@@ -14,7 +14,6 @@ module.exports = {
     XHR.send({
       url: `${App.config.api_v3_url}/workflow/triggers?node=${id}`,
       method: 'get',
-      timeout: 5000,
       done (graphData, xhr) {
         if (xhr.status === 200) {
           App.state.workflowPage.clear()

@@ -54,6 +54,7 @@ module.exports = {
         // get the job
         let wjob = workflow.jobs.get(tjob.workflow_job_id)
         if (!wjob) { // async error?
+          if (!tjob.workflow_job_id) { return }
           // add temp models to the collection
           wjob = workflow.jobs.add({ id: tjob.workflow_job_id }, { merge: true })
         }
@@ -224,7 +225,7 @@ const createWorkflowJob = (workflow, args) => {
     done (job, xhr) {
       logger.debug('job created. updating workflow')
       //wait for socket update arrive and create there
-      //workflow.jobs.add(job, { merge: true })
+      workflow.jobs.add(job, { merge: true })
     },
     fail (err,xhr) {
       bootbox.alert('Job creation failed')
