@@ -14,7 +14,6 @@ import { Collection as Resources } from 'models/resource'
 import { Collection as Tasks } from 'models/task'
 import { Collection as Jobs } from 'models/job'
 import { Collection as Tags } from 'models/tag'
-import { Collection as Scripts } from 'models/file/script'
 import { Collection as Files } from 'models/file'
 import { Collection as Events } from 'models/event'
 import { Workflows } from 'models/workflow'
@@ -100,7 +99,8 @@ const AppState = State.extend({
     workflowPage: ['state', false, () => new WorkflowPageState()],
     workflowVisualizer: ['state', false, () => new WorkflowVisualizerState()],
     approval: ['state', false, () => new ApprovalState()],
-    enterprise: ['state',false,() => { return new EnterpriseState() }],
+    taskForm: ['state', false, () => new TaskFormState()],
+    enterprise: ['state', false, () => { return new EnterpriseState() }],
   },
   initialize () {
     State.prototype.initialize.apply(this,arguments)
@@ -238,6 +238,12 @@ const ApprovalState = State.extend({
   }
 })
 
+const TaskFormState = State.extend({
+  props: {
+    file: 'object'
+  }
+})
+
 const LoaderState = State.extend({
   props: {
     visible: ['boolean',false,false],
@@ -263,7 +269,6 @@ const _initCollections = function () {
     tasks: new Tasks([]),
     jobs: new Jobs([]),
     tags: new Tags([]),
-    scripts: new Scripts([]),
     files: new Files([]),
     users: new Users([]),
     webhooks: new Webhooks([]),
