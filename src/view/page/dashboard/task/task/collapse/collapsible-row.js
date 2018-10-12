@@ -32,10 +32,10 @@ module.exports = CollapsibleRow.extend({
 
   },
   renderCollapsedContent () {
-    this.renderSubview(
-      new Schedules({model: this.model}),
-      this.queryByHook('collapse-container-body'),
-    )
+    // this.renderSubview(
+    //   new Schedules({model: this.model}),
+    //   this.queryByHook('collapse-container-body'),
+    // )
 
     this.renderSubview(
       new JobsList({ model: this.model, rowView: JobRow }),
