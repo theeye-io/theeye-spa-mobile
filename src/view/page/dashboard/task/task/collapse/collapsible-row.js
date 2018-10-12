@@ -48,9 +48,8 @@ const TaskButtonsView = View.extend({
   template: `
     <div>
       <li>
-        <button data-hook="search" class="btn btn-primary" title="Search related elements">
-          <i class="fa fa-search dropdown-icon" aria-hidden="true"></i>
-          <span>Search related</span>
+        <button data-hook="search" class="btn btn-primary tooltiped" title="Search related elements">
+          <i class="fa fa-search" aria-hidden="true"></i>
         </button>
       </li>
     </div>

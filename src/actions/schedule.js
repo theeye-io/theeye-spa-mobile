@@ -1,5 +1,4 @@
 import XHR from 'lib/xhr'
-import config from 'config'
 import bootbox from 'bootbox'
 import App from 'ampersand-app'
 
@@ -7,7 +6,7 @@ import App from 'ampersand-app'
 export const createSchedule = (taskId, data, callback = () => {}) => {
   const task = App.state.tasks.get(taskId)
   XHR.send({
-    url: `${config.api_url}/task/schedule`,
+    url: `${App.config.api_url}/task/schedule`,
     method: 'POST',
     jsonData: data,
     headers: {
@@ -29,7 +28,7 @@ export const createSchedule = (taskId, data, callback = () => {}) => {
 export const getSchedules = taskId => {
   const task = App.state.tasks.get(taskId)
   XHR.send({
-    url: `${config.api_url}/task/${task.id}/schedule`,
+    url: `${App.config.api_url}/task/${task.id}/schedule`,
     method: 'GET',
     headers: {
       Accept: 'application/json;charset=UTF-8'
@@ -49,7 +48,7 @@ export const cancelSchedule = (taskId, scheduleId) => {
   const schedule = task.schedules.get(scheduleId)
 
   XHR.send({
-    url: `${config.api_url}/task/${task.id}/schedule/${schedule._id}`,
+    url: `${App.config.api_url}/task/${task.id}/schedule/${schedule._id}`,
     method: 'DELETE',
     headers: {
       Accept: 'application/json;charset=UTF-8'
