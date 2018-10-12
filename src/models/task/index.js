@@ -21,7 +21,7 @@ const formattedTags = () => {
     fn () {
       return [
         'name=' + this.name,
-        'hostname=' + this.hostname,
+        'hostname=' + this.hostname || 'no-host',
         'type=' + this.type,
         'description=' + this.description,
         'acl=' + this.acl,
@@ -98,12 +98,6 @@ const Scraper = Template.Scraper.extend({
         return isurl && isMongoId(this.host_id || '')
       }
     },
-    canBatchExecute: {
-      deps: ['hasDinamicArguments'],
-      fn () {
-        return !this.hasDinamicArguments
-      }
-    },
     hasTemplate: {
       deps: ['template_id'],
       fn () {
@@ -134,29 +128,11 @@ const Approval = Template.Approval.extend({
     template_id: 'string'
   },
   derived: {
-    formatted_tags: () => {
-      return {
-        deps: ['name','type','description','acl','tags'],
-        fn () {
-          return [
-            'name=' + this.name,
-            'type=' + this.type,
-            'description=' + this.description,
-            'acl=' + this.acl,
-          ].concat(this.tags)
-        }
-      }
-    },
+    formatted_tags: formattedTags(),
     canExecute: {
       deps: [],
       fn () {
         return true
-      }
-    },
-    canBatchExecute: {
-      deps: ['hasDinamicArguments'],
-      fn () {
-        return !this.hasDinamicArguments
       }
     },
     hasTemplate: {
@@ -188,29 +164,11 @@ const Dummy = Template.Dummy.extend({
     template_id: 'string'
   },
   derived: {
-    formatted_tags: () => {
-      return {
-        deps: ['name','type','description','acl','tags'],
-        fn () {
-          return [
-            'name=' + this.name,
-            'type=' + this.type,
-            'description=' + this.description,
-            'acl=' + this.acl,
-          ].concat(this.tags)
-        }
-      }
-    },
+    formatted_tags: formattedTags(),
     canExecute: {
       deps: [],
       fn () {
         return true
-      }
-    },
-    canBatchExecute: {
-      deps: ['hasDinamicArguments'],
-      fn () {
-        return !this.hasDinamicArguments
       }
     },
     hasTemplate: {
@@ -273,7 +231,7 @@ const TaskFactory = function (attrs, options={}) {
   }
 
   model = createModel()
-  if (options.collection !== App.state.tasks) {
+  if (options.collection !== App.state.tasks && !model.isNew()) {
     App.state.tasks.add(model, {merge:true})
   }
   return model
