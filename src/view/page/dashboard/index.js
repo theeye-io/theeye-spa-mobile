@@ -11,11 +11,11 @@ import IndicatorRowView from './indicator'
 import RunAllTasksButton from './task/run-all-button'
 import TaskActions from 'actions/task'
 import WorkflowActions from 'actions/workflow'
+import SearchboxActions from 'actions/searchbox'
 import bootbox from 'bootbox'
 
 // const logger = require('lib/logger')('view:page:dashboard')
 const ItemsFolding = require('./panel-items-fold')
-const searchRows = require('lib/filter-rows')
 
 import MonitorsOptions from './monitors-options'
 import MonitoringOboardingPanel from './monitoring-onboarding'
@@ -134,6 +134,8 @@ module.exports = View.extend({
 
     this.renderWithTemplate()
 
+    SearchboxActions.emptyRowsViews()
+
     // keep a reference to the tabs element so we don't query
     // the dom everytime (on this.showTab and this.setSliderSizes)
     this.ulTabContents = this.query('#slider ul.tab-contents')
@@ -181,6 +183,21 @@ module.exports = View.extend({
     //   this.renderPlusButton()
     // }
 
+    this.listenTo(App.state.searchbox, 'onrow', (data) => {
+      const row = data.row
+      const hit = data.hit
+      if (/Task/.test(row.model._type) || /Workflow/.test(row.model._type)) {
+        if (row.model.canExecute) {
+          row.show = Boolean(hit)
+        }
+      } else {
+        row.show = Boolean(hit)
+      }
+    })
+
+    this.listenToAndRun(App.state.searchbox, 'change:search', this.search)
+    this.listenTo(App.state.searchbox, 'change:rowsViews', this.search)
+
     document.getElementsByClassName('navbar')[0].style.display = 'block'
 
     // notifications inbox
@@ -223,6 +240,48 @@ module.exports = View.extend({
           break
       }
     })
+  },
+  search () {
+    if (this.monitorRows) {
+      if (App.state.searchbox.search) {
+        this.hideUpAndRunning()
+        this.monitorsFolding.unfold()
+      } else {
+        this.monitorsFolding.fold()
+        // this.setUpAndRunningSign()
+      }
+    }
+    if (this.taskRows) {
+      this.runAllButton.visible = Boolean(App.state.searchbox.search)
+      if (App.state.searchbox.search.length > 3) {
+        const rows = this.taskRows.views.filter(row => row.show === true)
+        if (!rows || rows.length === 0) {
+          // no rows to show
+          this.runAllButton.disabled = true
+        } else {
+          // verify if all the tasks are not being executed
+          const nonExecutableTasks = rows
+          .map(row => row.model)
+          .find(task => {
+            if (/Task/.test(task._type)) {
+              return !task.canBatchExecute
+            }
+            if (/Workflow/.test(task._type)) {
+              var WFNotExecutable = false
+              task.tasks.models.forEach(function (wfTask) {
+                if (!wfTask.canBatchExecute) {
+                  WFNotExecutable = true
+                }
+              })
+              return WFNotExecutable
+            }
+          })
+          this.runAllButton.disabled = (nonExecutableTasks !== undefined)
+        }
+      } else {
+        this.runAllButton.disabled = true
+      }
+    }
   },
   setUpAndRunningSign: function () {
     if (!this.upandrunningSign) {
@@ -314,9 +373,7 @@ module.exports = View.extend({
       }
     )
 
-    const search = () => { }
-
-    this.listenToAndRun(App.state.searchbox, 'change:search', search)
+    SearchboxActions.addRowsViews(this.indicatorsRows.views)
   },
   /**
    *
@@ -348,29 +405,6 @@ module.exports = View.extend({
       new ItemsFolding({}),
       this.queryByHook('monitors-fold-container')
     )
-
-    /** bind searchbox **/
-    this.listenToAndRun(App.state.searchbox, 'change:search', () => {
-      if (this.monitorRows) {
-        searchRows({
-          rows: this.monitorRows.views,
-          search: App.state.searchbox.search,
-          onrow: (row, hit) => {
-            row.show = Boolean(hit)
-          },
-          onsearchend: () => {
-            this.monitorRows.views.forEach(row => (row.show = true))
-          }
-        })
-      }
-      if (App.state.searchbox.search) {
-        this.hideUpAndRunning()
-        this.monitorsFolding.unfold()
-      } else {
-        this.monitorsFolding.fold()
-        // this.setUpAndRunningSign()
-      }
-    })
 
     // this.listenToOnce(App.state.onboarding, 'first-host-registered', () => {
     //   this.onBoarding.onboardingStart()
@@ -411,6 +445,8 @@ module.exports = View.extend({
       this.monitorsFolding.unfold()
       App.state.dashboard.groupResources()
     })
+
+    SearchboxActions.addRowsViews(this.monitorRows.views)
   },
   /**
    *
@@ -418,7 +454,7 @@ module.exports = View.extend({
    *
    */
   renderTasksPanel () {
-    const taskRows = this.renderCollection(
+    this.taskRows = this.renderCollection(
       this.tasks,
       TaskRowView,
       this.queryByHook('tasks-container'),
@@ -427,14 +463,14 @@ module.exports = View.extend({
       }
     )
 
-    const runAllButton = new RunAllTasksButton({
+    this.runAllButton = new RunAllTasksButton({
       el: this.queryByHook('run-all-tasks')
     })
-    runAllButton.render()
-    this.registerSubview(runAllButton)
+    this.runAllButton.render()
+    this.registerSubview(this.runAllButton)
 
-    this.listenTo(runAllButton, 'runall', () => {
-      const rows = taskRows.views.filter(row => {
+    this.listenTo(this.runAllButton, 'runall', () => {
+      const rows = this.taskRows.views.filter(row => {
         return row.model.canExecute && row.show === true
       })
       runAllTasks(rows)
@@ -448,65 +484,14 @@ module.exports = View.extend({
       this.queryByHook('tasks-fold-container')
     )
 
-    taskRows.views.forEach(row => {
+    this.taskRows.views.forEach(row => {
       let task = row.model
       if (!task.canExecute) {
         this.tasksFolding.append(row.el)
       }
     })
 
-    const search = () => {
-      if (taskRows) {
-        searchRows({
-          rows: taskRows.views,
-          search: App.state.searchbox.search,
-          onrow: (row, isHit) => {
-            if (row.model.canExecute) {
-              row.show = isHit
-            } else {
-              row.show = false
-            }
-          },
-          onsearchend: () => {
-            taskRows.views.forEach(row => (row.show = true))
-          }
-        })
-
-        runAllButton.visible = Boolean(App.state.searchbox.search)
-
-        if (App.state.searchbox.search.length > 3) {
-          const rows = taskRows.views.filter(row => row.show === true)
-          if (!rows || rows.length === 0) {
-            // no rows to show
-            runAllButton.disabled = true
-          } else {
-            // verify if all the tasks are not being executed
-            const nonExecutableTasks = rows
-              .map(row => row.model)
-              .find(task => {
-                if (/Task/.test(task._type)) {
-                  return !task.canBatchExecute
-                }
-                if (/Workflow/.test(task._type)) {
-                  var WFNotExecutable = false
-                  task.tasks.models.forEach(function (wfTask) {
-                    if (!wfTask.canBatchExecute) {
-                      WFNotExecutable = true
-                    }
-                  })
-                  return WFNotExecutable
-                }
-              })
-
-            runAllButton.disabled = (nonExecutableTasks !== undefined)
-          }
-        } else {
-          runAllButton.disabled = true
-        }
-      }
-    }
-
-    this.listenToAndRun(App.state.searchbox, 'change:search', search)
+    SearchboxActions.addRowsViews(this.taskRows.views)
   },
   // renderPlusButton () {
   //   this.plusButton = new PlusMenuButton()

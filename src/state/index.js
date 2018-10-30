@@ -1,7 +1,6 @@
 import assign from 'lodash/assign'
 import AmpersandState from 'ampersand-state'
 import Collection from 'ampersand-collection'
-import uriFragment from 'lib/uri-fragment'
 import { Collection as Indicators } from 'models/indicator'
 import { Collection as Webhooks } from 'models/webhook'
 import { Collection as HostGroups } from 'models/hostgroup'
@@ -32,6 +31,7 @@ import InboxState from './inbox'
 import WorkflowPageState from './workflow-page'
 import WorkflowVisualizerState from './workflow-visualizer'
 import LocalSettings from './local-settings'
+import SearchBoxState from './searchbox'
 
 const State = AmpersandState.extend({ extraProperties: 'allow' })
 
@@ -59,6 +59,12 @@ const severities = [
   { id: 'LOW', text: 'LOW' },
   { id: 'HIGH', text: 'HIGH' },
   { id: 'CRITICAL', text: 'CRITICAL' }
+]
+
+const indicatorTypes = [
+  { id: 'TextIndicator', text: 'Text' },
+  { id: 'ProgressIndicator', text: 'Progress' },
+  { id: 'CounterIndicator', text: 'Counter' }
 ]
 
 const CredentialsCollection = Collection.extend({
@@ -115,6 +121,7 @@ const AppState = State.extend({
     this.credentials = new CredentialsCollection()
     this.looptimes = new Collection(looptimes)
     this.severities = new Collection(severities)
+    this.indicatorTypes = new Collection(indicatorTypes)
 
     this.inbox = new InboxState({ appState: this })
   },
@@ -167,27 +174,6 @@ const AppState = State.extend({
 })
 
 module.exports = AppState
-
-const SearchBoxState = State.extend({
-  props: {
-    search: ['string',false,'']
-  },
-  initialize () {
-    State.prototype.initialize.apply(this,arguments)
-
-    //const uri = new URI(window.location)
-    //const fragment = uri.fragment()
-    const fragment = uriFragment.get()
-
-    if (fragment.search) {
-      this.search = fragment.search
-    }
-
-    this.listenTo(this,'change:search',() => {
-      uriFragment.set('search', this.search)
-    })
-  }
-})
 
 const NotifyState = State.extend({
   props: {

@@ -1,15 +1,11 @@
 'use strict'
 
+import App from 'ampersand-app'
 import AmpersandState from 'ampersand-state'
 import XHR from 'lib/xhr'
-
 import localforage from 'localforage'
 import SessionActions from 'actions/session'
-
-import { Model as User } from 'models/user'
-import { Model as Customer } from 'models/customer'
-
-import {checkLicense} from 'app/license'
+import { checkLicense } from 'app/license'
 
 module.exports = AmpersandState.extend({
   props: {
@@ -18,8 +14,12 @@ module.exports = AmpersandState.extend({
   },
   session: {
     storage: 'object',
-    user: ['state',false,() => { return new User() }],
-    customer: ['state',false,() => { return new Customer() }],
+    user: ['state', false, () => {
+      return new App.Models.User.Model()
+    }],
+    customer: ['state', false, () => {
+      return new App.Models.Customer.Model()
+    }],
     logged_in: 'boolean',
     authorization: 'string',
     restored: 'boolean',
@@ -97,7 +97,7 @@ module.exports = AmpersandState.extend({
 
     this.storage
       .setItem('session', this.toJSON())
-      .catch(err => debug('ERROR %j', err))
+      .catch(err => console.error('ERROR %j', err))
   },
   //destroy (done) {
   //  done || (done = ()=>{})
