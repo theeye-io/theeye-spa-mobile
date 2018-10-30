@@ -1,7 +1,10 @@
 import App from 'ampersand-app'
 import View from 'ampersand-view'
-//import rowIconByType from '../row-icon-by-type'
 import ProgressBar from 'components/progress-bars'
+import BaseView from 'view/base-view'
+import Clipboard from 'clipboard'
+import DismissIndicatorButton from './button/dismiss'
+//import EditIndicatorButton from './button/edit'
 
 import './styles.less'
 
@@ -35,13 +38,11 @@ const IndicatorRowView = View.extend({
                       <small><i data-hook="type"></i></small>
                     </span>
 
-                    <section data-hook="gauge-container">
-                    </section>
+                    <section data-hook="gauge-container"></section>
                   </div>
 
-                  <div class="panel-item-right">
-                    <section data-hook="buttons-block" style="float:right;">
-                    </section>
+                  <div class="panel-item-right" style="width:23%">
+                    <section data-hook="buttons-block"></section>
 
                     <!-- state_severity is a model object derived property, not an attribute -->
                     <div class="panel-item tooltiped state-icon state-container">
@@ -85,7 +86,7 @@ const IndicatorRowView = View.extend({
       fn () {
         return `#${this.collapse_container_id}`
       }
-    },
+    }
   },
   bindings: {
     collapse_toggle_href: {
@@ -136,36 +137,49 @@ const IndicatorRowView = View.extend({
   },
   render () {
     this.renderWithTemplate()
+    this.renderButtons()
     this.setRowIcon()
     this.renderGauges()
-    //this.renderButtons()
-    //this.renderCollapsedContent()
+    // this.renderCollapsedContent()
   },
   renderGauges () {
-    let view = new GaugesFactoryView({ model: this.model })
-    this.renderSubview(view, this.queryByHook('gauge-container'))
+    this.renderSubview(
+      new GaugesFactoryView({ model: this.model }),
+      this.queryByHook('gauge-container')
+    )
   },
   renderCollapsedContent () {
+    this.renderSubview(
+      new CollapsedContent({ model: this.model }),
+      this.queryByHook('collapse-container-body')
+    )
   },
   renderButtons () {
-    let tpl = `
-      <div class="panel-item icons dropdown">
-        <button class="btn dropdown-toggle btn-primary"
-          type="button"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="true">
-          <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-        </button>
-        <ul data-hook="buttons-container" class="dropdown-menu"> </ul>
-      </div>
+    // there is only one button.
+    if (this.model.read_only===false) {
+      let tpl = `
+        <div class="panel-item icons dropdown">
+          <button class="btn dropdown-toggle btn-primary"
+            type="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="true">
+            <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+          </button>
+          <ul data-hook="buttons-container" class="dropdown-menu"></ul>
+        </div>
       `
 
-    let block = this.queryByHook('buttons-block')
-    block.innerHTML = tpl
+      let block = this.queryByHook('buttons-block')
+      block.innerHTML = tpl
+
+      this.renderSubview(
+        new DismissIndicatorButton({ model: this.model }),
+        block.querySelector('ul')
+      )
+    }
   },
   setRowIcon () {
-    var type = this.model.type;
     const iconEl = this.queryByHook('row-icon')
     iconEl.className = 'fa fa-lightbulb-o circle'
     iconEl.style.backgroundColor = '#06D5B4'
@@ -179,13 +193,13 @@ const GaugesFactoryView = function (options) {
     case 'text':
     case 'counter':
       gauge = new TextIndicatorView(options)
-      break;
+      break
     case 'progress':
       gauge = new ProgressIndicatorView(options)
-      break;
+      break
     default:
       gauge = new IndicatorView(options)
-      break;
+      break
   }
   return gauge
 }
@@ -232,5 +246,112 @@ const IndicatorView = View.extend({
       type: 'text',
       hook: 'value'
     }
+  }
+})
+
+const CollapsedContent = BaseView.extend({
+  template: `
+    <div class="indicator-details">
+      <div class="row indicator-curl">
+        <div class="col-xs-2">
+          <label>Update CURL</label>
+        </div>
+        <div class="col-xs-10">
+          <div class="">
+            <button class="curl-copy btn btn-primary clip" type="button" data-hook="update-copy">
+              <span class="glyphicon glyphicon-copy" alt="copy to clipboard"></span>
+            </button>
+            <div class="curl-container" data-hook="update-curl"></div>
+          </div>
+        </div>
+      </div>
+      <div class="row indicator-curl" style="padding-top:10px;">
+        <div class="col-xs-2">
+          <label>Delete CURL</label>
+        </div>
+        <div class="col-xs-10">
+          <div class="">
+            <button class="curl-copy btn btn-primary clip" type="button" data-hook="delete-copy">
+              <span class="glyphicon glyphicon-copy" alt="copy to clipboard"></span>
+            </button>
+            <div class="curl-container" data-hook="delete-curl"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `,
+  bindings: {
+    //'updateCurl': {
+    //  type: 'attribute',
+    //  name: 'value',
+    //  hook: 'update-curl'
+    //},
+    //'deleteCurl': {
+    //  type: 'attribute',
+    //  name: 'value',
+    //  hook: 'delete-curl'
+    //}
+    'updateCurl': {
+      hook: 'update-curl',
+      type: 'innerHTML'
+    },
+    'deleteCurl': {
+      hook: 'delete-curl',
+      type: 'innerHTML'
+    }
+  },
+  derived: {
+    indicatorUrl: {
+      deps: ['model.id'],
+      fn () {
+        const indicatorsURL = App.config.supervisor_api_url + '/indicator'
+        let url = [
+          "'",
+          indicatorsURL,
+          `/${this.model.id}`,
+          '?access_token={access_token_here}&customer=',
+          App.state.session.customer.name,
+          "'"
+        ]
+        return url.join('')
+      }
+    },
+    updateCurl: {
+      deps: ['indicatorUrl','model.state'],
+      fn () {
+        let state = this.model.state==='normal'?'failure':'normal'
+        let url = this.indicatorUrl
+        let curl = [
+          `curl -X PATCH ${url}`,
+          ` --header 'Content-Type: application/json'`,
+          ` --data '{"state":"${state}"}'`
+        ]
+        return curl.join('')
+      }
+    },
+    deleteCurl: {
+      deps: ['indicatorUrl'],
+      fn () {
+        let url = this.indicatorUrl
+        return `curl -X DELETE ${url}`
+      }
+    }
+  },
+  render () {
+    this.renderWithTemplate(this)
+
+    new Clipboard(
+      this.queryByHook('update-copy'),
+      {
+        text: () => this.updateCurl
+      }
+    )
+
+    new Clipboard(
+      this.queryByHook('delete-copy'),
+      {
+        text: () => this.deleteCurl
+      }
+    )
   }
 })
