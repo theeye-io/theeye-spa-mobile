@@ -61,6 +61,12 @@ const severities = [
   { id: 'CRITICAL', text: 'CRITICAL' }
 ]
 
+const indicatorTypes = [
+  { id: 'TextIndicator', text: 'Text' },
+  { id: 'ProgressIndicator', text: 'Progress' },
+  { id: 'CounterIndicator', text: 'Counter' }
+]
+
 const CredentialsCollection = Collection.extend({
   reset (models) {
     const reset = Collection.prototype.reset
@@ -115,6 +121,7 @@ const AppState = State.extend({
     this.credentials = new CredentialsCollection()
     this.looptimes = new Collection(looptimes)
     this.severities = new Collection(severities)
+    this.indicatorTypes = new Collection(indicatorTypes)
 
     this.inbox = new InboxState({ appState: this })
   },

@@ -2,6 +2,10 @@ import 'bootstrap'
 import config from 'config'
 
 import App from 'ampersand-app'
+//const models = require('app/models')
+// load application models definitions
+require('app/models')()
+
 import AppState from 'state'
 import Router from 'router'
 import Loader from 'components/loader'
@@ -12,7 +16,6 @@ import DashboardActions from 'actions/dashboard'
 require('app/events')
 const sockets = require('app/sockets')
 const session = require('app/session')
-const models = require('app/models')
 const actions = require('app/actions')
 const pushNotification = require('app/push-notification')
 
@@ -26,7 +29,6 @@ App.extend({
   init () {
     this.bindDocumentEvents()
     this.initState(() => {
-      models()
       actions()
       this.registerComponents()
       session()

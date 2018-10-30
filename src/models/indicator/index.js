@@ -14,21 +14,23 @@ const BaseSchema = AppModel.extend({
   idAttribute: 'id',
   props: {
     id: 'string',
+    customer_id: 'string',
     customer_name: 'string',
     user_id: 'string', // owner/creator
     description: 'string',
-    title: 'string',
-    severity: 'string',
     alerts: 'boolean',
-    state: 'string',
-    acl: ['array', false, () => { return [] }],
     _type: 'string',
     type: 'string',
     creation_date: 'date',
     last_update: 'date',
-    enable: 'boolean',
-    customer_id: 'string',
-    sticky: 'boolean'
+    secret: 'string',
+    title: ['string'],
+    severity: ['string',false,'low'],
+    state: ['string',false,'normal'],
+    acl: ['array', false, () => { return [] }],
+    enable: ['boolean',false,true],
+    sticky: ['boolean',false,false],
+    read_only: ['boolean',false,false]
   },
   derived: {
     order: {
@@ -38,22 +40,23 @@ const BaseSchema = AppModel.extend({
       }
     },
     formatted_tags: {
-      deps: ['name','_type','state','severity','tags','description'],
+      deps: ['title','_type','type','state','severity','tags','description','acl','read_only'],
       fn () {
         return [
-          'name=' + this.name,
-          'state=' + this.state,
-          'type=' + this._type,
-          'description=' + this.description,
-          'severity=' + this.severity
-        ].concat(this.tags)
+          this.title,
+          this.state,
+          this._type,
+          this.description,
+          this.severity,
+          (this.read_only?'read only':undefined)
+        ].concat(this.acl, this.tags)
       }
     },
     stateSeverity: {
       deps: ['state','severity'],
       fn () {
-        const state = this.state.toLowerCase() || 'error'
-        const severity = this.severity.toLowerCase() || 'high'
+        const state = (this.state || 'error').toLowerCase()
+        const severity = (this.severity || 'high').toLowerCase()
 
         if (state==='failure') {
           return severity
@@ -82,7 +85,17 @@ const BaseSchema = AppModel.extend({
 })
 
 const Indicator = BaseSchema.extend({
-  urlRoot
+  urlRoot,
+  session: {
+    _all: 'object' // keep properties returned by the server as is
+  },
+  mutate () {
+    return new IndicatorFactory(this._all)
+  },
+  parse (attrs) {
+    this._all = attrs
+    return attrs
+  }
 })
 
 const ProgressIndicator = Indicator.extend({
@@ -107,13 +120,14 @@ const TextIndicator = Indicator.extend({
 })
 
 function IndicatorFactory (attrs, options={}) {
+  let store = App.state.indicators
   if (attrs.isCollection) { return attrs }
   if (attrs.isState) { return attrs } // already constructed
 
   let model
 
   if (attrs.id) {
-    model = App.state.indicators.get(attrs.id)
+    model = store.get(attrs.id)
     if (model) {
       model.set(attrs)
       return model
@@ -145,8 +159,11 @@ function IndicatorFactory (attrs, options={}) {
   }
 
   model = createModel()
-  if (options.collection !== App.state.indicators) {
-    App.state.indicators.add(model, { merge: true })
+  if (
+    options.collection !== store &&
+    !model.isNew()
+  ) {
+    store.add(model, { merge: true })
   }
   return model
 }

@@ -17,15 +17,16 @@ const urlRoot = function () {
 
 const formattedTags = () => {
   return {
-    deps: ['name','hostname','type','description','acl','tags'],
+    deps: ['name','hostname','type','description','acl','tags','hasSchedules','inProgressJobs','hasTemplate'],
     fn () {
       return [
-        'name=' + this.name,
-        'hostname=' + this.hostname || 'no-host',
-        'type=' + this.type,
-        'description=' + this.description,
-        'acl=' + this.acl,
-      ].concat(this.tags)
+        this.name,
+        this.type,
+        this.description,
+        (this.hostname||'no host'),
+        (this.hasSchedules?'scheduled':undefined),
+        (this.inProgressJobs?'running':undefined)
+      ].concat(this.acl, this.tags)
     }
   }
 }
@@ -196,13 +197,14 @@ const Dummy = Template.Dummy.extend({
 
 
 const TaskFactory = function (attrs, options={}) {
+  const store = App.state.tasks
   if (attrs.isCollection) { return attrs }
   if (attrs.isState) { return attrs } // already constructed
 
   let model
 
   if (attrs.id) {
-    model = App.state.tasks.get(attrs.id)
+    model = store.get(attrs.id)
     if (model) { return model }
   }
 
@@ -231,8 +233,11 @@ const TaskFactory = function (attrs, options={}) {
   }
 
   model = createModel()
-  if (options.collection !== App.state.tasks && !model.isNew()) {
-    App.state.tasks.add(model, {merge:true})
+  if (
+    options.collection !== store &&
+    !model.isNew()
+  ) {
+    store.add(model, {merge:true})
   }
   return model
 }
