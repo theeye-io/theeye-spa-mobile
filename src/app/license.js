@@ -61,18 +61,14 @@ module.exports = {
       .then(res => res.json())
       .then(json => {
         if (json && json.ip) {
-          if (json.type && json.type === 'inhouse') {
-            App.config.app_url = json.ip
-            App.config.api_url = `${json.ip}/apiv2`
-            App.config.api_v3_url = `${json.ip}/apiv3`
-            App.config.socket_url = `${json.ip}:443`
+          App.config.app_url = json.ip
+          App.config.api_url = `${json.ip}/apiv2`
+          App.config.api_v3_url = `${json.ip}/apiv3`
+          App.config.socket_url = `${json.ip}:443`
 
-            App.state.enterprise.showEnterpriseForm = false
-          } else {
-            throw new Error('no inhouse')
-          }
+          App.state.enterprise.showEnterpriseForm = false
         } else {
-          throw new Error('no license')
+          throw new Error('no custom ip')
         }
       })
       .catch(err => handleError(err))
