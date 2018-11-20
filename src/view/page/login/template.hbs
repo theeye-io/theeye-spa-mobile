@@ -1,10 +1,28 @@
-<div class="loginBox">
-  <div data-hook="login-form-container">
-    <h1>Sign In to theeye.io</h1>
-    <a href="" class="sign google" data-hook="google-login-mobile"><i class="fa fa-google-plus"></i>Google+</a>
-    <div class="or"><span>or</span></div>
-    <div data-hook="login-form" class="login-form"></div>
-    <button data-hook="start-login">Sign in</button>
+<div class="login-container">
+  <div class="container">
+    <div class="login-main">
+      <div data-hook="login-form-container">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="title-wrapper">
+              <h1>Sign In to TheEye App</h1>
+              <a href="" class="sign google" data-hook="google-login"><i class="fa fa-google-plus"></i>Google+</a>
+              <h2 class="or"> - or - </h2>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="form-wrapper">
+              <div data-hook="login-form" class="form-container"></div>
+              <button data-hook="start-login">Sign in</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <a href="/enterprise"><h2 class="register-link">Enterprise? Access here</h2></a>
+      </div>
+    </div>
   </div>
-  <div class="register-link"><a href="/enterprise">Enterprise? Enter here</a></div>
 </div>
