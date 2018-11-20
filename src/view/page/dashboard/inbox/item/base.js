@@ -12,7 +12,8 @@ const iconByType = {
   nested: 'fa-bullseye',
   approval: 'fa-thumbs-o-up',
   webhook: 'fa-exchange',
-  workflow: 'fa-sitemap'
+  workflow: 'fa-sitemap',
+  notification: 'fa-bell'
 }
 
 const resourceType = {
@@ -94,7 +95,9 @@ export default View.extend({
   },
   setModelIcon (modelType, modelSubType) {
     var iconClass = 'circle fa '
-    if (modelType === 'Webhook') {
+    if (modelType === 'NotificationJob') {
+      iconClass += ` ${iconByType['notification']} notification-color`
+    } else if (modelType === 'Webhook') {
       iconClass += ` ${iconByType['webhook']} webhook-color`
     } else if (modelType === 'Workflow') {
       iconClass += ` ${iconByType['workflow']} workflow-color`

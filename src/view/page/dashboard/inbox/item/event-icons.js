@@ -19,5 +19,5 @@ module.exports = {
   'host:stats:disk:high': 'fa fa-bar-chart',
   'host:stats:cache:high': 'fa fa-bar-chart',
   'job:create': 'fa fa-check-circle',
-  'NotificationJob': 'fa fa-bell'
+  'NotificationJob': 'fa fa-check-circle'
 }
