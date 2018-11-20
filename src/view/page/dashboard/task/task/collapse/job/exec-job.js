@@ -6,6 +6,7 @@ import {BaseExec} from '../../exec-task.js'
 import FIELD from 'constants/field'
 import moment from 'moment'
 import fileDownloader from 'lib/file-downloader'
+import isURL from 'validator/lib/isURL'
 import $ from 'jquery'
 
 const buildMessage = function (model) {
@@ -22,7 +23,11 @@ const buildMessage = function (model) {
     switch (param.type) {
       case FIELD.TYPE_FIXED:
       case FIELD.TYPE_INPUT:
-        line += values[index]
+        if (isURL(values[index])) {
+          line += `<a href='${values[index]}' download='file${index + 1}' target='_blank'>Download</a>`
+        } else {
+          line += values[index]
+        }
         break
       case FIELD.TYPE_DATE:
         line += moment(values[index]).format('D-MMM-YY, HH:mm:ss')
