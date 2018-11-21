@@ -1,13 +1,16 @@
 import JobItem from './job'
 import WorkflowJobItem from './workflow-job'
 import ResourceItem from './resource'
+import NotificationTaskItem from './notification-job'
 import WebhookItem from './webhook'
 import DefaultItem from './default'
 
 const Factory = (options) => {
   const type = options.model.data.model._type
 
-  if (type === 'Resource') {
+  if (type === 'NotificationJob') {
+    return new NotificationTaskItem(options)
+  } else if (type === 'Resource') {
     return new ResourceItem(options)
   } else if (/WorkflowJob/.test(type) === true) {
     return new WorkflowJobItem(options)

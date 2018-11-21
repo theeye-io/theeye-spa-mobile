@@ -1,17 +1,22 @@
 import bootbox from 'bootbox'
 
 module.exports = {
-  open (filename) {
+  open (filename, fromDownloads) {
     var opener = window.cordova.plugins.disusered.open
 
     var fileRoute = ''
-    switch (window.device.platform) {
-      case 'Android':
-        fileRoute = '/storage/emulated/0/Download/' + filename
-        break
-      case 'iOS':
-        fileRoute = window.cordova.file.documentsDirectory + 'Download/' + filename
-        break
+
+    if (fromDownloads) {
+      switch (window.device.platform) {
+        case 'Android':
+          fileRoute = '/storage/emulated/0/Download/' + filename
+          break
+        case 'iOS':
+          fileRoute = window.cordova.file.documentsDirectory + 'Download/' + filename
+          break
+      }
+    } else {
+      fileRoute = filename
     }
 
     function success () {}
