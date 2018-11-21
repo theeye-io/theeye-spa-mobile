@@ -24,7 +24,7 @@ const buildMessage = function (model) {
       case FIELD.TYPE_FIXED:
       case FIELD.TYPE_INPUT:
         if (isURL(values[index])) {
-          line += `<a href='${values[index]}' download='file${index + 1}' target='_blank'>Download</a>`
+          line += `<a class='url-download' href='${values[index]}' download='file${index + 1}'>Download</a>`
         } else {
           line += values[index]
         }
@@ -33,7 +33,11 @@ const buildMessage = function (model) {
         line += moment(values[index]).format('D-MMM-YY, HH:mm:ss')
         break
       case FIELD.TYPE_FILE:
-        line += `<a class='file-download' href='${values[index]}' download='file${index + 1}'>Download</a>`
+        if (isURL(values[index])) {
+          line += `<a class='url-download' href='${values[index]}' download='file${index + 1}'>Download</a>`
+        } else {
+          line += `<a class='base64-download' href='${values[index]}' download='file${index + 1}'>Download</a>`
+        }
         break
       case FIELD.TYPE_SELECT:
         break
@@ -170,9 +174,14 @@ const ExecApprovalJob = BaseExec.extend({
       buttons: buttons
     })
 
-    $('.file-download').click(function () {
+    $('.url-download').click(function () {
       let data = $(this)[0].href
-      fileDownloader.initDownload(data)
+      fileDownloader.urlDownload(data)
+    })
+
+    $('.base64-download').click(function () {
+      let data = $(this)[0].href
+      fileDownloader.base64Download(data)
     })
   },
   updateApprovalRequest (done) {

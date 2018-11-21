@@ -128,4 +128,5 @@
     <plugin name="phonegap-plugin-push" spec="^2.2.3" />
     <plugin name="cordova-plugin-file" spec="^6.0.1" />
     <plugin name="cordova-open" spec="^1.0.12" />
+    <plugin name="cordova-plugin-file-transfer" spec="^1.7.1" />
 </widget>

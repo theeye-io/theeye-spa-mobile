@@ -129,7 +129,8 @@
       },
       "phonegap-plugin-push": {},
       "cordova-plugin-file": {},
-      "cordova-open": {}
+      "cordova-open": {},
+      "cordova-plugin-file-transfer": {}
     },
     "platforms": [
       "android",
