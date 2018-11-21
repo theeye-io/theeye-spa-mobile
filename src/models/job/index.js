@@ -12,6 +12,23 @@ const urlRoot = function () {
 }
 
 const BaseJob = AppModel.extend({
+  dataTypes: {
+    lifecycle: {
+      set: function (newVal) {
+        return {
+          val: newVal,
+          type: 'lifecycle'
+        }
+      },
+      compare: function (currentVal, newVal) {
+        if (currentVal === newVal) {
+          return true
+        } else {
+          return !LifecycleConstants.isValidNewLifecycle(currentVal, newVal)
+        }
+      }
+    }
+  },
   urlRoot: urlRoot,
   props: {
     id: 'string',
@@ -28,15 +45,16 @@ const BaseJob = AppModel.extend({
     name: 'string',
     notify: 'boolean',
     state: 'string',
-    lifecycle: 'string',
+    lifecycle: 'lifecycle',
     //result: ['state',false,null],
-    creation_date: ['date', false, () => { return new Date() }],
+    creation_date: 'date',
     last_update: 'date',
     event: 'any',
     event_id: 'string',
     _type: 'string',
     task: 'object',
     task_arguments_values: 'array',
+    output: 'array',
     workflow_id: 'string',
     workflow_job_id: 'string'
   },
@@ -136,6 +154,8 @@ const ApprovalJobResult = State.extend({ })
 
 const DummyJobResult = State.extend({ })
 
+const NotificationJobResult = State.extend({ })
+
 const NgrokIntegrationResult = State.extend({
   props: {
     url:  ['string',false,''],
@@ -174,6 +194,12 @@ const ApprovalJob = BaseJob.extend({
 const DummyJob = BaseJob.extend({
   children: {
     result: DummyJobResult
+  }
+})
+
+const NotificationJob = BaseJob.extend({
+  children: {
+    result: NotificationJobResult
   }
 })
 
@@ -230,6 +256,9 @@ const JobFactory = function (attrs, options={}) {
       case JobConstants.DUMMY_TYPE:
         model = new DummyJob(attrs, options)
         break;
+      case JobConstants.NOTIFICATION_TYPE:
+        model = new NotificationJob(attrs, options)
+        break;
       case JobConstants.WORKFLOW_TYPE:
         model = new WorkflowJob(attrs, options)
         break;
@@ -257,7 +286,8 @@ const Collection = AppCollection.extend({
       model instanceof ScraperJob ||
       model instanceof ScriptJob ||
       model instanceof ApprovalJob ||
-      model instanceof DummyJob
+      model instanceof DummyJob ||
+      model instanceof NotificationJob
     )
     return isModel
   }
@@ -268,7 +298,7 @@ const WorkflowJob = BaseJob.extend({
     jobs: Collection
   },
   session: {
-    lifecycle: 'string'
+    lifecycle: 'lifecycle'
   },
   initialize () {
     BaseJob.prototype.initialize.apply(this, arguments)
@@ -278,9 +308,12 @@ const WorkflowJob = BaseJob.extend({
       'add change sync reset remove',
       function () {
         if (this.jobs.length) {
-          this.lifecycle = this.jobs.at(this.jobs.length - 1).lifecycle
+          let currentJob = this.jobs.at(this.jobs.length - 1)
+          this.lifecycle = currentJob.lifecycle
+          this.state = currentJob.state
         } else {
           this.lifecycle = undefined
+          this.state = undefined
         }
       }
     )
@@ -291,6 +324,7 @@ exports.Approval = ApprovalJob
 exports.Script = ScriptJob
 exports.Scraper = ScraperJob
 exports.Dummy = DummyJob
+exports.Notification = NotificationJob
 exports.Workflow = WorkflowJob
 exports.NgrokIntegration = NgrokIntegrationJob
 

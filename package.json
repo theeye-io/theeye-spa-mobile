@@ -32,7 +32,7 @@
     "babel-preset-stage-0": "^6.16.0",
     "bcryptjs": "~2.3.0",
     "block-ui": "^2.70.1",
-    "bootbox": "^4.4.0",
+    "bootbox": "4.4.0",
     "bootstrap": "^3.3.7",
     "bower": "~1.7.9",
     "clipboard": "1.7.1",
@@ -66,9 +66,9 @@
     "eslint-plugin-react": "^6.4.1",
     "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "0.11.2",
-    "file-saver": "^1.3.8",
+    "file-saver": "1.3.8",
     "flatpickr": "4.3.0",
-    "fullcalendar": "^3.1.0",
+    "fullcalendar": "3.9.0",
     "graphlib": "^2.1.5",
     "handlebars": "4.0.5",
     "handlebars-loader": "~1.6.0",
@@ -129,7 +129,8 @@
       },
       "phonegap-plugin-push": {},
       "cordova-plugin-file": {},
-      "cordova-open": {}
+      "cordova-open": {},
+      "cordova-plugin-file-transfer": {}
     },
     "platforms": [
       "android",
@@ -140,6 +141,6 @@
   "scripts": {
     "webpack": "./node_modules/webpack/bin/webpack.js"
   },
-  "author": "jailbirt, facugon, cgastrell, tmarcote",
+  "author": "jailbirt, facugon, tmarcote",
   "license": ""
 }

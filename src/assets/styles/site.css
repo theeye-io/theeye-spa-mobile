@@ -145,33 +145,132 @@ hr {border:none;border-bottom:1px dotted #fff}
 .inlineDropdown .dropdown-menu p {background:#304269;margin:0 10px;padding:10px;font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New}
 
 .mainStatus {width:90%;margin:10% auto;border-top:1px dotted #fff;border-bottom:1px dotted #fff;padding:20px 0;text-align:center;color:#fff;font-size:20px;font-weight:700}
-.loginBox, .safeBox { width:80%; margin:60px auto 4%; text-align:center; color:#fff }
-.loginBox h1 {margin-bottom:24px; font-size:26px;}
-.loginBox .or {border-top:1px dashed #fff;position:relative;margin:40px 0}
-.loginBox input, .loginBox button {width:100%;border:none;border-radius:4px;padding:10px;margin-bottom:10px;text-align:center;font-size:24px}
-.loginBox input {color:#304269;height:50px; }
-.loginBox button {color:#fff;background: #d78d47;background: -moz-linear-gradient(top,  #d78d47 0%, #af733a 100%);background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#d78d47), color-stop(100%,#af733a));background: -webkit-linear-gradient(top,  #d78d47 0%,#af733a 100%);background: -o-linear-gradient(top,  #d78d47 0%,#af733a 100%);background: -ms-linear-gradient(top,  #d78d47 0%,#af733a 100%);background: linear-gradient(to bottom,  #d78d47 0%,#af733a 100%);filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d78d47', endColorstr='#af733a',GradientType=0 )}
-.loginBox .or span {background:#415c76;padding:10px;position:absolute;top:-22px;left:48%}
-.loginBox section.license a:hover { color:#ee8e40; }
-.loginBox .login-form form label { width: 100%; }
-.loginBox .forgot-form form label { width: 100%; }
-.loginBox .register-form form label { width: 100%; }
-.loginBox .activate-form form label { width: 100%; }
-.loginBox .customer-form form label { width: 100%; }
-.loginBox .password-form form label { width: 100%; }
-.loginBox .register-link { margin-top: 10px; }
-.loginBox .register-link a { color:#fff; font-size: 18px; }
-.loginBox .login-toggle { cursor:pointer; }
-.loginBox .login-back { cursor:pointer; color: #fff; font-size: 14px; font-weight: 400;}
-.loginBox .result-container h1 {    font-size: 27px; color: #d78d47;}
-.loginBox .result-container h2 {    font-size: 22px; color: #fff;}
 
-.sign {padding:14px 0;color:#fff;border:1px solid #fff;border-radius:4px;width:100%;display:inline-block;font-size:18px;margin-bottom:6px}
+.activate-container {
+  padding-bottom: 50px;
+  width:100%;
+  position: absolute;
+  background-color: #314367;
+  top: 0px;
+}
+
+.activate-container .activate-header, .login-container .login-header{
+  text-align: center;
+  padding: 15px 0px 20px 0px;
+  background-color: #FAFAFA;
+}
+
+.activate-container .activate-header .logo, .login-container .login-header .logo{
+  width: 160px;
+}
+
+.activate-container h1, .login-container h1 {
+  font-family: 'Trebuchet MS', sans-serif;
+  font-weight: normal;
+}
+
+.activate-container .activate-header h1, .login-container .login-header h1 {
+  margin: 0px;
+  margin-top: 5px;
+  color: #130e40;
+  font-size: 23px;
+}
+
+.activate-container .activate-main, .login-container .login-main {
+  text-align: center;
+}
+
+.activate-container .activate-main h1, .login-container .login-main h1 {
+  margin-top: 40px;
+  margin-bottom: 30px;
+  font-size: 27px;
+  color: #FFF;
+}
+
+.login-container .login-main h1.reset-title {
+ margin-bottom: 40px;
+}
+
+.activate-container .activate-main h2, .login-container .login-main h2 {
+  font-family:'Montserrat', sans-serif;
+  color: #FFF;
+  font-size: 20px;
+  font-weight: 200;
+  margin-bottom: 50px;
+}
+
+.login-container .login-main h2.or {
+  margin-bottom: 20px;
+}
+
+.activate-container .form-container, .login-container .form-container {
+  width: 100%;
+  max-width: 450px;
+  margin: 0px auto;
+}
+
+.login-container h2.login-toggle {
+  cursor:pointer;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.login-container h2.register-link, .login-container h2.login-link {
+  margin-top: 10px;
+  margin-bottom: 40px;
+}
+
+.activate-container .form-container label, .login-container .form-container label {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.activate-container .form-container input, .login-container .form-container input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  border-bottom: 1px solid #CCC;
+  font-family:'Rubik', sans-serif;
+  font-weight: 100;
+  font-size: 17px;
+  color: #FFF;
+  margin-bottom: 25px;
+  padding-bottom: 8px;
+}
+
+.activate-container .form-container ::placeholder, .login-container .form-container ::placeholder {
+  color: #CCC;
+}
+
+.activate-container .form-container .message p, .login-container .form-container .message p {
+  color: #ee8e40;
+  margin-top: -20px;
+  margin-bottom: 0px;
+  font-weight: 400;
+}
+
+.activate-container button, .login-container button {
+  font-family: 'Trebuchet MS', sans-serif;
+  width: 100%;
+  max-width: 450px;
+  margin: 20px auto;
+  text-transform: uppercase;
+  padding: 12px 0px;
+  background: #ee8e40;
+  color: #FFF;
+  font-size: 22px;
+  border-radius: 36px;
+  letter-spacing: 0.8px;
+  border: none;
+}
+
+.sign {padding:12px 0;color:#fff;border-radius:36px;width:100%;max-width: 450px;display:inline-block;font-size:22px;font-family: 'Trebuchet MS', sans-serif;letter-spacing: 0.8px;border: none;}
 .sign i {font-size:24px;margin-right:6px}
 .sign:hover {color:#fff}
 .sign.facebook {background: #40579a;background: -moz-linear-gradient(top,  #40579a 0%, #34467d 100%);background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#40579a), color-stop(100%,#34467d));background: -webkit-linear-gradient(top,  #40579a 0%,#34467d 100%);background: -o-linear-gradient(top,  #40579a 0%,#34467d 100%);background: -ms-linear-gradient(top,  #40579a 0%,#34467d 100%);background: linear-gradient(to bottom,  #40579a 0%,#34467d 100%);filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#40579a', endColorstr='#34467d',GradientType=0 );}
 .sign.twitter {background: #02ace6;background: -moz-linear-gradient(top,  #02ace6 0%, #028bbb 100%);background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#02ace6), color-stop(100%,#028bbb));background: -webkit-linear-gradient(top,  #02ace6 0%,#028bbb 100%);background: -o-linear-gradient(top,  #02ace6 0%,#028bbb 100%);background: -ms-linear-gradient(top,  #02ace6 0%,#028bbb 100%);background: linear-gradient(to bottom,  #02ace6 0%,#028bbb 100%);filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#02ace6', endColorstr='#028bbb',GradientType=0 )}
-.sign.google {background: #c32f11;background: -moz-linear-gradient(top,  #c32f11 0%, #9e260e 100%);background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#c32f11), color-stop(100%,#9e260e));background: -webkit-linear-gradient(top,  #c32f11 0%,#9e260e 100%);background: -o-linear-gradient(top,  #c32f11 0%,#9e260e 100%);background: -ms-linear-gradient(top,  #c32f11 0%,#9e260e 100%);background: linear-gradient(to bottom,  #c32f11 0%,#9e260e 100%);filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c32f11', endColorstr='#9e260e',GradientType=0 )}
+.sign.google {background: #c32f11;}
 .forgotForm {display:none}
 .forgotLink, .cancelLink {display:inline-block;cursor:pointer}
 .load {cursor:pointer; text-align:center;color:#fff;padding:20px 0 0 0;font-size:20px}
@@ -314,7 +413,7 @@ h3.light { color: #EEE}
 .admin-container .panel-item.icons ul.dropdown-menu li .btn-wide { text-align: left; padding: 5px 10px; width: 155px; height: 34px; border-radius: unset;}
 
 .admin-container .panel-heading .panel-item .visible-badge {padding-right:5px;}
-.admin-container .panel-default.selectedItem>.panel-heading{ color: #F39B0F; }
+.admin-container .panel-default.selectedItem>.panel-heading{ color: #e88840; }
 /*.admin-container .panel-heading .panel-item.icons .trigger-task {top:-5px;}*/
 .admin-container .editIcon,
 .admin-container .playIcon,
@@ -329,7 +428,6 @@ ol.list-group.tasks { color:#34495E }
   .mainStatus {font-size:40px;width:60%;padding:60px 0}
   .switch{margin:0 auto}
   .loginBox {width:50%}
-  .sign {width:32%;margin-bottom:0}
   .navData {
     font-size:14px;
     line-height: 52px;
@@ -405,7 +503,8 @@ button.rowSelector {
 }
 
 .itemRow button.rowSelector > span { color: #bbb; }
-.itemRow.selectedItem button.rowSelector > span { color: #f39b0f; }
+.itemRow.selectedItem button.rowSelector > span { color: #e88840; }
+.itemRow button.hilite { border: 1px solid #e88840; }
 /*span.selectorIcon.glyphicon-unchecked {
   color: #BBB;
 }
@@ -484,7 +583,7 @@ input[type=checkbox].form-control {
 
 .attention:after {
   content: ' ';
-  background-color: #d88e47;
+  background-color: #e88840;
   width: 7px;
   height: 7px;
   position: absolute;
@@ -595,7 +694,7 @@ input[type=checkbox].form-control {
 
 div.js-searchable-box {width:100%;font-weight:700;font-size:14px;z-index: 1000; position: relative;}
 div.js-searchable-box input {border:none;background:#fff;padding:8px 40px 8px 12px;width:100%;color:#38688a;}
-div.js-searchable-box button {color:#fff;background:#d88e47;border:none;padding:8px 12px;position:absolute;top:0;right:0;width:39px;}
+div.js-searchable-box button {color:#fff;background:#e88840;border:none;padding:8px 12px;position:absolute;top:0;right:0;width:39px;}
 div.js-searchable-box button.clean {right:39px;color:#999;background:#ccc;}
 div.js-searchable-box button.clean.active {color:#fff;background:#34495E;}
 
@@ -802,14 +901,15 @@ a.flowchart-icon {
 .admin-container.dashboard i.script-color { background-color: #c6639b }
 .admin-container.dashboard i.approval-color { background-color: #9fbc75 }
 .admin-container.dashboard i.workflow-color { background-color: #bc9ad6 }
-.admin-container.dashboard i.webhook-color { background-color: #158df9 }
-.admin-container.dashboard i.notification-color { background-color: #f9cb5a }
+.admin-container.dashboard i.webhook-color { background-color: #0080b9 }
+.admin-container.dashboard i.notification-color { background-color: #f4bc4a }
 .admin-container.dashboard i.nested-color { background-color: #06b777 }
-.admin-container.dashboard i.process-color { background-color: #1c73b9 }
-.admin-container.dashboard i.scraper-color { background-color: #158df9 }
+.admin-container.dashboard i.process-color { background-color: #c69c6d }
+.admin-container.dashboard i.scraper-color { background-color: #0080b9 }
 .admin-container.dashboard i.file-color { background-color: #ff8a6d }
 .admin-container.dashboard i.dstat-color { background-color: #338412 }
 .admin-container.dashboard i.psaux-color { background-color: #c69c6d }
+.admin-container.dashboard i.indicator-color { background-color: #bd5e5c }
 
 .admin-container .table-header.admin div.icons { float: right; }
 .admin-container .table-header.admin div.panel-item.icons li {float:right; list-style:none; margin-left: 5px;}
@@ -829,7 +929,7 @@ a.flowchart-icon {
 .admin-container.dashboard .task-exec-button .badge {
   top: -14px;
   right: 7px;
-  background-color: #d88e47;
+  background-color: #e88840;
 }
 
 .admin-container.dashboard .job-status-icon {
@@ -866,6 +966,7 @@ a.flowchart-icon {
   .admin-container .panel-heading .panel-item.entry-text { width:80%;}
 	.admin-container .panel-heading .panel-title-content { position:relative; }
   button.rowSelector, button.rowSelector-not {}
+  .activate-container .form-wrapper, .login-container .form-wrapper, .login-container .title-wrapper { padding: 0px 30px; }
 }
 
 @media (min-width: 768px) {
@@ -898,4 +999,8 @@ a.flowchart-icon {
   padding: 10px;
   background: #fff;
   right: 15px;
+}
+
+.bootbox-body p {
+  word-wrap: break-word;
 }

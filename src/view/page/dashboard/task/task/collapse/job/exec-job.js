@@ -6,6 +6,7 @@ import {BaseExec} from '../../exec-task.js'
 import FIELD from 'constants/field'
 import moment from 'moment'
 import fileDownloader from 'lib/file-downloader'
+import isURL from 'validator/lib/isURL'
 import $ from 'jquery'
 
 const buildMessage = function (model) {
@@ -22,13 +23,21 @@ const buildMessage = function (model) {
     switch (param.type) {
       case FIELD.TYPE_FIXED:
       case FIELD.TYPE_INPUT:
-        line += values[index]
+        if (isURL(values[index])) {
+          line += `<a class='url-download' href='${values[index]}' download='file${index + 1}'>Download</a>`
+        } else {
+          line += values[index]
+        }
         break
       case FIELD.TYPE_DATE:
         line += moment(values[index]).format('D-MMM-YY, HH:mm:ss')
         break
       case FIELD.TYPE_FILE:
-        line += `<a class='file-download' href='${values[index]}' download='file${index + 1}'>Download</a>`
+        if (isURL(values[index])) {
+          line += `<a class='url-download' href='${values[index]}' download='file${index + 1}'>Download</a>`
+        } else {
+          line += `<a class='base64-download' href='${values[index]}' download='file${index + 1}'>Download</a>`
+        }
         break
       case FIELD.TYPE_SELECT:
         break
@@ -165,9 +174,14 @@ const ExecApprovalJob = BaseExec.extend({
       buttons: buttons
     })
 
-    $('.file-download').click(function () {
+    $('.url-download').click(function () {
       let data = $(this)[0].href
-      fileDownloader.initDownload(data)
+      fileDownloader.urlDownload(data)
+    })
+
+    $('.base64-download').click(function () {
+      let data = $(this)[0].href
+      fileDownloader.base64Download(data)
     })
   },
   updateApprovalRequest (done) {
