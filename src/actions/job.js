@@ -221,7 +221,7 @@ const createWorkflowJob = (workflow, args) => {
 
   XHR.send({
     method: 'post',
-    url: `${App.config.api_v3_url}/workflow/${workflow.id}/job`,
+    url: `${App.config.api_v3_url}/workflows/${workflow.id}/job`,
     jsonData: body,
     headers: {
       Accept: 'application/json;charset=UTF-8'
