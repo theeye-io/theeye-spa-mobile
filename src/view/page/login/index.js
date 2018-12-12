@@ -37,7 +37,7 @@ module.exports = View.extend({
   autoRender: true,
   template: require('./template.hbs'),
   events: {
-    'click [data-hook=google-login-mobile]': function (event) {
+    'click [data-hook=google-login]': function (event) {
       event.preventDefault()
       event.stopPropagation()
       AuthActions.socialLoginMobile('google')
