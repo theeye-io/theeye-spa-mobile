@@ -93,7 +93,7 @@
         <splash height="480" src="res/screen/ios/Default~iphone.png" width="320" />
         <splash height="2732" src="res/screen/ios/Default@2x~universal~anyany.png" width="2732" />
         <preference name="BackupWebStorage" value="local" />
-        <edit-config file="theEye Mobile/*-Info.plist" mode="merge" target="NSCameraUsageDescription">
+        <edit-config file="MAXSON/*-Info.plist" mode="merge" target="NSCameraUsageDescription">
             <string>The App allows you to take photos of your documents and attach them to a workflow</string>
         </edit-config>
         <edit-config file="*-Info.plist" mode="merge" target="NSPhotoLibraryUsageDescription">
