@@ -12,6 +12,10 @@ const handleError = (err) => {
   bootbox.alert('Enterprise account not found, please try again.')
 }
 
+const persistOnStorage = function (enterpriseCustomer) {
+  window.localStorage.setItem('enterpriseCustomer', enterpriseCustomer)
+}
+
 module.exports = {
   checkLicense () {
     const customerName = App.state.session.customer.name
@@ -45,6 +49,8 @@ module.exports = {
   },
   setConfigUris (customerName) {
     if (!customerName) return
+
+    persistOnStorage(customerName)
 
     const licenseServiceUri = config.lc_url
     const url = `${licenseServiceUri}?client=${customerName}`

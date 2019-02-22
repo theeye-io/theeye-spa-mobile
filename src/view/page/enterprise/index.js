@@ -40,7 +40,8 @@ const EnterpriseForm = FormView.extend({
         required: true,
         invalidClass: 'text-danger',
         validityClassSelector: '.control-label',
-        autofocus: true
+        autofocus: true,
+        value: window.localStorage.enterpriseCustomer || ''
       })
     ]
     FormView.prototype.initialize.apply(this, arguments)
