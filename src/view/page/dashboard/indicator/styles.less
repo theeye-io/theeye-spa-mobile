@@ -1,68 +1,63 @@
-.admin-container.dashboard .indicator-container .panel-heading .panel-item.name {
-  width: 70%;
-  padding-right: 5px;
-}
+.admin-container.dashboard .indicator-container .panel-heading {
+  .panel-title-content {
+    .panel-item-left {
+      width: 80%;
+      float: left;
 
-.panel-item-left {
-  width: 80%;
-  float: left;
-}
+      .panel-item {
+        .bars-component {
+          .progress.progress-bar-vertical {
+            height:32px;
+            min-height: 0px;
+            margin-bottom: 0px;
+          }
+        }
+      }
 
-.panel-item.value {
-  padding:2px 10px 2px 10px;
-  line-height: 28px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+      .panel-item.name {
+        width: 70%;
+        padding-right: 5px;
+      }
 
-.gauge-container {
-  position: relative;
-  width: 30%;
-  float: right;
-}
+      .gauge-container {
+        position: relative;
+        width: 30%;
+        float: right;
 
-.panel-item {
-  .bars-component {
-    .progress.progress-bar-vertical {
-      height:32px;
-      min-height: 0px;
-      margin-bottom: 0px;
+        .panel-item.value {
+          padding:2px 10px 2px 10px;
+          line-height: 28px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
     }
   }
-}
-
-.indicator-details {
-  .indicator-curl {
-    label {
-      margin: 0px;
-      line-height: 30px;
-      font-weight: 400;
-    }
-  }
-}
-
-.curl-container {
-  overflow: hidden;
-  overflow-x: scroll;
-  white-space: nowrap;
-  position: relative;
-  margin-right: 68px;
-}
-
-.curl-copy {
-  float:right;
 }
 
 @media (max-width: 767px) {
-  .admin-container.dashboard .indicator-container .panel-heading .panel-item.name {
-    width: 65%;
-  }
-  .gauge-container {
-    width: 35%;
-  }
+  .admin-container.dashboard .indicator-container .panel-heading {
+    .panel-title-icon {
+      padding: 25px 5px !important;
+    }
 
-  .panel-item-left {
-    width: 75%;
+    .panel-title-content {
+      min-height: 90px;
+      .state-icon {
+        padding: 25px 5px !important;
+      }
+
+      .panel-item-left {
+        .panel-item.name {
+          width: 100%;
+        }
+        .gauge-container {
+          width: 95%;
+          float: left;
+          padding: 0px 10px;
+        }
+      }
+    }
   }
 }
