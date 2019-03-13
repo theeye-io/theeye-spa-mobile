@@ -2,6 +2,7 @@ import View from 'ampersand-view'
 import FormView from 'ampersand-form-view'
 import InputView from 'ampersand-input-view'
 import AuthActions from 'actions/auth'
+import bootbox from 'bootbox'
 
 const LoginForm = FormView.extend({
   autoRender: true,
@@ -50,7 +51,17 @@ module.exports = View.extend({
         var data = this.loginForm.data
         AuthActions.login(data)
       }
-    }
+    },
+    'click [data-hook=new-user]': function (event) {
+      event.preventDefault()
+      event.stopPropagation()
+      bootbox.alert({
+        message: `<span>User registration is not available in mobile version.</span><br>
+          <span>Please refer to <a href="https://app.theeye.io/register">https://app.theeye.io/register</a>
+          in order to create an account.</span>`,
+        size: 'small'
+      })
+    },
   },
   render () {
     this.renderWithTemplate(this)
