@@ -1,8 +1,8 @@
 import BaseItem from './base'
 import StateConstants from 'constants/states'
 import LifecycleConstants from 'constants/lifecycle'
-import meaning from './meaning'
 import eventIcons from './event-icons'
+import messageFactory from 'models/notification/messageFactory'
 
 const stateToColorClass = (state) => (StateConstants.STATES.indexOf(state)!==-1) ? state : null
 
@@ -20,10 +20,11 @@ module.exports = BaseItem.extend({
 
     this.hostName = hostname
 
-    if(this.model.data.model.task)
+    if (this.model.data.model.task) {
       this.modelSubType = this.model.data.model.task.type
+    }
 
-    this.message = meaning['lifecycle:' + lifecycle] || `${lifecycle}:${state}`
+    this.message = messageFactory(this.model)
 
     if (this.modelName === 'agent:config:update') {
       this.modelName = `${hostname} configuration update`
