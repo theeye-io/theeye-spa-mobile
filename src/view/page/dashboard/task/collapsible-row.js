@@ -1,5 +1,6 @@
 import View from 'ampersand-view'
 import './styles.less'
+import HelpIconView from 'components/help-icon'
 
 /**
  * tasks rows
@@ -24,6 +25,7 @@ module.exports = View.extend({
 
                 <span class="panel-item name">
                   <span data-hook="name" title=""></span>
+                  <span data-hook="help"></span>
                   <small> > <i data-hook="type"></i> <i data-hook="hostname"></i></small>
                 </span>
 
@@ -180,6 +182,7 @@ module.exports = View.extend({
     this.renderWithTemplate()
     this.renderButtons()
     this.renderCollapsedContent()
+    this.renderHelp()
 
     let $el = $(this.query('.panel-collapse.collapse'))
     $el.on('show.bs.collapse', () => { this.collapsed = false })
@@ -193,5 +196,19 @@ module.exports = View.extend({
   },
   renderCollapsedContent () {
     return
+  },
+  renderHelp () {
+    let icon = new HelpIconView({
+      color: [255,255,255],
+      category: 'task_row_help',
+      text: this.model.description || 'Add Description',
+      placement: 'bottom'
+    })
+
+    this.renderSubview(icon, this.queryByHook('help'))
+
+    this.listenTo(this.model, 'change:description', () => {
+      icon.el.setAttribute('data-original-title', this.model.description)
+    })
   }
 })
