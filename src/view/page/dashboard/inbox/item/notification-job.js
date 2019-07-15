@@ -4,6 +4,12 @@ import StateConstants from 'constants/states'
 import messageFactory from 'models/notification/messageFactory'
 
 module.exports = BaseItem.extend({
+  props: {
+    body: 'string'
+  },
+  bindings: Object.assign({}, BaseItem.prototype.bindings, {
+    body: { hook: 'body' }
+  }),
   template: require('./inboxNotificationRow.hbs'),
   customizeItem () {
     // this.colorClass = StateConstants.SUCCESS
@@ -16,5 +22,6 @@ module.exports = BaseItem.extend({
     this.icon = EventIcons[notification.data.model._type]
     this.message = messageFactory(notification)
     this.modelName = notification.data.model.name
+    this.body = notification.data.notification.body
   }
 })
