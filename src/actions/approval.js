@@ -29,8 +29,12 @@ module.exports = {
     const executePendingApprovalJobs = function (pendingApprovalJobs) {
       App.state.approval.underExecution = true
       eachSeries(pendingApprovalJobs, function (job, done) {
-        var execApprovalJob = new ExecApprovalJob({model: job})
-        execApprovalJob.execute(true, done)
+        job.fetch({
+          success: () => {
+            var execApprovalJob = new ExecApprovalJob({model: job})
+            execApprovalJob.execute(true, done)
+          }
+        })
       }, function (err) {
         if (App.state.approval.newArrived) {
           App.state.approval.newArrived = false

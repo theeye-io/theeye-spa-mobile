@@ -152,6 +152,10 @@ const WorkflowJobRowView = CollapsibleRow.extend({
       }),
       this.queryByHook('collapse-container-body'),
     )
+  },
+  renderHelp () {
+    // no help required
+    return
   }
 })
 

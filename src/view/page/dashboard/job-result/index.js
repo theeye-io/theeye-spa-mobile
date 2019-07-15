@@ -7,6 +7,7 @@ import Modalizer from 'components/modalizer'
 import moment from 'moment'
 import ansi2html from 'ansi-to-html'
 import JsonViewer from 'components/json-viewer'
+import assign from 'lodash/assign'
 
 import './styles.less'
 
@@ -273,15 +274,21 @@ const JobView = View.extend({
       }
     },
     input: {
-      deps: ['job.task_arguments_values'],
+      deps: ['job.task_arguments_values', 'job.task.task_arguments'],
       fn () {
-        let input = this.job.task_arguments_values
+        let input = Object.assign({}, this.job.task_arguments_values)
         if (
           !input ||
           (Array.isArray(input) && input.length === 0)
         ) {
           return ''
         }
+
+        this.job.task.task_arguments.forEach(arg => {
+          if (arg.masked === true) {
+            input[arg.order] = '*******'
+          }
+        })
 
         return input
       }

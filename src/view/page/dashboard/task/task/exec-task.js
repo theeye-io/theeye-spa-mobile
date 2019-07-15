@@ -1,12 +1,13 @@
 import App from 'ampersand-app'
 import State from 'ampersand-state'
-const runTaskWithArgsMessage = require('./run-task-message.hbs')
 import bootbox from 'bootbox'
 import TaskConstants from 'constants/task'
 
 import DinamicForm from 'components/dinamic-form'
 import Modalizer from 'components/modalizer'
 import AnalyticsActions from 'actions/analytics'
+
+import ConfirmExecution from './confirm-execution'
 
 const BaseExec = State.extend({
   props: {
@@ -18,7 +19,7 @@ const BaseExec = State.extend({
         case 'date':
           if (Array.isArray(arg.value) && arg.value.length === 1) {
             arg.value = arg.value[0]
-            arg.renderValue = arg.value
+            arg.renderValue = arg.value.toString()
           }
           break
         case 'file':
@@ -63,7 +64,8 @@ const BaseExec = State.extend({
                 order: parseInt(order),
                 label: this.model.task_arguments.get(parseInt(order), 'order').label,
                 value: args[order],
-                type: this.model.task_arguments.get(parseInt(order), 'order').type
+                type: this.model.task_arguments.get(parseInt(order), 'order').type,
+                masked: this.model.task_arguments.get(parseInt(order), 'order').masked
               }
             })
           )
@@ -96,34 +98,37 @@ const BaseExec = State.extend({
   },
   _confirmExecution () {
     let callback = taskArgs => {
-      let message
       if (taskArgs.length > 0) {
         taskArgs = this.parseArgs(taskArgs)
-
-        message = runTaskWithArgsMessage({
-          name: this.model.name,
-          args: taskArgs
-        })
-      } else {
-        message = `
-          <h2>You are about to run the task <b>${this.model.name}</b></h2>
-          <h2>Continue?</h2>
-          `
       }
 
-      bootbox.confirm({
-        message: message,
-        backdrop: true,
-        callback: (confirmed) => {
-          if (confirmed) {
-            App.actions.job.createFromTask(this.model, taskArgs)
-
-            AnalyticsActions.trackEvent('Task', 'Execution', this.model.id)
-            AnalyticsActions.trackMixpanelEvent('Task execution', {task: this.model.id})
-            AnalyticsActions.trackMixpanelIncrement('Task execution', 1)
-          }
-        }
+      let confirmView = new ConfirmExecution({
+        name: this.model.name,
+        taskArgs: taskArgs
       })
+
+      const modal = new Modalizer({
+        buttons: true,
+        confirmButton: 'Run',
+        title: `Run ${this.model.name} with dynamic arguments`,
+        bodyView: confirmView
+      })
+
+      this.listenTo(modal, 'hidden', () => {
+        confirmView.remove()
+        modal.remove()
+      })
+
+      this.listenTo(modal, 'confirm', () => {
+        modal.hide()
+        App.actions.job.createFromTask(this.model, taskArgs)
+
+        AnalyticsActions.trackEvent('Task', 'Execution', this.model.id)
+        AnalyticsActions.trackMixpanelEvent('Task execution', {task: this.model.id})
+        AnalyticsActions.trackMixpanelIncrement('Task execution', 1)
+      })
+
+      modal.show()
     }
 
     if (this.model.type === TaskConstants.TYPE_DUMMY) {
