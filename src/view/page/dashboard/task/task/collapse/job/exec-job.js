@@ -1,57 +1,13 @@
 import App from 'ampersand-app'
 import bootbox from 'bootbox'
-import DynamicForm from 'components/dynamic-form'
+import DynamicForm from 'view/dynamic-form'
 import Modalizer from 'components/modalizer'
-import {BaseExec} from '../../exec-task.js'
+import { BaseExec } from '../../exec-task.js'
 import FIELD from 'constants/field'
 import moment from 'moment'
-import fileDownloader from 'lib/file-downloader'
 import isURL from 'validator/lib/isURL'
+import fileDownloader from 'lib/file-downloader'
 import $ from 'jquery'
-
-const buildMessage = function (model) {
-  let params = model.task.task_arguments
-  let values = model.task_arguments_values
-  let message = `<p>Task <b>${model.name}</b> needs your approval to continue.</p>`
-
-  if (params.length) {
-    message += '<br><p><b>Please verify this information: </b></p><br>'
-  }
-
-  params.forEach(function (param, index) {
-    let line = `<p>${param.label}: `
-    switch (param.type) {
-      case FIELD.TYPE_FIXED:
-      case FIELD.TYPE_INPUT:
-        if (isURL(values[index])) {
-          line += `<a class='url-download' href='${values[index]}' download='file${index + 1}'>Download</a>`
-        } else {
-          line += values[index]
-        }
-        break
-      case FIELD.TYPE_DATE:
-        line += moment(values[index]).format('D-MMM-YY, HH:mm:ss')
-        break
-      case FIELD.TYPE_FILE:
-        if (isURL(values[index])) {
-          line += `<a class='url-download' href='${values[index]}' download='file${index + 1}'>Download</a>`
-        } else {
-          line += `<a class='base64-download' href='${values[index]}' download='file${index + 1}'>Download</a>`
-        }
-        break
-      case FIELD.TYPE_SELECT:
-        break
-      case FIELD.TYPE_REMOTE_OPTIONS:
-        break
-      default:
-    }
-    line += '</p>'
-    message += line
-  })
-
-  return message
-}
-
 
 const ExecJob = BaseExec.extend({
   execute () {
@@ -71,6 +27,8 @@ const ExecJob = BaseExec.extend({
     }
   }
 })
+
+exports.ExecJob = ExecJob
 
 const ExecApprovalJob = BaseExec.extend({
   getDynamicOutputs (next) {
@@ -190,6 +148,7 @@ const ExecApprovalJob = BaseExec.extend({
     bootbox.dialog({
       message: message,
       backdrop: true,
+      //closeButton: (App.state.session.user.credential==='root'),
       buttons: {
         cancel: {
           label: 'Cancel request',
@@ -204,5 +163,47 @@ const ExecApprovalJob = BaseExec.extend({
   }
 })
 
-exports.ExecJob = ExecJob
 exports.ExecApprovalJob = ExecApprovalJob
+
+const buildMessage = function (model) {
+  let params = model.task.task_arguments
+  let values = model.task_arguments_values
+  let message = `<p>Task <b>${model.name}</b> needs your approval to continue.</p>`
+
+  if (params.length) {
+    message += '<br><p><b>Please verify this information: </b></p><br>'
+  }
+
+  params.forEach(function (param, index) {
+    let line = `<p>${param.label}: `
+    switch (param.type) {
+      case FIELD.TYPE_FIXED:
+      case FIELD.TYPE_INPUT:
+        if (isURL(values[index])) {
+          line += `<a class='url-download' href='${values[index]}' download='file${index + 1}'>Download</a>`
+        } else {
+          line += values[index]
+        }
+        break
+      case FIELD.TYPE_DATE:
+        line += moment(values[index]).format('D-MMM-YY, HH:mm:ss')
+        break
+      case FIELD.TYPE_FILE:
+        if (isURL(values[index])) {
+          line += `<a class='url-download' href='${values[index]}' download='file${index + 1}'>Download</a>`
+        } else {
+          line += `<a class='base64-download' href='${values[index]}' download='file${index + 1}'>Download</a>`
+        }
+        break
+      case FIELD.TYPE_SELECT:
+        break
+      case FIELD.TYPE_REMOTE_OPTIONS:
+        break
+      default:
+    }
+    line += '</p>'
+    message += line
+  })
+
+  return message
+}

@@ -3,7 +3,7 @@ import State from 'ampersand-state'
 import bootbox from 'bootbox'
 import TaskConstants from 'constants/task'
 
-import DynamicForm from 'components/dynamic-form'
+import DynamicForm from 'view/dynamic-form'
 import Modalizer from 'components/modalizer'
 import AnalyticsActions from 'actions/analytics'
 

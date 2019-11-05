@@ -55,9 +55,9 @@ const Script = Template.Script.extend({
       }
     },
     canBatchExecute: {
-      deps: ['hasDinamicArguments'],
+      deps: ['hasDynamicArguments'],
       fn () {
-        return !this.hasDinamicArguments
+        return !this.hasDynamicArguments
       }
     },
     hasTemplate: {
