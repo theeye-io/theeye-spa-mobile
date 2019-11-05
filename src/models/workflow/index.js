@@ -1,6 +1,7 @@
 import App from 'ampersand-app'
 import AppModel from 'lib/app-model'
 import AppCollection from 'lib/app-collection'
+const TagCollection = require('models/tag').Collection
 import graphlib from 'graphlib'
 
 const urlRoot = function () {
@@ -73,7 +74,7 @@ export const Workflow = AppModel.extend({
     user_id: 'string', // owner/creator
     customer_id: 'string',
     description: 'string',
-    tags: 'array',
+    tags: ['array',false, () => { return [] }],
     acl: 'array',
     lifecycle: 'string',
     state: 'string',
@@ -94,7 +95,9 @@ export const Workflow = AppModel.extend({
   session: {
     alreadyPopulated: ['boolean', false, false],
     inProgressJobs: 'number',
-    last_execution: 'date'
+    last_execution: 'date',
+    tagsCollection: 'collection',
+    credentials: ['object', false, null]
   },
   derived: {
     type: {
@@ -134,6 +137,18 @@ export const Workflow = AppModel.extend({
   },
   initialize () {
     AppModel.prototype.initialize.apply(this,arguments)
+
+    this.tagsCollection = new TagCollection([])
+
+    this.listenToAndRun(this, 'change:tags', () => {
+      if (Array.isArray(this.tags)) {
+        let tags = this.tags.map((tag, index) => {
+          return {_id: (index + 1).toString(), name: tag}
+        })
+        tags = tags.slice(0, 3)
+        this.tagsCollection.set(tags)
+      }
+    })
 
     this.listenToAndRun(
       this.jobs,

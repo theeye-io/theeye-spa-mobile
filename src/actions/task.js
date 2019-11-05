@@ -51,6 +51,7 @@ module.exports = {
         }
         App.state.alerts.success('Success', 'Tasks Updated')
         App.state.events.fetch()
+        App.state.tags.fetch()
       },
       error: () => {
         bootbox.alert('Something goes wrong updating the Task')
@@ -75,6 +76,7 @@ module.exports = {
     const done = after(hosts.length,() => {
       App.state.alerts.success('Success', 'Tasks created.')
       App.state.events.fetch()
+      App.state.tags.fetch()
     })
     hosts.forEach(host => {
       let taskData = assign({},data,{ host_id: host })

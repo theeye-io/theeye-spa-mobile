@@ -101,6 +101,23 @@ module.exports = {
   run (workflow) {
     JobActions.createFromTask(workflow.start_task)
   },
+  getCredentials (id, next) {
+    next || (next = () => {})
+    let workflow = App.state.workflows.get(id)
+
+    XHR.send({
+      method: 'GET',
+      url: `${App.config.api_v3_url}/workflow/${id}/credentials`,
+      done (credentials) {
+        workflow.credentials = credentials
+      },
+      fail (err, xhr) {
+        let msg = 'Error retrieving workflow integrations credentials.'
+        bootbox.alert(msg)
+        return next(new Error(msg))
+      }
+    })
+  },
   updateAcl (id) {
     let workflow = App.state.workflows.get(id)
     let acl, allAcls = []

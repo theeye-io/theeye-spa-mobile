@@ -7,6 +7,7 @@ import MonitorConstants from 'constants/monitor'
 
 const MonitorSchema = require('./monitor-schema')
 const ResourceSchema = require('./resource-schema')
+const TagCollection = require('models/tag').Collection
 //const MonitorTemplate = require('./monitor-template')
 //const ResourceTemplate = require('./resource-template')
 const Host = require('models/host/index').Model
@@ -225,9 +226,24 @@ const Resource = ResourceBaseModel.extend({
     template: ResourceSchema, // belongs to
     host: Host, // belongs to
   },
+  session: {
+    tagsCollection: 'collection'
+  },
   initialize (options) {
     //this.id = options._id || options.id
     ResourceBaseModel.prototype.initialize.apply(this,arguments)
+
+    this.tagsCollection = new TagCollection([])
+
+    this.listenToAndRun(this, 'change:tags', () => {
+      if (Array.isArray(this.tags)) {
+        let tags = this.tags.map((tag, index) => {
+          return {_id: (index + 1).toString(), name: tag}
+        })
+        tags = tags.slice(0, 3)
+        this.tagsCollection.set(tags)
+      }
+    })
   }
 })
 

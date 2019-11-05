@@ -3,6 +3,8 @@ import AppModel from 'lib/app-model'
 import AmpersandCollection from 'ampersand-collection'
 const DinamicArgument = require('./dinamic-argument').DinamicArgument
 const ScheduleCollection = require('models/schedule').Collection
+const TagCollection = require('models/tag').Collection
+
 import FIELD from 'constants/field'
 
 const TaskArguments = AmpersandCollection.extend({
@@ -48,7 +50,8 @@ const Schema = AppModel.extend({
     hasDinamicOutputs: 'boolean',
     alreadyFetched: ['boolean', false, false],
     inProgressJobs: 'number',
-    last_execution: 'date'
+    last_execution: 'date',
+    tagsCollection: 'collection'
   },
   collections: {
     //triggers: Events,
@@ -61,6 +64,18 @@ const Schema = AppModel.extend({
   },
   initialize () {
     AppModel.prototype.initialize.apply(this,arguments)
+
+    this.tagsCollection = new TagCollection([])
+
+    this.listenToAndRun(this, 'change:tags', () => {
+      if (Array.isArray(this.tags)) {
+        let tags = this.tags.map((tag, index) => {
+          return {_id: (index + 1).toString(), name: tag}
+        })
+        tags = tags.slice(0, 3)
+        this.tagsCollection.set(tags)
+      }
+    })
 
     this.listenToAndRun(this.schedules, 'reset sync remove add', () => {
       this.hasSchedules = this.schedules.length > 0
