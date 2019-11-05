@@ -117,6 +117,8 @@ module.exports = {
     var body = {}
     body.email = data.email
     body.username = data.email
+    body.name = data.name
+    body.grecaptcha = data.grecaptcha
 
     const req = xhr({
       url: `${App.config.app_url}/registeruser`,
