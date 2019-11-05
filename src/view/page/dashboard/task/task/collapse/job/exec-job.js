@@ -1,6 +1,6 @@
 import App from 'ampersand-app'
 import bootbox from 'bootbox'
-import DinamicForm from 'components/dinamic-form'
+import DynamicForm from 'components/dynamic-form'
 import Modalizer from 'components/modalizer'
 import {BaseExec} from '../../exec-task.js'
 import FIELD from 'constants/field'
@@ -73,9 +73,9 @@ const ExecJob = BaseExec.extend({
 })
 
 const ExecApprovalJob = BaseExec.extend({
-  getDinamicOutputs (next) {
-    if (this.model.hasDinamicOutputs) {
-      const form = new DinamicForm({
+  getDynamicOutputs (next) {
+    if (this.model.hasDynamicOutputs) {
+      const form = new DynamicForm({
         fieldsDefinitions: this.model.task.output_parameters
       })
 
@@ -136,7 +136,7 @@ const ExecApprovalJob = BaseExec.extend({
         label: 'Reject',
         className: 'btn btn-danger',
         callback: () => {
-          this.getDinamicOutputs(jobArgs => {
+          this.getDynamicOutputs(jobArgs => {
             jobArgs = this.parseArgs(jobArgs)
             App.actions.job.reject(this.model, jobArgs)
             if (done) done()
@@ -147,7 +147,7 @@ const ExecApprovalJob = BaseExec.extend({
         label: 'Approve',
         className: 'btn btn-primary',
         callback: () => {
-          this.getDinamicOutputs(jobArgs => {
+          this.getDynamicOutputs(jobArgs => {
             jobArgs = this.parseArgs(jobArgs)
             App.actions.job.approve(this.model, jobArgs)
             if (done) done()
