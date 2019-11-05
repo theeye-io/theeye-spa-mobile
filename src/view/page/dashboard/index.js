@@ -29,6 +29,7 @@ import AnalyticsActions from 'actions/analytics'
 import InboxView from './inbox'
 
 // import onBoarding from './onboarding'
+import './styles.less'
 
 var slideCount, slideWidth, sliderUlWidth
 

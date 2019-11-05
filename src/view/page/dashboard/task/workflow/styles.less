@@ -1,7 +1,8 @@
-
-.workflow-job-row {
-  background-color: #304269;
-  cursor: pointer;
+[data-component="workflow-collapsible-row"] {
+  .workflow-job-row {
+    background-color: #304269;
+    cursor: pointer;
+  }
 
   .rotate {
     -moz-transition: all 0.1s linear;
@@ -13,5 +14,23 @@
     -moz-transform:rotate(90deg);
     -webkit-transform:rotate(90deg);
     transform:rotate(90deg);
+  }
+
+  .status-icons {
+    width: 30px;
+    padding-right: 10px;
+    text-align: center;
+
+    i[data-hook="execution_lifecycle_icon"] {
+      font-size: 16px;
+      line-height: 28px;
+    }
+
+    i[data-hook="execution_progress_icon"] {
+      top:-6px;
+      position:relative;
+      right:4px;
+      font-size:12px;
+    }
   }
 }
