@@ -62,9 +62,9 @@ module.exports = {
           }
           wjob = workflow.jobs.add(attrs, { merge: true })
         }
-        wjob.jobs.add(tjob)
+        wjob.jobs.add(tjob, { merge: true })
       } else {
-        task.jobs.add(tjob)
+        wjob.jobs.add(tjob, { merge: true })
       }
       isApprovalUpdate(tjob, task)
     }

@@ -18,6 +18,7 @@ import bootbox from 'bootbox'
 const ItemsFolding = require('./panel-items-fold')
 
 import MonitorsOptions from './monitors-options'
+import TasksOptions from './tasks-options'
 import MonitoringOboardingPanel from './monitoring-onboarding'
 import TasksOboardingPanel from './tasks-onboarding'
 // import PlusMenuButton from './plus-menu-button'
@@ -91,7 +92,6 @@ module.exports = View.extend({
     tasks: 'collection',
     renderStats: ['boolean', false, false],
     renderTasks: ['boolean', false, true],
-    waitTimeout: ['number', false, null],
     upandrunningSign: ['boolean', false, () => {
       let enabled = config.dashboard.upandrunningSign
       return typeof enabled === 'boolean' ? enabled : true
@@ -288,10 +288,6 @@ module.exports = View.extend({
       // upandrunning is disabled
       return
     }
-    if (this.waitTimeout) {
-      // the user is interacting
-      return
-    }
     if (!(this.monitors.length > 0)) {
       return
     }
@@ -389,6 +385,11 @@ module.exports = View.extend({
       this.queryByHook('monitors-panel-header')
     )
 
+    this.renderSubview(
+      new TasksOptions(),
+      this.queryByHook('tasks-panel-header')
+    )
+
     this.monitorRows = this.renderCollection(
       this.groupedResources,
       MonitorRowView,
@@ -430,16 +431,6 @@ module.exports = View.extend({
       this.sortGroupedResouces()
     })
 
-    this.listenToAndRun(App.state.tasks, 'add sync reset', () => {
-      if (this.tasksFolding) {
-        if (App.state.tasks.length > 0) {
-          this.tasksFolding.showButton()
-        } else {
-          this.tasksFolding.hideButton()
-        }
-      }
-    })
-
     this.listenTo(this.monitors, 'sync change:state', this.setUpAndRunningSign)
     this.listenTo(this.monitors, 'add', () => {
       this.monitorsFolding.unfold()
@@ -479,19 +470,33 @@ module.exports = View.extend({
     const rowtooltips = this.query('[data-hook=tasks-container] .tooltiped')
     $(rowtooltips).tooltip()
 
-    this.tasksFolding = this.renderSubview(
-      new ItemsFolding({}),
-      this.queryByHook('tasks-fold-container')
-    )
-
-    this.taskRows.views.forEach(row => {
-      let task = row.model
-      if (!task.canExecute) {
-        this.tasksFolding.append(row.el)
-      }
-    })
-
     SearchboxActions.addRowsViews(this.taskRows.views)
+
+    // this.tasksFolding = this.renderSubview(
+    //   new ItemsFolding({}),
+    //   this.queryByHook('tasks-fold-container')
+    // )
+    //
+    // this.listenToAndRun(this.tasksFolding, 'change:visible', () => {
+    //   this.showTasksPanel = this.tasksFolding.visible
+    // })
+    //
+    // this.taskRows.views.forEach(row => {
+    //   let task = row.model
+    //   if (!task.canExecute) {
+    //     this.tasksFolding.append(row.el)
+    //   }
+    // })
+    //
+    // this.listenToAndRun(App.state.tasks, 'add sync reset', () => {
+    //   if (this.tasksFolding) {
+    //     if (App.state.tasks.length > 0) {
+    //       this.tasksFolding.showButton()
+    //     } else {
+    //       this.tasksFolding.hideButton()
+    //     }
+    //   }
+    // })
   },
   // renderPlusButton () {
   //   this.plusButton = new PlusMenuButton()
