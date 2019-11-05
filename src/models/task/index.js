@@ -42,7 +42,9 @@ const Script = Template.Script.extend({
   props: {
     hostname: 'string',
     host_id: 'string',
-    template_id: 'string'
+    template_id: 'string',
+    multitasking: ['boolean',false,true],
+    env: 'string'
   },
   derived: {
     formatted_tags: formattedTags(),
@@ -88,7 +90,8 @@ const Scraper = Template.Scraper.extend({
   props: {
     hostname: 'string',
     host_id: 'string',
-    template_id: 'string'
+    template_id: 'string',
+    multitasking: ['boolean',false,true]
   },
   derived: {
     formatted_tags: formattedTags(),
