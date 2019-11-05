@@ -20,6 +20,23 @@ module.exports = {
   nodeWorkflow (node) {
     App.navigate('/admin/workflow/' + node)
   },
+  getCredentials (id, next) {
+    next || (next=()=>{})
+    let task = App.state.tasks.get(id)
+
+    XHR.send({
+      method: 'GET',
+      url: `${App.config.api_v3_url}/task/${id}/credentials`,
+      done (credentials) {
+        task.credentials = credentials
+      },
+      fail (err, xhr) {
+        let msg = 'Error retrieving task integrations credentials.'
+        bootbox.alert(msg)
+        return next(new Error(msg))
+      }
+    })
+  },
   update (id, data) {
     let task = App.state.tasks.get(id)
     if (task.type == 'script') {

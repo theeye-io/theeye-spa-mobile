@@ -3,6 +3,7 @@
 import assign from 'lodash/assign'
 
 const defaultConfigs = {
+  docs: 'https://documentation.theeye.io',
   request_timeout: 30000,
   landing_page_url: 'https://theeye.io',
   env: 'default',
