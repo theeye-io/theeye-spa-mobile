@@ -189,7 +189,7 @@ const Dummy = Template.Dummy.extend({
     summary: {
       deps: ['name'],
       fn () {
-        return `dummy task ${this.name}`
+        return `Input task ${this.name}`
       }
     }
   },
