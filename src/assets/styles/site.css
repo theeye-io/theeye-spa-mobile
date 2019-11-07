@@ -386,7 +386,6 @@ h3.light { color: #EEE}
 .admin-container .table-header.admin span.title {font-weight: bold;padding: 5px 12px 5px 5px;}
 .admin-container .table-header.admin button.mass-action {width:40px;}
 
-.admin-container .panel-heading {}
 .admin-container .panel-heading .actions label {font-size:20px; text-align:center;}
 .admin-container .panel-heading .name,
 .admin-container .panel-heading .hostname {white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
@@ -904,7 +903,8 @@ a.flowchart-icon {
 .admin-container.dashboard i.script-color { background-color: #c6639b }
 .admin-container.dashboard i.bot-color { background-color: #5bc4e8 }
 .admin-container.dashboard i.approval-color { background-color: #9fbc75 }
- .admin-container.dashboard i.group-color { background-color: #5bc4e8 }
+.admin-container.dashboard i.group-color { background-color: #5bc4e8 }
+.admin-container.dashboard i.dummy-color { background-color: #fb8484 }
 .admin-container.dashboard i.workflow-color { background-color: #bc9ad6 }
 .admin-container.dashboard i.webhook-color { background-color: #0080b9 }
 .admin-container.dashboard i.notification-color { background-color: #f4bc4a }
@@ -969,9 +969,8 @@ a.flowchart-icon {
 @media (max-width: 767px) {
 	.admin-container .panel-heading .panel-item.name { width:72%;padding-right:20px; }
   .admin-container .indicators-panel .panel-heading .panel-item.name { width:75%; }
-  .admin-container .job-container .panel-heading  .panel-item.name, .admin-container .workflow-job-row .panel-heading  .panel-item.name {
-    width: 85%;
-  }
+  .admin-container .workflow-job-row .panel-heading  .panel-item.name { width: 85%; }
+  .admin-container .job-container .panel-heading  .panel-item.name { width: 70%; }
   .admin-container .panel-heading .panel-item.entry-text { width:80%;}
 	.admin-container .panel-heading .panel-title-content { position:relative; }
   button.rowSelector, button.rowSelector-not {}

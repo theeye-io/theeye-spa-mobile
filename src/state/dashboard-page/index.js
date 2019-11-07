@@ -24,7 +24,8 @@ module.exports = AmpersandState.extend({
     }],
     tasksGroupBy: ['object',false, () => {
       return { prop: 'name' }
-    }]
+    }],
+    currentTab: ['string',true,'monitors']
   },
   collections: {
     // representation of the current groups being display
