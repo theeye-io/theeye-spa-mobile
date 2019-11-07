@@ -2,15 +2,23 @@ import search from 'lib/query-params'
 import App from 'ampersand-app'
 import after from 'lodash/after'
 import WorkflowActions from 'actions/workflow'
-import ApprovalActions from 'actions/approval'
+import OnHoldActions from 'actions/onHold'
 
 module.exports = {
   setMonitorsGroupByProperty (prop) {
     const query = search.get()
-    query.monitorsgroupby = { prop: prop }
+    query.monitorsgroupby = { prop }
     const qs = search.set(query)
 
     App.Router.navigate(`dashboard?${qs}`, { replace: true })
+  },
+  setTasksGroupByProperty (prop) {
+    const query = search.get()
+    query.tasksgroupby = { prop }
+    const qs = search.set(query)
+
+    App.Router.navigate(`dashboard?${qs}`, { replace: true })
+    // App.Router.reload()
   },
   loadNewRegisteredHostAgent (host) {
     var done = after(2, function () {
@@ -50,7 +58,7 @@ module.exports = {
               WorkflowActions.populate(workflow)
             })
 
-            ApprovalActions.check()
+            OnHoldActions.check()
             step()
           },
           error: step,

@@ -42,7 +42,9 @@ const Script = Template.Script.extend({
   props: {
     hostname: 'string',
     host_id: 'string',
-    template_id: 'string'
+    template_id: 'string',
+    multitasking: ['boolean',false,true],
+    env: 'object'
   },
   derived: {
     formatted_tags: formattedTags(),
@@ -53,9 +55,9 @@ const Script = Template.Script.extend({
       }
     },
     canBatchExecute: {
-      deps: ['hasDinamicArguments'],
+      deps: ['hasDynamicArguments'],
       fn () {
-        return !this.hasDinamicArguments
+        return !this.hasDynamicArguments
       }
     },
     hasTemplate: {
@@ -88,7 +90,8 @@ const Scraper = Template.Scraper.extend({
   props: {
     hostname: 'string',
     host_id: 'string',
-    template_id: 'string'
+    template_id: 'string',
+    multitasking: ['boolean',false,true]
   },
   derived: {
     formatted_tags: formattedTags(),
@@ -186,7 +189,7 @@ const Dummy = Template.Dummy.extend({
     summary: {
       deps: ['name'],
       fn () {
-        return `dummy task ${this.name}`
+        return `Input task ${this.name}`
       }
     }
   },
@@ -238,19 +241,19 @@ const Notification = Template.Notification.extend({
 
 const TaskFactory = function (attrs, options={}) {
   const store = App.state.tasks
+
   if (attrs.isCollection) { return attrs }
   if (attrs.isState) { return attrs } // already constructed
-
   let model
-
-  if (attrs.id) {
-    model = store.get(attrs.id)
-    if (model) { return model }
-  }
-
   const createModel = () => {
     let type = attrs.type
     let model
+
+    if (attrs.id) {
+      model = store.get(attrs.id)
+      if (model) { return model }
+    }
+
     switch (type) {
       case TaskConstants.TYPE_SCRIPT:
         model = new Script(attrs, options)
@@ -276,10 +279,7 @@ const TaskFactory = function (attrs, options={}) {
   }
 
   model = createModel()
-  if (
-    options.collection !== store &&
-    !model.isNew()
-  ) {
+  if (options.collection !== store && !model.isNew()) {
     store.add(model, {merge:true})
   }
   return model
@@ -314,6 +314,30 @@ exports.Task = Schema.extend({
     return attrs
   }
 })
+
+const Group = Schema.extend({
+  initialize (attrs) {
+    Schema.prototype.initialize.apply(this,arguments)
+    this.type = 'group'
+
+    this.listenToAndRun(this.submodels, 'change:inProgressJobs', () => {
+      this.inProgressJobs = this.submodels.models
+        .map(model => model.inProgressJobs)
+        .reduce((count, curr) => count + curr, 0)
+    })
+  },
+  collections: {
+    submodels: Collection
+  },
+  derived: {
+    formatted_tags: formattedTags()
+  },
+  props: {
+    groupby: ['string'],
+    canExecute: ['boolean', false, true]
+  }
+})
+
 exports.Scraper = Scraper
 exports.Script = Script
 exports.Approval = Approval
@@ -321,3 +345,4 @@ exports.Dummy = Dummy
 exports.Notification = Notification
 exports.Collection = Collection
 exports.Factory = TaskFactory
+exports.Group = Group

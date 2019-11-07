@@ -11,7 +11,7 @@ import WorkflowActions from 'actions/workflow'
 import TaskFormActions from 'actions/taskform'
 import FileSaver from 'file-saver'
 const emptyCallback = () => {}
-import { ExecTask, ExecApprovalTask } from 'view/page/dashboard/task/task/exec-task.js'
+import { ExecTask, ExecTaskWithNoHost } from 'view/page/dashboard/task/task/exec-task.js'
 import { Model as File } from 'models/file'
 
 const logger = require('lib/logger')('actions:tasks')
@@ -20,20 +20,34 @@ module.exports = {
   nodeWorkflow (node) {
     App.navigate('/admin/workflow/' + node)
   },
+  getCredentials (id, next) {
+    next || (next=()=>{})
+    let task = App.state.tasks.get(id)
+
+    XHR.send({
+      method: 'GET',
+      url: `${App.config.api_v3_url}/task/${id}/credentials`,
+      done (credentials) {
+        task.credentials = credentials
+      },
+      fail (err, xhr) {
+        let msg = 'Error retrieving task integrations credentials.'
+        bootbox.alert(msg)
+        return next(new Error(msg))
+      }
+    })
+  },
   update (id, data) {
     let task = App.state.tasks.get(id)
     if (task.type == 'script') {
       task.task_arguments.reset([])
-      task.output_parameters.reset([])
     }
     task.set(data)
     task.save({},{
       success: () => {
-        if (task.workflow_id) {
-          WorkflowActions.updateAcl(task.workflow_id)
-        }
         App.state.alerts.success('Success', 'Tasks Updated')
         App.state.events.fetch()
+        App.state.tags.fetch()
       },
       error: () => {
         bootbox.alert('Something goes wrong updating the Task')
@@ -58,6 +72,7 @@ module.exports = {
     const done = after(hosts.length,() => {
       App.state.alerts.success('Success', 'Tasks created.')
       App.state.events.fetch()
+      App.state.tags.fetch()
     })
     hosts.forEach(host => {
       let taskData = assign({},data,{ host_id: host })
@@ -173,10 +188,10 @@ module.exports = {
   execute (task) {
     var execTask
     if (!App.state.session.licenseExpired) {
-      if (task.type === TaskConstants.TYPE_APPROVAL) {
-        execTask = new ExecApprovalTask({ model: task })
-      } else {
+      if (task.hasHost()) {
         execTask = new ExecTask({ model: task })
+      } else {
+        execTask = new ExecTaskWithNoHost({ model: task })
       }
       execTask.execute()
     } else {

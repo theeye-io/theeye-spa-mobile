@@ -54,12 +54,17 @@ const BaseJob = AppModel.extend({
     _type: 'string',
     task: 'object',
     task_arguments_values: 'array',
-    output: 'array',
+    output: 'any',
     workflow_id: 'string',
     workflow_job_id: 'string'
   },
   children: {
     user: User,
+  },
+  isOwner (email) {
+    if (!this.user||!this.user.email) { return false }
+
+    return (email.toLowerCase() === this.user.email.toLowerCase())
   },
   derived: {
     inProgress: {
@@ -73,24 +78,6 @@ const BaseJob = AppModel.extend({
       fn () {
         if (!this.task) { return {} }
         return new App.Models.Task.Factory(this.task, {})
-      }
-    },
-    hasDinamicOutputs: {
-      deps: ['task'],
-      fn () {
-        if (!this.task) return false
-        let hasDinamicOutputs = Boolean(
-          this.task.output_parameters.find(arg => {
-            return arg.type && (
-              arg.type === FIELD.TYPE_INPUT ||
-              arg.type === FIELD.TYPE_SELECT ||
-              arg.type === FIELD.TYPE_DATE ||
-              arg.type === FIELD.TYPE_FILE ||
-              arg.type === FIELD.TYPE_REMOTE_OPTIONS
-            )
-          })
-        )
-        return hasDinamicOutputs
       }
     }
   }
@@ -224,11 +211,6 @@ const JobFactory = function (attrs, options={}) {
   if (attrs.id) {
     model = App.state.jobs.get(attrs.id)
     if (model) {
-      // reset
-      //model.clear()
-      //model.result.clear()
-
-      // and update
       model.set(attrs)
       if (model.result) {
         model.result.set(attrs.result)

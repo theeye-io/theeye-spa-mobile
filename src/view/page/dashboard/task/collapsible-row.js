@@ -1,4 +1,5 @@
 import View from 'ampersand-view'
+import TagView from 'components/tag'
 import './styles.less'
 import HelpIconView from 'components/help-icon'
 
@@ -182,20 +183,27 @@ module.exports = View.extend({
     this.renderWithTemplate()
     this.renderButtons()
     this.renderCollapsedContent()
+    // this.renderTags()
     this.renderHelp()
 
     let $el = $(this.query('.panel-collapse.collapse'))
     $el.on('show.bs.collapse', () => { this.collapsed = false })
     $el.on('hide.bs.collapse', () => { this.collapsed = true  })
   },
-  //remove () {
-  //  View.prototype.remove.apply(this, arguments)
-  //},
   renderButtons () {
     return
   },
   renderCollapsedContent () {
     return
+  },
+  renderTags () {
+    if (this.model.tagsCollection) {
+      this.renderCollection(
+        this.model.tagsCollection,
+        TagView,
+        this.queryByHook('tags')
+      )
+    }
   },
   renderHelp () {
     let icon = new HelpIconView({

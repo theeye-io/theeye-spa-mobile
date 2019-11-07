@@ -6,6 +6,7 @@ import MonitorButtonsView from './buttons'
 import MonitorActions from 'actions/monitor'
 import MonitorConstants from 'constants/monitor'
 import rowIconByType from '../row-icon-by-type'
+import TagView from 'components/tag'
 import HelpIconView from 'components/help-icon'
 const CollapseContentFactory = require('./collapse-content').Factory
 
@@ -163,9 +164,10 @@ const MonitorView = View.extend({
   },
   render () {
     this.renderWithTemplate()
+    this.renderCollapsedContent()
     this.renderButtons()
     this.setRowIcon()
-    this.renderCollapsedContent()
+    // this.renderTags()
     this.renderHelp()
   },
   renderHelp () {
@@ -210,6 +212,15 @@ const MonitorView = View.extend({
       new MonitorButtonsView({ model: this.model }),
       this.query('ul.dropdown-menu[data-hook=buttons-container]')
     )
+  },
+  renderTags () {
+    if (this.model.tagsCollection) {
+      this.renderCollection(
+        this.model.tagsCollection,
+        TagView,
+        this.queryByHook('tags')
+      )
+    }
   }
 })
 
