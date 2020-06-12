@@ -25,7 +25,6 @@ import TasksOboardingPanel from './tasks-onboarding'
 // import acls from 'lib/acls'
 // import NotificationActions from 'actions/notifications'
 import DashboardActions from 'actions/dashboard'
-import AnalyticsActions from 'actions/analytics'
 import InboxView from './inbox'
 
 // import onBoarding from './onboarding'
@@ -221,8 +220,6 @@ module.exports = View.extend({
       if (!App.state.dashboard.currentTab) {
         return
       }
-
-      AnalyticsActions.trackView(App.state.dashboard.currentTab)
 
       let hasIndicators = (this.indicators.length) ? 1 : 0
 

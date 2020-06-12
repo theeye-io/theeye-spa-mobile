@@ -4,7 +4,6 @@ import App from 'ampersand-app'
 import XHR from 'lib/xhr'
 import bootbox from 'bootbox'
 import credentials from 'config/credentials'
-import AnalyticsActions from './analytics'
 const xhr = $.ajax
 
 const persistOnStorage = function (data) {
@@ -27,8 +26,6 @@ module.exports = {
         persistOnStorage(data)
         App.state.loader.visible = false
         if (xhr.status == 200){
-          AnalyticsActions.trackEvent('Auth', 'Login')
-          AnalyticsActions.trackMixpanelEvent('login', {provider: 'Local'})
           App.state.session.set({
             access_token: response.access_token
           })
@@ -57,17 +54,13 @@ module.exports = {
       },
       done: (response,xhr) => {
         if (xhr.status == 200) {
-          AnalyticsActions.unsetMixpanelUser()
         }
       },
       fail: (err,xhr) => {
-        AnalyticsActions.trackError(err, 'Logout Error')
         //bootbox.alert('Something goes wrong.')
       }
     })
 
-    AnalyticsActions.trackEvent('Auth', 'Logout')
-    AnalyticsActions.trackMixpanelEvent('logout')
     if(window.plugins && window.plugins.googleplus) {
       window.plugins.googleplus.disconnect(function (msg) {console.log(msg)})
     }
@@ -105,7 +98,6 @@ module.exports = {
         if (xhr.status == 400) {
           bootbox.alert('User email not found')
         } else {
-          AnalyticsActions.trackError(err, 'Login Error')
           bootbox.alert('Error, please try again')
         }
       }
@@ -239,8 +231,6 @@ module.exports = {
           },
           done: (response,xhr) => {
             if (xhr.status == 200){
-              AnalyticsActions.trackEvent('Auth', 'Social Login', 'Google')
-              AnalyticsActions.trackMixpanelEvent('login', {provider: 'Google'})
 
               App.state.session.set({
                 access_token: response.access_token
@@ -263,7 +253,6 @@ module.exports = {
             if (xhr.status == 400) {
               bootbox.alert('Login error, invalid credentials')
             } else {
-              AnalyticsActions.trackError(err, 'Social Login (google) Error')
               bootbox.alert('Login error, please try again')
             }
           }
@@ -272,7 +261,6 @@ module.exports = {
       function(error){
         //throws error ==12501 on modal close event
         if (error!==12501) {
-          AnalyticsActions.trackError(error, 'Social Login (google) Error')
 
           bootbox.alert('Login error, please try again')
         }

@@ -4,7 +4,6 @@ const logger = require('lib/logger')('actions:session')
 import bootbox from 'bootbox'
 import assign from 'lodash/assign'
 import reject from 'lodash/reject'
-import AnalyticsActions from './analytics'
 
 import jwtDecode from 'jwt-decode'
 
@@ -100,7 +99,6 @@ module.exports = {
           sessionState.user.customers.reset()
           sessionState.user.customers.set(customers)
         }
-        AnalyticsActions.setMixpanelUser(user)
         sessionState.logged_in = true
         next()
       },

@@ -8,7 +8,6 @@ import MonitorConstants from 'constants/monitor'
 // import MonitorEditView from 'view/page/monitor/edit'
 import HelpMessages from 'language/help'
 import $ from 'jquery'
-import AnalyticsActions from 'actions/analytics'
 
 const Mute = View.extend({
   template: `
@@ -143,8 +142,6 @@ const LastEvent = View.extend({
     event.stopPropagation();
     $('.dropdown.open .dropdown-toggle').dropdown('toggle')
 
-    AnalyticsActions.trackView('executionOutputMonitor')
-    AnalyticsActions.trackMixpanelEvent('Check monitor output', {output: this.model.last_event || 'it is empty'})
     const view = new JobOutput({
       output: this.model.last_event || 'it is empty'
     })

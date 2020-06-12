@@ -10,7 +10,6 @@ import AppState from 'state'
 import Router from 'router'
 import Loader from 'components/loader'
 import RootContainer from 'view/root-container'
-import AnalyticsActions from 'actions/analytics'
 import DashboardActions from 'actions/dashboard'
 
 require('app/events')
@@ -101,8 +100,6 @@ document.addEventListener('deviceready', function () {
   document.addEventListener('backbutton', function (e) {
     e.preventDefault()
   }, false)
-
-  AnalyticsActions.initPlugins()
 
   App.init()
 }, false)
