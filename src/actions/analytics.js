@@ -45,8 +45,8 @@ module.exports = {
   trackError (error, log) {
     if (!window.cordova || window.cordova.platformId === 'browser') return
     if (log) {
-      window.fabric.Crashlytics.addLog(log)
+      // window.fabric.Crashlytics.addLog(log)
     }
-    window.fabric.Crashlytics.sendNonFatalCrash(JSON.stringify(error))
+    // window.fabric.Crashlytics.sendNonFatalCrash(JSON.stringify(error))
   }
 }
