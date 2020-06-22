@@ -36,9 +36,8 @@
     "bootstrap": "^3.3.7",
     "bower": "~1.7.9",
     "clipboard": "1.7.1",
-    "cordova-andrdoi": "6.3.0",
-    "cordova-android": "^6.3.0",
-    "cordova-browser": "^5.0.3",
+    "cordova-android": "8.0.0",
+    "cordova-browser": "^6.0.0",
     "cordova-ios": "^4.5.5",
     "cordova-open": "1.0.12",
     "cordova-plugin-buildinfo": "2.0.1",
@@ -132,9 +131,9 @@
       }
     },
     "platforms": [
-      "browser",
       "ios",
-      "android"
+      "android",
+      "browser"
     ]
   },
   "scripts": {
