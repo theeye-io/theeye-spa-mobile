@@ -10,11 +10,11 @@ const defaultConfigs = {
   request_timeout: 30000,
   landing_page_url: 'https://theeye.io',
   env: 'default',
-  app_url: 'http://localhost:6080',
-  socket_url: 'http://localhost:6080',
-  api_url: 'http://localhost:6080/apiv2',
-  api_v3_url: 'http://localhost:6080/apiv3',
-  supervisor_api_url: 'http://localhost:60080',
+  app_url: 'http://arl20124307.ar.hsbc:6080',
+  socket_url: 'http://arl20124307.ar.hsbc:6080',
+  api_url: 'http://arl20124307.ar.hsbc:6080/apiv2',
+  api_v3_url: 'http://arl20124307.ar.hsbc:6080/apiv3',
+  supervisor_api_url: 'http://arl20124307.ar.hsbc:60080',
   files: {
     max_upload_size: 750
   },

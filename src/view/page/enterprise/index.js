@@ -68,11 +68,11 @@ module.exports = View.extend({
   },
   template: require('./template.hbs'),
   events: {
-    'click [data-hook=google-login-mobile]': function (event) {
-      event.preventDefault()
-      event.stopPropagation()
-      AuthActions.socialLoginMobile('google')
-    },
+    // 'click [data-hook=google-login-mobile]': function (event) {
+    //   event.preventDefault()
+    //   event.stopPropagation()
+    //   AuthActions.socialLoginMobile('google')
+    // },
     'click button[data-hook=start-login]': function (event) {
       event.preventDefault()
       event.stopPropagation()

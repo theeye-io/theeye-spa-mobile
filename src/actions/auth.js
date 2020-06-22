@@ -61,9 +61,9 @@ module.exports = {
       }
     })
 
-    if(window.plugins && window.plugins.googleplus) {
-      window.plugins.googleplus.disconnect(function (msg) {console.log(msg)})
-    }
+    // if(window.plugins && window.plugins.googleplus) {
+    //   window.plugins.googleplus.disconnect(function (msg) {console.log(msg)})
+    // }
 
     App.state.reset() // reset all application states
     App.state.session.clear() // force session destroy on client
@@ -213,58 +213,58 @@ module.exports = {
   providerLogin(provider) {
     window.location.replace('auth/'+provider)
   },
-  socialLoginMobile(provider) {
-    if(provider == 'google') {
-      window.plugins.googleplus.login({
-        'webClientId': credentials.google.webClientId,
-        'offline': true
-      },
-      function(userData) {
-        XHR.send({
-          url: `${App.config.app_url}/auth/verifysocialtoken`,
-          method: 'post',
-          jsonData: {email: userData.email, idToken: userData.idToken},
-          timeout: 5000,
-          withCredentials: true,
-          headers: {
-            Accept: 'application/json;charset=UTF-8'
-          },
-          done: (response,xhr) => {
-            if (xhr.status == 200){
-
-              App.state.session.set({
-                access_token: response.access_token
-              })
-            } else {
-              if (xhr.status == 400) {
-                bootbox.alert('Login error, invalid credentials')
-              } else {
-                bootbox.alert('Login error, please try again')
-              }
-            }
-          },
-          fail: (err,xhr) => {
-            window.plugins.googleplus.disconnect(
-              function (msg) {
-                App.state.session.destroy()
-                App.state.alerts.success('Logged Out.','See you soon')
-              }
-            );
-            if (xhr.status == 400) {
-              bootbox.alert('Login error, invalid credentials')
-            } else {
-              bootbox.alert('Login error, please try again')
-            }
-          }
-        })
-      },
-      function(error){
-        //throws error ==12501 on modal close event
-        if (error!==12501) {
-
-          bootbox.alert('Login error, please try again')
-        }
-      })
-    }
-  }
+  // socialLoginMobile(provider) {
+  //   if(provider == 'google') {
+  //     window.plugins.googleplus.login({
+  //       'webClientId': credentials.google.webClientId,
+  //       'offline': true
+  //     },
+  //     function(userData) {
+  //       XHR.send({
+  //         url: `${App.config.app_url}/auth/verifysocialtoken`,
+  //         method: 'post',
+  //         jsonData: {email: userData.email, idToken: userData.idToken},
+  //         timeout: 5000,
+  //         withCredentials: true,
+  //         headers: {
+  //           Accept: 'application/json;charset=UTF-8'
+  //         },
+  //         done: (response,xhr) => {
+  //           if (xhr.status == 200){
+  //
+  //             App.state.session.set({
+  //               access_token: response.access_token
+  //             })
+  //           } else {
+  //             if (xhr.status == 400) {
+  //               bootbox.alert('Login error, invalid credentials')
+  //             } else {
+  //               bootbox.alert('Login error, please try again')
+  //             }
+  //           }
+  //         },
+  //         fail: (err,xhr) => {
+  //           window.plugins.googleplus.disconnect(
+  //             function (msg) {
+  //               App.state.session.destroy()
+  //               App.state.alerts.success('Logged Out.','See you soon')
+  //             }
+  //           );
+  //           if (xhr.status == 400) {
+  //             bootbox.alert('Login error, invalid credentials')
+  //           } else {
+  //             bootbox.alert('Login error, please try again')
+  //           }
+  //         }
+  //       })
+  //     },
+  //     function(error){
+  //       //throws error ==12501 on modal close event
+  //       if (error!==12501) {
+  //
+  //         bootbox.alert('Login error, please try again')
+  //       }
+  //     })
+  //   }
+  // }
 }
