@@ -36,9 +36,8 @@
     "bootstrap": "^3.3.7",
     "bower": "~1.7.9",
     "clipboard": "1.7.1",
-    "cordova-android": "^6.3.0",
-    "cordova-browser": "^5.0.3",
-    "cordova-fabric-plugin": "^1.1.14-dev",
+    "cordova-android": "^8.0.0",
+    "cordova-browser": "6.0.0",
     "cordova-ios": "^4.5.5",
     "cordova-open": "1.0.12",
     "cordova-plugin-buildinfo": "2.0.1",
@@ -46,10 +45,7 @@
     "cordova-plugin-device": "1.1.7",
     "cordova-plugin-file": "6.0.1",
     "cordova-plugin-file-transfer": "1.7.1",
-    "cordova-plugin-google-analytics": "1.8.3",
-    "cordova-plugin-googleplus": "7.0.2",
     "cordova-plugin-inappbrowser": "2.0.2",
-    "cordova-plugin-mixpanel": "^4.7.0",
     "cordova-plugin-screen-orientation": "2.0.2",
     "cordova-plugin-splashscreen": "4.1.0",
     "cordova-plugin-statusbar": "2.4.2",
@@ -93,7 +89,6 @@
     "nodemailer-smtp-transport": "~2.4.2",
     "nodemon": "1.10.0",
     "npm-2": "2.15.0",
-    "phonegap-plugin-push": "^1.9.0",
     "request": "~2.74.0",
     "select2": "^4.0.3",
     "standard": "^8.6.0",
@@ -111,7 +106,6 @@
       "cordova-plugin-whitelist": {},
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-statusbar": {},
-      "cordova-plugin-google-analytics": {},
       "cordova-plugin-device": {},
       "cordova-plugin-screen-orientation": {},
       "cordova-plugin-buildinfo": {},
@@ -122,27 +116,23 @@
       "cordova-plugin-file": {},
       "cordova-open": {},
       "cordova-plugin-file-transfer": {},
-      "cordova-fabric-plugin": {
-        "FABRIC_API_KEY": "44ff5df2c2b8e843d90f122120a0f2652bc23715",
-        "FABRIC_API_SECRET": "a01c760676d7a382d64ba4251f0f29338f4b324ccb4437b46dd97d516fc49e90"
+      "cordova-plugin-google-analytics": {
+        "GMS_VERSION": "11.8.0",
+        "FCM_VERSION": "11.8.0"
       },
       "phonegap-plugin-push": {
-        "FCM_VERSION": "11.6.2",
-        "SENDER_ID": "85075801930"
-      },
-      "cordova-plugin-mixpanel": {
-        "PLAY_SERVICES_VERSION": "+",
-        "FIREBASE_VERSION": "+"
+        "FCM_VERSION": "11.8.0"
       },
       "cordova-plugin-googleplus": {
         "REVERSED_CLIENT_ID": "com.googleusercontent.apps.1072547485365-paamcaljqmvn6s0nr0ota0553q1c4a5a",
         "WEB_APPLICATION_CLIENT_ID": "1072547485365-4usae5tps8cl6i98ju63k3oft5vlnbkk.apps.googleusercontent.com",
+        "FCM_VERSION": "11.8.0",
         "PLAY_SERVICES_VERSION": "11.8.0"
       }
     },
     "platforms": [
-      "browser",
       "ios",
+      "browser",
       "android"
     ]
   },
@@ -150,5 +140,10 @@
     "webpack": "./node_modules/webpack/bin/webpack.js"
   },
   "author": "jailbirt, facugon, tmarcote",
-  "license": ""
+  "license": "",
+  "devDependencies": {
+    "cordova-plugin-google-analytics": "^1.9.0",
+    "cordova-plugin-googleplus": "^7.0.2",
+    "phonegap-plugin-push": "^2.2.0"
+  }
 }
