@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1072547485365-im1duonglm9av7qp17ntu88tui7tl8sp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.theeye.mobile",
+            "certificate_hash": "8a5c88f7e1b3f42f027f0a55ca0a36f19c125101"
+          }
+        },
+        {
           "client_id": "1072547485365-4usae5tps8cl6i98ju63k3oft5vlnbkk.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -29,88 +37,24 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBsK7VmzYyfgW4UwbTdGoluZjmMMcCrZE8"
+          "current_key": "AIzaSyCBR0nmZoGe_zy-cQ687aS2qXu2sxqJ1mo"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 2,
-          "analytics_property": {
-            "tracking_id": "UA-108287519-1"
-          }
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
               "client_id": "1072547485365-e61rifm9tra4obdplai7nlia158vfhqa.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "1072547485365-fpb3qvrqb5c5btnqqq4600pn492jjpfc.apps.googleusercontent.com",
+              "client_id": "1072547485365-paamcaljqmvn6s0nr0ota0553q1c4a5a.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "io.theeye.mobile.bghinhouse"
+                "bundle_id": "io.theeye.mobile"
               }
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1072547485365:android:6a8afc12acaf3559",
-        "android_client_info": {
-          "package_name": "io.theeye.mobile.bgh"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1072547485365-k0q6bnqq667to9u7k35gtnpjhpp9f1b4.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "io.theeye.mobile.bgh",
-            "certificate_hash": "8a5c88f7e1b3f42f027f0a55ca0a36f19c125101"
-          }
-        },
-        {
-          "client_id": "1072547485365-e61rifm9tra4obdplai7nlia158vfhqa.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBsK7VmzYyfgW4UwbTdGoluZjmMMcCrZE8"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 2,
-          "analytics_property": {
-            "tracking_id": "UA-108287519-1"
-          }
-        },
-        "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1072547485365-e61rifm9tra4obdplai7nlia158vfhqa.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "1072547485365-fpb3qvrqb5c5btnqqq4600pn492jjpfc.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "io.theeye.mobile.bghinhouse"
-              }
-            }
-          ]
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     },
@@ -137,34 +81,24 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBsK7VmzYyfgW4UwbTdGoluZjmMMcCrZE8"
+          "current_key": "AIzaSyCBR0nmZoGe_zy-cQ687aS2qXu2sxqJ1mo"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 2,
-          "analytics_property": {
-            "tracking_id": "UA-108287519-1"
-          }
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
               "client_id": "1072547485365-e61rifm9tra4obdplai7nlia158vfhqa.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "1072547485365-fpb3qvrqb5c5btnqqq4600pn492jjpfc.apps.googleusercontent.com",
+              "client_id": "1072547485365-paamcaljqmvn6s0nr0ota0553q1c4a5a.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "io.theeye.mobile.bghinhouse"
+                "bundle_id": "io.theeye.mobile"
               }
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     }
