@@ -1,0 +1,173 @@
+{
+  "project_info": {
+    "project_number": "1072547485365",
+    "firebase_url": "https://fir-theeye-mobile.firebaseio.com",
+    "project_id": "firebase-theeye-mobile",
+    "storage_bucket": "firebase-theeye-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1072547485365:android:d781180d0bad3613",
+        "android_client_info": {
+          "package_name": "io.theeye.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1072547485365-4usae5tps8cl6i98ju63k3oft5vlnbkk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.theeye.mobile",
+            "certificate_hash": "f16b4484087ceb5e7ce76e4ac8c347ea92f5b39f"
+          }
+        },
+        {
+          "client_id": "1072547485365-e61rifm9tra4obdplai7nlia158vfhqa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsK7VmzYyfgW4UwbTdGoluZjmMMcCrZE8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-108287519-1"
+          }
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1072547485365-e61rifm9tra4obdplai7nlia158vfhqa.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1072547485365-fpb3qvrqb5c5btnqqq4600pn492jjpfc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.theeye.mobile.bghinhouse"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1072547485365:android:6a8afc12acaf3559",
+        "android_client_info": {
+          "package_name": "io.theeye.mobile.bgh"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1072547485365-k0q6bnqq667to9u7k35gtnpjhpp9f1b4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.theeye.mobile.bgh",
+            "certificate_hash": "8a5c88f7e1b3f42f027f0a55ca0a36f19c125101"
+          }
+        },
+        {
+          "client_id": "1072547485365-e61rifm9tra4obdplai7nlia158vfhqa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsK7VmzYyfgW4UwbTdGoluZjmMMcCrZE8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-108287519-1"
+          }
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1072547485365-e61rifm9tra4obdplai7nlia158vfhqa.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1072547485365-fpb3qvrqb5c5btnqqq4600pn492jjpfc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.theeye.mobile.bghinhouse"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1072547485365:android:bb9cb0ab24622f74",
+        "android_client_info": {
+          "package_name": "io.theeye.mobile.development"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1072547485365-9t1uugcedicrt95v42nbcdq56jn0u6bd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.theeye.mobile.development",
+            "certificate_hash": "d4e6e5d0f8e0628919ef98c0ece5273602a4018b"
+          }
+        },
+        {
+          "client_id": "1072547485365-e61rifm9tra4obdplai7nlia158vfhqa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsK7VmzYyfgW4UwbTdGoluZjmMMcCrZE8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-108287519-1"
+          }
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1072547485365-e61rifm9tra4obdplai7nlia158vfhqa.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1072547485365-fpb3qvrqb5c5btnqqq4600pn492jjpfc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.theeye.mobile.bghinhouse"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
