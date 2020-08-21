@@ -45,11 +45,14 @@ module.exports = {
     }),
     (function () {
       if (IS_PRODUCTION) {
-        console.log('uglifying')
-        return new webpack.optimize.UglifyJsPlugin({
-          compress: { warnings: false },
-          output: { comments: false }
-        })
+        // console.log('uglifying')
+        // return new webpack.optimize.UglifyJsPlugin({
+        //   compress: { warnings: false },
+        //   output: { comments: false }
+        // })
+        return function () {
+          console.log('uglify desactivated')
+        }
       } else {
         return function () {
           console.log('uglify desactivated')

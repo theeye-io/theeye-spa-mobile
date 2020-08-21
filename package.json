@@ -91,6 +91,7 @@
     "npm-2": "2.15.0",
     "request": "~2.74.0",
     "select2": "^4.0.3",
+    "socket.io-client": "~2.3.0",
     "standard": "^8.6.0",
     "style-loader": "~0.13.1",
     "underscore": "~1.8.3",

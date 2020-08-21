@@ -14,7 +14,8 @@ import AnalyticsActions from 'actions/analytics'
 import DashboardActions from 'actions/dashboard'
 
 require('app/events')
-const sockets = require('app/sockets')
+import sockets from 'app/sockets'
+// const sockets = require('app/sockets')
 const session = require('app/session')
 const actions = require('app/actions')
 const pushNotification = require('app/push-notification')
@@ -97,6 +98,10 @@ App.extend({
 document.addEventListener('deviceready', function () {
   document.addEventListener('resume', function () {
     DashboardActions.fetchData({ fetchTasks: true, fetchNotifications: true })
+    App.sockets.disconnect(() => {
+      const session = App.state.session
+      App.sockets.connect({ access_token: session.access_token })
+    })
   }, false)
   document.addEventListener('backbutton', function (e) {
     e.preventDefault()
