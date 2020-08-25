@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1072547485365-6219efmp0c4u742sd075o8hbap6vpmm8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.theeye.mobile",
+            "certificate_hash": "92863abfc121a027f169b169c176c2bbe8658c3d"
+          }
+        },
+        {
           "client_id": "1072547485365-im1duonglm9av7qp17ntu88tui7tl8sp.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

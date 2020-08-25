@@ -222,18 +222,16 @@ module.exports = {
     window.location.replace('auth/'+provider)
   },
   socialLoginMobile(provider) {
-    if(provider == 'google') {
+    if(provider == 'googlemobile') {
       window.plugins.googleplus.login({
         'webClientId': credentials.google.webClientId,
         'offline': true
       },
       function(userData) {
         XHR.send({
-          url: `${App.config.app_url}/auth/verifysocialtoken`,
+          url: `${App.config.app_url}/api/auth/social/${provider}/verifytoken`,
           method: 'post',
           jsonData: {email: userData.email, idToken: userData.idToken},
-          timeout: 5000,
-          withCredentials: true,
           headers: {
             Accept: 'application/json;charset=UTF-8'
           },

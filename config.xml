@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.theeye.mobile" version="1.1.31" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="io.theeye.mobile" version="1.1.31" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>theEye Mobile</name>
     <description>
         Mobile version for theEye. The orchestator and automation platform for all IT operations.
@@ -45,6 +45,9 @@
         <splash density="port-xxxhdpi" src="res/screen/android/drawable-port-xxxhdpi-screen.png" />
         <resource-file src="google-services.json" target="google-services.json" />
         <hook src="scripts/push-icon.js" type="after_prepare" />
+        <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
+            <application android:usesCleartextTraffic="true" />
+        </edit-config>
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
@@ -125,7 +128,7 @@
     </plugin>
     <plugin name="cordova-plugin-googleplus" spec="7.0.2">
         <variable name="REVERSED_CLIENT_ID" value="com.googleusercontent.apps.1072547485365-paamcaljqmvn6s0nr0ota0553q1c4a5a" />
-        <variable name="WEB_APPLICATION_CLIENT_ID" value="1072547485365-4usae5tps8cl6i98ju63k3oft5vlnbkk.apps.googleusercontent.com" />
+        <variable name="WEB_APPLICATION_CLIENT_ID" value="1072547485365-e61rifm9tra4obdplai7nlia158vfhqa.apps.googleusercontent.com" />
         <variable name="FCM_VERSION" value="11.8.0" />
         <variable name="PLAY_SERVICES_VERSION" value="11.8.0" />
     </plugin>

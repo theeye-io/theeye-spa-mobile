@@ -41,7 +41,7 @@ module.exports = View.extend({
     'click [data-hook=google-login]': function (event) {
       event.preventDefault()
       event.stopPropagation()
-      AuthActions.socialLoginMobile('google')
+      AuthActions.socialLoginMobile('googlemobile')
     },
     'click button[data-hook=start-login]': function (event) {
       event.preventDefault()
